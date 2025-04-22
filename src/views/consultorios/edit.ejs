@@ -1,0 +1,141 @@
+<form action="/consultorios/<%= consultorio.idConsultorio %>?_method=PUT" method="post">
+  <div class="row form-group pt-5">
+    <div class="col-md-4 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="nome"
+        name="nome"
+        value="<%= consultorio.nome %>"
+        tabindex="1"
+        autofocus
+        maxlength="60"
+        required
+      />
+      <label for="nome">Nome:</label>
+    </div>
+    <div class="col-md-5 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="responsavel"
+        name="responsavel"
+        value="<%= consultorio.responsavel %>"
+        tabindex="2"
+        maxlength="60"
+      />
+      <label for="responsavel">Responsável:</label>
+    </div>
+    <div class="col-md-3 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        oninput="mascaraCelular(this)"
+        id="celular"
+        name="celular"
+        value="<%= consultorio.celular %>"
+        tabindex="3"
+        required
+        maxlength="15"
+      />
+      <label for="celular">Celular:</label>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-3 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="cep"
+        oninput="mascaraCep(this)"
+        onblur="encontraCep(this)"
+        name="cep"
+        value="<%= consultorio.cep %>"
+        tabindex="5"
+        maxlength="9"
+      />
+      <label for="cep">CEP:</label>
+    </div>
+    <div class="col-md-7 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="endereco"
+        name="endereco"
+        value="<%= consultorio.endereco %>"
+        tabindex="6"
+        required
+      />
+      <label for="endereco">Endereço:</label>
+    </div>
+    <div class="col-md-2 mb-3">
+      <input
+        type="number"
+        class="form-control"
+        id="numero"
+        name="numero"
+        value="<%= consultorio.numero %>"
+        tabindex="7"
+        required
+      />
+      <label for="numero">Número:</label>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-4 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="bairro"
+        name="bairro"
+        value="<%= consultorio.bairro %>"
+        tabindex="8"
+        maxlength="60"
+        required
+      />
+      <label for="bairro">Bairro:</label>
+    </div>
+    <div class="col-md-4 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="cidade"
+        name="cidade"
+        value="<%= consultorio.cidade %>"
+        tabindex="9"
+        required
+      />
+      <label for="cidade">Cidade:</label>
+    </div>
+    <div class="col-md-4 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="cpf"
+        oninput="mascaraCpf(this)"
+        name="cpf"
+        value="<%= consultorio.cpf %>"
+        tabindex="10"
+        maxlength="14"
+      />
+      <label for="cpf">CPF:</label>
+    </div>
+  </div>
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      id="profissao"
+      name="profissao"
+      value="<%= consultorio.profissao %>"
+      tabindex="11"
+      maxlength="30"
+      required
+    />
+    <label for="profissao">Profissão:</label>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+  <a href="/consultorio/index" class="btn btn-secondary">Cancelar</a>
+  <a href="/consultorios" class="btn btn-secondary">Voltar para a lista</a>
+</form>

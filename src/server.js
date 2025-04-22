@@ -1,4 +1,5 @@
 // Configuração do Express
+import axios from 'axios';
 import flash from 'connect-flash';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -8,6 +9,9 @@ import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
 import { join } from 'path';
 dotenv.config();
+// Rotas e lógica da aplicação podem ser adicionadas aqui
+import methodOverride from 'method-override';
+import consultorioRoutes from './routes/consultorioRoutes.js';
 
 // Configuração da aplicação
 const app = express();
@@ -45,7 +49,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rotas e lógica da aplicação podem ser adicionadas aqui
+// Configuração do method-override
+app.use(methodOverride('_method'));
 
 // Rotas para o frontend
 app.get('/', (req, res) => {
@@ -55,6 +60,22 @@ app.get('/', (req, res) => {
     pageIcon: 'bi bi-house-door',
   }); // Passa o pageTitle para o render
 });
+
+// Usando as rotas de Consultorio
+app.use('/consultorios', consultorioRoutes);
+
+app.get('/display-message', (req, res) => {
+  req.flash('message', 'Bem-vindo!');
+  res.send(req.flash('message'));
+});
+// página Sobre
+app.get('/sobre', (req, res) => {
+  res.render('sobre', {
+    pageTitle: 'Sobre',
+    pageIcon: 'ri-information-line',
+  });
+});
+
 // ***********************************************************//
 // Rota para buscar o endereço pelo CEP
 app.get('/buscar-endereco/:cep', async (req, res) => {

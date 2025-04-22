@@ -20,6 +20,7 @@
   "license": "ISC",
   "description": "Sistema de Gerenciamento do Consultório de Optometria",
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "axios": "^1.8.4",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
@@ -29,7 +30,8 @@
     "express": "^5.1.0",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
-    "mariadb": "^3.4.1"
+    "mariadb": "^3.4.1",
+    "method-override": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^9.25.1",

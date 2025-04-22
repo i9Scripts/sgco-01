@@ -1,0 +1,56 @@
+<div class="wrapper flex-column align-items-center mt-3">
+  <h1 class="fs-2">Sobre o Sistema de Gestão de Consultório</h1>
+  <hr>
+
+  <p class="lead">
+      Este sistema foi desenvolvido para otimizar o fluxo de atendimento e a gestão de pacientes em consultórios e clínicas, tornando o dia a dia mais organizado e eficiente.
+  </p>
+
+  <h2 class="fs-4">Como Funciona?</h2>
+  <p>
+      O sistema integra as principais tarefas da recepção e dos profissionais de saúde em uma única plataforma:
+  </p>
+
+  <!-- <ul class="fs-5">
+      <li><strong>Cadastro e Agendamento:</strong> Permite registrar novos pacientes e agendar consultas de forma rápida, seja presencialmente ou por telefone. Cada novo registro ou agendamento atualiza automaticamente a fila.</li>
+      <li><strong>Gerenciamento da Fila:</strong> Os profissionais visualizam a fila de espera atualizada em tempo real, organizada por ordem de chegada ou horário agendado. O status do paciente (Aguardando, Em Atendimento, Concluído) é claramente indicado.</li>
+      <li><strong>Registro de Atendimentos:</strong> Após a consulta, o profissional registra o diagnóstico, tratamento e outras observações diretamente no sistema, atualizando o histórico do paciente e dando baixa na fila automaticamente.</li>
+      <li><strong>Controle Financeiro e Relatórios:</strong> O sistema inclui um módulo para registrar receitas e despesas (inclusive parceladas), gerando relatórios e gráficos que auxiliam na gestão financeira e na análise do desempenho do consultório.</li>
+  </ul> -->
+
+  <h2>Benefícios Principais:</h2>
+  <ul>
+      <li>Redução do tempo de espera e melhor organização da recepção.</li>
+      <li>Comunicação eficiente entre recepção e profissionais.</li>
+      <li>Acesso fácil ao histórico completo do paciente.</li>
+      <li>Visão clara da situação financeira do consultório.</li>
+      <li>Otimização do tempo dos profissionais.</li>
+  </ul>
+
+  <hr>
+
+  <%# Seção de Informações do Consultório - Dados vindos do Backend %>
+  <div class="contact-info mt-4 p-3 mb-4" style="background-color: #f8f9fa; border-radius: 5px;">
+      <h3>Informações do Consultório</h3>
+
+      <%# Verifica se a variável 'nomeClinica' foi passada e não está vazia %>
+      <% if (typeof nomeClinica !== 'undefined' && nomeClinica) { %>
+          <p><strong>Nome:</strong> <%= nomeClinica %></p>
+      <% } %>
+
+      <%# Verifica se a variável 'enderecoClinica' foi passada e não está vazia %>
+      <% if (typeof enderecoClinica !== 'undefined' && enderecoClinica) { %>
+          <p><strong>Endereço:</strong> <%= enderecoClinica %></p>
+      <% } else { %>
+          <p><strong>Endereço:</strong> <span class="text-muted">Não informado</span></p>
+      <% } %>
+
+      <%# Verifica se a variável 'telefoneClinica' foi passada e não está vazia %>
+      <% if (typeof telefoneClinica !== 'undefined' && telefoneClinica) { %>
+           <p><strong>Telefone:</strong> <%= telefoneClinica %></p>
+      <% } else { %>
+          <p><strong>Telefone:</strong> <span class="text-muted">Não informado</span></p>
+      <% } %>
+  </div>
+
+</div>
