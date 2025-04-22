@@ -1,0 +1,42 @@
+{
+  "name": "sgco-v2",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "type": "module",
+  "private": true,
+  "directories": {
+    "src": "./src"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "",
+    "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "Marco Mello",
+  "license": "ISC",
+  "description": "Sistema de Gerenciamento do Consultório de Optometria",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
+    "mariadb": "^3.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "prisma": "^6.6.0"
+  }
+}

@@ -1,0 +1,103 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  position: absolute;
+  top: 15px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 4rem;
+  color: var(--back-color);
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.exercise-eye {
+  width: 300px;
+  height: 300px;
+}
+
+.eye-body {
+  animation: breathe 2s infinite ease-in-out;
+}
+
+.pupil {
+  animation: look 3s infinite ease-in-out;
+}
+
+.left-arm, .right-arm {
+  transform-origin: center;
+  animation: exercise 1s infinite ease-in-out alternate;
+}
+
+.right-arm {
+  animation-delay: 0.5s;
+}
+
+.left-dumbbell {
+  animation: left-dumbbell 1s infinite ease-in-out alternate;
+}
+
+.right-dumbbell {
+  animation: right-dumbbell 1s infinite ease-in-out alternate;
+  animation-delay: 0.5s;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes look {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(5px, -5px); }
+  75% { transform: translate(-5px, 5px); }
+}
+
+@keyframes exercise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-20deg); }
+}
+
+@keyframes left-dumbbell {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(0, -20px) rotate(-20deg); }
+}
+
+@keyframes right-dumbbell {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(0, -20px) rotate(-20deg); }
+}
+
+/* Add some sweat drops during exercise */
+.eye-body::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(0, 0, 255, 0.3);
+  border-radius: 50%;
+  animation: sweat 2s infinite;
+}
+
+@keyframes sweat {
+  0% { 
+    transform: translate(120px, 80px) scale(0);
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(120px, 120px) scale(1);
+    opacity: 0;
+  }
+}

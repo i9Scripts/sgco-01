@@ -1,0 +1,145 @@
+header {
+  position: fixed; /* Fixa o header no topo da página */
+  top: 0; /* Alinha ao topo */
+  left: 0; /* Alinha à esquerda */
+  width: 100%; /* Garante que o header ocupe toda a largura da página */
+  z-index: 1000;
+  background: var(--clr);
+  height: 45px;
+  padding-left: 20px;
+  /* min-height: 15vh; */
+  -webkit-box-shadow: 1px 5px 14px -4px rgba(0, 0, 0, 0.61);
+  -moz-box-shadow: 1px 5px 14px -4px rgba(0, 0, 0, 0.61);
+  box-shadow: 1px 5px 14px -4px rgba(0, 0, 0, 0.61);
+  color: var(--secondary-color);
+} /*Fim do header*/
+header .titulo {
+  padding-left: 60px;
+  font-size: 1.6rem;
+}
+/* Configurações do Menu no header.ejs */
+.navigation {
+  position: relative;
+  width: 470px; /* a cada item aumentar + 70 px*/
+  max-width: 800px; /* Limita o máximo para 500px (você pode ajustar isso) */
+  height: 70px;
+  background: #fff;
+  display: flex;
+  justify-content: space-evenly; /* Distribui os itens uniformemente */
+  align-items: center;
+  border-radius: 10px;
+  margin-left: auto; /* Empurra o menu para a direita */
+}
+.navigation ul {
+  display: flex;
+  justify-content: space-between; /* Distribui os itens de forma igual */
+  padding: 20px; /* Remove padding */
+  margin: 20px; /* Remove margin */
+  width: 100%;
+}
+
+.navigation ul li {
+  position: relative;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: auto; /* Deixa a largura se ajustar ao conteúdo */
+  height: 60px; /*Aqui é a orientação para o tamanho da bola*/
+  z-index: 50;
+}
+
+.navigation ul li a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 500;
+  width: 100%;
+  padding: 5px;
+}
+
+.navigation ul li a .icon {
+  display: flex; /* Usa flexbox para centralizar */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  font-size: 1.8rem; /* Tamanho do ícone */
+  width: 100%; /* Garante que ocupe 100% da largura disponível */
+  height: 100%; /* Garante que ocupe toda a altura do contêiner */
+  transition: 0.5s; /* Transição suave */
+  color: var(--clr); /* Cor do ícone */
+}
+
+.navigation ul li.active a .icon {
+  transform: translateY(-35px);
+}
+.navigation ul li a .text {
+  position: absolute;
+  color: var(--clr);
+  font-weight: 400;
+  font-size: 0.875rem; /* Diminui o tamanho do texto para que fique equilibrado */
+  letter-spacing: 0.07em;
+  transition: 0.5s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+.navigation ul li.active a .text {
+  opacity: 1;
+  transform: translateY(10px);
+}
+.indicator {
+  /*indicator é a bola*/
+  position: absolute;
+  top: -50%;
+  left: 22px; /*posição da bola*/
+  width: 70px; /*Tamanho da bola*/
+  height: 70px; /*Tamanho da bola*/
+  background: #fff;
+  border-radius: 50%;
+  border: 6px solid var(--clr);
+  transition: 0.5s;
+}
+.indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -20px; /*acabamento arredondado*/
+  width: 20px; /*acabamento arredondado*/
+  height: 20px; /*acabamento arredondado*/
+  background: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 0px -10px 0 0 var(--clr);
+}
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-left-radius: 20px;
+  box-shadow: 0px -10px 0 0 var(--clr);
+}
+/* faz movimentar a bola */
+.navigation ul li:nth-child(1).active ~ .indicator {
+  transform: translateX(calc(70px * 0));
+}
+.navigation ul li:nth-child(2).active ~ .indicator {
+  transform: translateX(calc(70px * 1));
+}
+.navigation ul li:nth-child(3).active ~ .indicator {
+  transform: translateX(calc(70px * 2));
+}
+.navigation ul li:nth-child(4).active ~ .indicator {
+  transform: translateX(calc(70px * 3));
+}
+.navigation ul li:nth-child(5).active ~ .indicator {
+  transform: translateX(calc(70px * 4));
+}
+.navigation ul li:nth-child(6).active ~ .indicator {
+  transform: translateX(calc(70px * 5));
+}
+/* fim das configurações do Menu */

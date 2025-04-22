@@ -1,0 +1,19 @@
+<%- include('../partials/head.ejs') %>
+<div><%- include('../partials/header.ejs') %></div>
+<body>
+  <div class="row">
+    <!-- Garantir que a altura da página ocupe toda a tela -->
+    <!-- Conteúdo Principal -->
+    <main class="wrapper" class="col-md-12">
+      <div class="img">
+        <%- body %>
+        <!-- Conteúdo dinâmico da página -->
+      </div>
+    </main>
+  </div>
+  <!-- Scripts -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+<!-- FOOTER -->
+<footer><%- include('../partials/footer.ejs') %></footer>

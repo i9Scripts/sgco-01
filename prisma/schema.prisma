@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Consultorio {
+  idConsultorio Int            @id @default(autoincrement())
+  nome          String         @db.VarChar(60)
+  endereco      String         @db.VarChar(60)
+  cpf           String?        @db.VarChar(15)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  bairro        String         @db.VarChar(30)
+  celular       String         @db.VarChar(15)
+  cep           String?        @db.VarChar(9)
+  cidade        String         @db.VarChar(30)
+  numero        Int
+  profissao     String         @db.VarChar(30)
+  responsavel   String?        @db.VarChar(60)
+  anamneses     Anamnese[]
+  consultas     Consulta[]
+  diagnosticos  Diagnostico[]
+  itensVenda    ItensVenda[]
+  pacientes     Paciente[]
+  pagamentos    Pagamento[]
+  parceiros     Parceiro[]
+  produtos      Produto[]
+  profissionais Profissional[]
+  usuarios      User[]
+
+  @@index([cpf])
+  @@index([nome])
+  @@index([responsavel])
+}
+
+model User {
+  id            Int         @id @default(autoincrement())
+  nome          String      @db.VarChar(60)
+  email         String      @unique @db.VarChar(30)
+  celular       String      @db.VarChar(15)
+  password      String      @db.VarChar(20)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  isActive      Boolean     @default(true)
+  consultorioId Int
+  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+
+  @@index([consultorioId], map: "User_consultorioId_fkey")
+}
+
+model Paciente {
+  idPaciente    Int           @id @default(autoincrement())
+  nome          String        @db.VarChar(60)
+  responsavel   String?       @db.VarChar(60)
+  dataNasc      DateTime      @db.Date
+  celular       String        @db.VarChar(15)
+  cep           String?       @db.VarChar(9)
+  endereco      String        @db.VarChar(60)
+  numero        Int
+  bairro        String        @db.VarChar(30)
+  cidade        String        @db.VarChar(30)
+  cpf           String?       @unique @db.VarChar(15)
+  profissao     String        @db.VarChar(30)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  consultorioId Int
+  anamneses     Anamnese[]
+  consultas     Consulta[]
+  diagnosticos  Diagnostico[]
+  consultorio   Consultorio   @relation(fields: [consultorioId], references: [idConsultorio])
+
+  @@index([nome])
+  @@index([responsavel])
+  @@index([celular])
+  @@index([createdAt])
+  @@index([consultorioId], map: "Paciente_consultorioId_fkey")
+}
+
+model Profissional {
+  idProfissional Int           @id @default(autoincrement())
+  nome           String        @db.VarChar(60)
+  especialidade  String        @db.VarChar(30)
+  celular        String        @db.VarChar(15)
+  consultorioId  Int
+  cboo           String        @db.VarChar(10)
+  consultas      Consulta[]
+  diagnosticos   Diagnostico[]
+  consultorio    Consultorio   @relation(fields: [consultorioId], references: [idConsultorio])
+
+  @@index([nome])
+  @@index([celular])
+  @@index([cboo])
+  @@index([consultorioId], map: "Profissional_consultorioId_fkey")
+}
+
+model Parceiro {
+  idParceiro        Int         @id @default(autoincrement())
+  nome              String      @db.VarChar(60)
+  endereco          String      @db.VarChar(60)
+  telefone          String      @db.VarChar(15)
+  contato           String?     @db.VarChar(30)
+  credito           Decimal?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  consultorioId     Int
+  consultasParceiro Consulta[]  @relation("ParceiroConsulta")
+  consultorio       Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+
+  @@index([nome])
+  @@index([consultorioId], map: "Parceiro_consultorioId_fkey")
+}
+
+model Anamnese {
+  idAnam        Int         @id @default(autoincrement())
+  motivo        String      @db.VarChar(100)
+  ultimoExame   String      @db.VarChar(20)
+  usuarioOculos Boolean
+  usuarioLC     Boolean
+  trauma        String?     @db.VarChar(50)
+  dm            String?     @db.VarChar(50)
+  has           String?     @db.VarChar(50)
+  glauc         String?     @db.VarChar(50)
+  dmFam         String?     @db.VarChar(50)
+  hasFam        String?     @db.VarChar(50)
+  glaucFam      String?     @db.VarChar(50)
+  sintomas      String?     @db.VarChar(50)
+  remedio       String?     @db.VarChar(50)
+  obsGerais     String?     @db.VarChar(255)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  pacienteId    Int
+  consultorioId Int
+  adicao        String?     @db.VarChar(6)
+  cilOD         String?     @db.VarChar(6)
+  cilOE         String?     @db.VarChar(6)
+  eixoOD        String?     @db.VarChar(3)
+  eixoOE        String?     @db.VarChar(3)
+  esfOD         String?     @db.VarChar(6)
+  esfOE         String?     @db.VarChar(6)
+  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  paciente      Paciente    @relation(fields: [pacienteId], references: [idPaciente])
+  consultas     Consulta[]
+
+  @@index([consultorioId], map: "Anamnese_consultorioId_fkey")
+  @@index([pacienteId], map: "Anamnese_pacienteId_fkey")
+}
+
+model Diagnostico {
+  idDiagnostico  Int          @id @default(autoincrement())
+  esfOD          String       @db.VarChar(6)
+  cilOD          String       @db.VarChar(6)
+  eixoOD         String       @db.VarChar(3)
+  esfOE          String       @db.VarChar(6)
+  cilOE          String       @db.VarChar(6)
+  eixoOE         String       @db.VarChar(3)
+  adicao         String       @db.VarChar(6)
+  descricao      String       @db.VarChar(200)
+  pacienteId     Int
+  profissionalId Int
+  consultorioId  Int
+  consultas      Consulta[]
+  consultorio    Consultorio  @relation(fields: [consultorioId], references: [idConsultorio])
+  paciente       Paciente     @relation(fields: [pacienteId], references: [idPaciente])
+  profissional   Profissional @relation(fields: [profissionalId], references: [idProfissional])
+
+  @@index([consultorioId], map: "Diagnostico_consultorioId_fkey")
+  @@index([pacienteId], map: "Diagnostico_pacienteId_fkey")
+  @@index([profissionalId], map: "Diagnostico_profissionalId_fkey")
+}
+
+model Consulta {
+  idConsulta           Int             @id @default(autoincrement())
+  valorPago            Decimal
+  statusConsulta       StatusConsulta  @default(Agendada)
+  dataVenciPagParceiro DateTime?       @db.Date
+  valorAPagarParceiro  Decimal?
+  valorTotal           Decimal
+  statusPagamento      StatusPagamento @default(Pendente)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  pacienteId           Int
+  profissionalId       Int
+  anamneseId           Int
+  parceiroId           Int?
+  diagnosticoId        Int
+  consultorioId        Int
+  anamnese             Anamnese        @relation(fields: [anamneseId], references: [idAnam])
+  consultorio          Consultorio     @relation(fields: [consultorioId], references: [idConsultorio])
+  diagnostico          Diagnostico     @relation(fields: [diagnosticoId], references: [idDiagnostico])
+  paciente             Paciente        @relation(fields: [pacienteId], references: [idPaciente])
+  parceiro             Parceiro?       @relation("ParceiroConsulta", fields: [parceiroId], references: [idParceiro])
+  profissional         Profissional    @relation(fields: [profissionalId], references: [idProfissional])
+  vendas               ItensVenda[]
+  pagamentos           Pagamento[]
+
+  @@index([pacienteId])
+  @@index([profissionalId])
+  @@index([anamneseId])
+  @@index([parceiroId])
+  @@index([diagnosticoId])
+  @@index([consultorioId], map: "Consulta_consultorioId_fkey")
+}
+
+model ItensVenda {
+  idItenVenda   Int         @id @default(autoincrement())
+  quantidade    Int
+  valorUnitario Decimal
+  produtoId     Int
+  consultaId    Int
+  consultorioId Int
+  consulta      Consulta    @relation(fields: [consultaId], references: [idConsulta])
+  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  produto       Produto     @relation(fields: [produtoId], references: [idProduto])
+  pagamentos    Pagamento[]
+
+  @@index([consultaId], map: "ItensVenda_consultaId_fkey")
+  @@index([consultorioId], map: "ItensVenda_consultorioId_fkey")
+  @@index([produtoId], map: "ItensVenda_produtoId_fkey")
+}
+
+model Pagamento {
+  idPagamento    Int            @id @default(autoincrement())
+  valorPago      Decimal
+  dataPagamento  DateTime       @db.Date
+  observacao     String         @db.VarChar(255)
+  formaPagamento FormaPagamento
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  itensVendaId   Int
+  consultaId     Int?
+  consultorioId  Int
+  consulta       Consulta?      @relation(fields: [consultaId], references: [idConsulta])
+  consultorio    Consultorio    @relation(fields: [consultorioId], references: [idConsultorio])
+  itensVenda     ItensVenda     @relation(fields: [itensVendaId], references: [idItenVenda])
+
+  @@index([consultaId], map: "Pagamento_consultaId_fkey")
+  @@index([consultorioId], map: "Pagamento_consultorioId_fkey")
+  @@index([itensVendaId], map: "Pagamento_itensVendaId_fkey")
+}
+
+model Produto {
+  idProduto     Int          @id @default(autoincrement())
+  descricao     String       @db.VarChar(100)
+  preco         Decimal
+  quantidade    Int
+  consultorioId Int
+  venda         ItensVenda[]
+  consultorio   Consultorio  @relation(fields: [consultorioId], references: [idConsultorio])
+
+  @@index([consultorioId], map: "Produto_consultorioId_fkey")
+}
+
+enum StatusConsulta {
+  Agendada
+  EmAtendimento
+  Finalizada
+  Cancelada
+  NaoCompareceu
+  Remarcada
+}
+
+enum StatusPagamento {
+  Pago
+  Pendente
+  Cancelado
+}
+
+enum FormaPagamento {
+  Dinheiro
+  CartaoCredito
+  CartaoDebito
+  PIX
+  Cheque
+  Convenio
+  Voucher
+}

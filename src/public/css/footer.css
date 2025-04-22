@@ -1,0 +1,48 @@
+/* FOOTER */
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--back-color);
+  color: var(--primary-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  padding: 1rem;
+  z-index: 999; /* Garante que a sidebar fique acima de outros elementos */
+}
+
+/* o usuario logado */
+footer .profile_content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: var(--secondary-color);
+}
+footer .profile_content .profile {
+  position: relative;
+  padding: 10px 6px;
+  height: 48px;
+}
+footer .profile_content .profile .profile_details {
+  display: flex;
+  align-items: center;
+}
+footer .profile .profile_details img {
+  height: 35px;
+  width: 35px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+footer .profile .profile_details .name_job {
+  margin-left: 10px;
+}
+footer .profile .profile_details .name {
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+footer .profile .profile_details .job {
+  font-size: 0.7;
+}
