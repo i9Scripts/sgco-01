@@ -12,5 +12,7 @@ router.put('/:idConsultorio', consultorioController.updateConsultorio);
 router.delete('/:idConsultorio', consultorioController.deleteConsultorio);
 router.get('/:idConsultorio/edit', consultorioController.editConsultorioForm);
 router.get('/index', consultorioController.getAllConsultorios);
+// Rota para selecionar um consultório e salvar no arquivo JSON
+router.post('/selecionar/:idConsultorio', consultorioController.selecionarConsultorio);
 
 export default router;

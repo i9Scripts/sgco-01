@@ -288,4 +288,45 @@ export const consultorioController = {
       return null;
     }
   },
+
+  async selecionarConsultorio(req, res) {
+    try {
+      const { idConsultorio } = req.params;
+
+      if (!idConsultorio || isNaN(idConsultorio)) {
+        req.flash('error', 'ID do consultório inválido.');
+        return res.redirect('/consultorios');
+      }
+
+      // Busca o consultório no banco de dados
+      const consultorio = await prisma.consultorio.findUnique({
+        where: { idConsultorio: parseInt(idConsultorio) },
+      });
+
+      if (!consultorio) {
+        req.flash('error', 'Consultório não encontrado.');
+        return res.redirect('/consultorios');
+      }
+
+      // Caminho para o arquivo
+      const configPath = path.join(process.cwd(), 'src/config', 'numeroSerie.json');
+
+      // Conteúdo que será salvo no JSON
+      const configData = {
+        numeroSerie: consultorio.numeroSerie,
+        idConsultorio: consultorio.idConsultorio,
+        nome: consultorio.nome,
+      };
+
+      // Salva no arquivo JSON
+      fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), 'utf-8');
+
+      req.flash('success', `Consultório "${consultorio.nome}" selecionado com sucesso!`);
+      return res.redirect('/consultorios');
+    } catch (error) {
+      console.error('Erro ao selecionar consultório:', error);
+      req.flash('error', 'Erro ao selecionar consultório. Tente novamente.');
+      return res.redirect('/consultorios');
+    }
+  },
 };
