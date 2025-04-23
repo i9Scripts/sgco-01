@@ -1,6 +1,11 @@
-// server/controllers/consultorioController.js
+//controllers/consultorioController.js
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid'; // Importa a função para gerar UUID
+
 const prisma = new PrismaClient();
+const configPath = path.join(process.cwd(), 'src/config', 'numeroSerie.json');
 
 export const consultorioController = {
   async newConsultorioForm(req, res) {
@@ -20,6 +25,7 @@ export const consultorioController = {
   async createConsultorio(req, res) {
     try {
       const { nome, responsavel, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+
       console.log('Dados recebidos:', req.body); // Log dos dados recebidos
 
       if (!nome || !celular || !endereco || !numero || !bairro || !cidade || !profissao) {
@@ -28,27 +34,56 @@ export const consultorioController = {
         return res.redirect('/consultorios/new');
       }
 
+      // Gera um UUID para o número de série
+      const numeroSerie = uuidv4();
+
+      // Verifica se o número de série já existe no banco
+      const numeroSerieExistente = await prisma.consultorio.findUnique({
+        where: { numeroSerie },
+      });
+
+      if (numeroSerieExistente) {
+        console.log('Erro: Número de série já registrado'); // Log de erro
+        req.flash('error', 'Número de série já registrado.');
+        return res.redirect('/consultorios/new');
+      }
+      // Criar o consultório no banco de dados
       const novoConsultorio = await prisma.consultorio.create({
         data: {
           nome,
-          responsavel: responsavel || null, // Permite valores nulos
+          responsavel: responsavel || null,
           celular,
-          cep: cep || null, // Permite valores nulos
+          cep: cep || null,
           endereco,
           numero: parseInt(numero),
           bairro,
           cidade,
-          cpf: cpf || null, // Permite valores nulos
+          cpf: cpf || null,
           profissao,
+          numeroSerie, // Adiciona o número de série gerado
         },
       });
+      // Caminho para o arquivo
+      const configPath = path.join(process.cwd(), 'src/config', 'numeroSerie.json');
 
-      console.log('Consultório criado com sucesso:', novoConsultorio);
-      req.flash('success', 'Consultório criado com sucesso!');
-      return res.redirect('/consultorios/index');
+      // Conteúdo que será salvo no JSON
+      const configData = {
+        numeroSerie: novoConsultorio.numeroSerie,
+        idConsultorio: novoConsultorio.idConsultorio,
+        nome: novoConsultorio.nome,
+      };
+
+      // Salva no arquivo JSON
+      fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), 'utf-8');
+      req.session.idConsultorio = novoConsultorio.idConsultorio;
+
+      console.log('Consultório criado com sucesso:', novoConsultorio); // Log de sucesso
+      req.flash('success', 'Consultório registrado com sucesso!');
+
+      return res.redirect('/consultorios');
     } catch (error) {
-      console.error('Erro ao criar consultório:', error);
-      req.flash('error', 'Erro ao criar consultório. Verifique os dados e tente novamente.');
+      console.error('Erro ao registrar consultório:', error); // Log do erro
+      req.flash('error', 'Erro ao registrar consultório. Verifique os dados e tente novamente.');
       return res.redirect('/consultorios/new');
     }
   },
@@ -114,7 +149,7 @@ export const consultorioController = {
       res.render('consultorios/index', {
         pageTitle: 'Lista de Consultórios',
         pageIcon: 'ri-home-office-line',
-        consultorios: consultorios,
+        consultorios,
         messages: req.flash(), // Passa as mensagens flash para a view
       });
     } catch (error) {
@@ -237,6 +272,20 @@ export const consultorioController = {
       console.error('Erro ao deletar consultório:', error);
       req.flash('error', 'Erro ao deletar consultório. Tente novamente.');
       return res.redirect('/consultorios/index');
+    }
+  },
+
+  // Verificar número de série na inicialização
+  verificarNumeroSerie() {
+    try {
+      if (fs.existsSync(configPath)) {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        return config.numeroSerie;
+      }
+      return null;
+    } catch (error) {
+      console.error('Erro ao verificar número de série:', error);
+      return null;
     }
   },
 };

@@ -1,3 +1,4 @@
+// server.js
 // Configuração do Express
 import axios from 'axios';
 import flash from 'connect-flash';
@@ -11,7 +12,9 @@ import { join } from 'path';
 dotenv.config();
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
-import consultorioRoutes from './routes/consultorioRoutes.js';
+import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
+import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
+import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 
 // Configuração da aplicação
 const app = express();
@@ -60,9 +63,22 @@ app.get('/', (req, res) => {
     pageIcon: 'bi bi-house-door',
   }); // Passa o pageTitle para o render
 });
+// Rota para o formulário de registro de consultório
+app.use('/consultorios', consultorioPublicRoutes);
+app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes);
 
-// Usando as rotas de Consultorio
-app.use('/consultorios', consultorioRoutes);
+// Proteger rotas, exceto a rota de registro de consultório
+app.use(
+  '/consultorios',
+  (req, res, next) => {
+    const isLiberado = (req.path === '/new' && req.method === 'GET') || (req.path === '/' && req.method === 'POST');
+
+    if (isLiberado) return next();
+
+    return verificarConsultorioRegistrado(req, res, next);
+  },
+  consultorioProtectedRoutes
+);
 
 app.get('/display-message', (req, res) => {
   req.flash('message', 'Bem-vindo!');

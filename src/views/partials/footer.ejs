@@ -13,16 +13,8 @@
       </div>
     </div>
   </div>
-  <div>
-    <% if (messages && messages.welcome) { %>
-    <div class="text-white"><%= messages.welcome %></div>
-    <% } %> <% if (messages && messages.error) { %>
-    <div class="bg-danger text-white"><%= messages.error %></div>
-    <% } %> <% if (messages && messages.success) { %>
-    <div class="bg-success text-white"><%= messages.success %></div>
-    <% } %> <% if (messages && messages.consultorioId) { %>
-    <div class="text-white">Consultório ID: <%= messages.consultorioId %></div>
-    <% } %>
-  </div>
+  <!-- sessão de mensagens -->
+  <div><%- include('../partials/_mensagens') %></div>
+  <!-- componente relogio -->
   <div><%- include('../partials/relogio.ejs') %></div>
 </footer>

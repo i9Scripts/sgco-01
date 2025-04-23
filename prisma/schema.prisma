@@ -21,6 +21,7 @@ model Consultorio {
   numero        Int
   profissao     String         @db.VarChar(30)
   responsavel   String?        @db.VarChar(60)
+  numeroSerie   String         @unique @db.VarChar(36) // <-- novo campo único
   anamneses     Anamnese[]
   consultas     Consulta[]
   diagnosticos  Diagnostico[]

@@ -8,15 +8,6 @@
     </div>
   </form>
 
-  <!-- Mensagens flash -->
-  <% if (messages.success && messages.success.length > 0) { %>
-  <div class="text-white bg-success"><%= messages.success %></div>
-  <% } %> <% if (messages.error && messages.error.length > 0) { %>
-  <div class="text-white bg--danger"><%= messages.error %></div>
-  <% } %> <% if (messages.info && messages.info.length > 0) { %>
-  <div class="text-white bg-info"><%= messages.info %></div>
-  <% } %>
-
   <!-- Lista de consultórios -->
   <% if (consultorios && consultorios.length> 0) { %>
   <table class="table table-striped">

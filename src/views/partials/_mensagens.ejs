@@ -1,0 +1,22 @@
+<!-- PARTIAL: Mensagens Globais -->
+<div>
+  <% if (messages && messages.consultorioId && messages.consultorioId.length > 0) { %>
+    <div class="text-white">Consultório ID: <%= messages.consultorioId %></div>
+  <% } %>
+
+  <% if (messages && messages.consultorioNome && messages.consultorioNome.length > 0) { %>
+    <div class="text-white">Consultório: <%= messages.consultorioNome %></div>
+  <% } %>
+
+  <% if (messages.welcome && messages.welcome.length > 0) { %>
+    <div class="text-white"><%= messages.welcome %></div>
+  <% } %>
+
+  <% if (messages.error && messages.error.length > 0) { %>
+    <div class="bg-danger text-white"><%= messages.error %></div>
+  <% } %>
+
+  <% if (messages.success && messages.success.length > 0) { %>
+    <div class="bg-success text-white"><%= messages.success %></div>
+  <% } %>
+</div>
