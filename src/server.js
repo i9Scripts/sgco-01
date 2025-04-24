@@ -15,6 +15,7 @@ import methodOverride from 'method-override';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
+import parceiroRoutes from './routes/parceiroRoutes.js';
 
 // Configuração da aplicação
 const app = express();
@@ -107,6 +108,9 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
   }
 });
 // ***********************************************************//
+
+// Rotas para parceiros
+app.use('/parceiros', parceiroRoutes);
 
 // Página 404
 // app.get('*', (req, res) => {

@@ -1,0 +1,10 @@
+<h1>Detalhes do Parceiro</h1>
+<ul>
+  <li><strong>ID:</strong> <%= parceiro.idParceiro %></li>
+  <li><strong>Nome:</strong> <%= parceiro.nome %></li>
+  <li><strong>Telefone:</strong> <%= parceiro.telefone %></li>
+  <li><strong>Endereço:</strong> <%= parceiro.endereco || 'Não informado' %></li>
+  <li><strong>Contato:</strong> <%= parceiro.contato || 'Não informado' %></li>
+  <li><strong>Crédito:</strong> <%= parceiro.credito || '0.00' %></li>
+</ul>
+<a href="/parceiros" class="btn btn-secondary">Voltar</a>

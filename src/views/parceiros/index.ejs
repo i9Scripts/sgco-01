@@ -1,0 +1,28 @@
+<h1>Lista de Parceiros</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Telefone</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% parceiros.forEach(parceiro => { %>
+      <tr>
+        <td><%= parceiro.idParceiro %></td>
+        <td><%= parceiro.nome %></td>
+        <td><%= parceiro.telefone %></td>
+        <td>
+          <form action="/parceiros/selecionar/<%= parceiro.idParceiro %>" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-primary btn-sm">Selecionar</button>
+          </form>
+          <form action="/parceiros/delete/<%= parceiro.idParceiro %>" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

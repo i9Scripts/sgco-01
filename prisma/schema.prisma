@@ -101,7 +101,7 @@ model Profissional {
 model Parceiro {
   idParceiro        Int         @id @default(autoincrement())
   nome              String      @db.VarChar(60)
-  endereco          String?      @db.VarChar(60)
+  endereco          String?     @db.VarChar(60)
   telefone          String      @db.VarChar(15)
   contato           String?     @db.VarChar(30)
   credito           Decimal?
