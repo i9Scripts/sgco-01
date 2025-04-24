@@ -1,4 +1,5 @@
 <h1>Lista de Parceiros</h1>
+
 <table class="table">
   <thead>
     <tr>
@@ -15,14 +16,19 @@
         <td><%= parceiro.nome %></td>
         <td><%= parceiro.telefone %></td>
         <td>
-          <form action="/parceiros/selecionar/<%= parceiro.idParceiro %>" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-primary btn-sm">Selecionar</button>
-          </form>
+          <!-- Botão Visualizar Detalhes -->
+          <a href="/parceiros/<%= parceiro.idParceiro %>" class="btn btn-info btn-sm">Ver</a>
+
+          <!-- Botão Editar -->
+          <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-warning btn-sm">Editar</a>
+
+          <!-- Formulário para deletar -->
           <form action="/parceiros/delete/<%= parceiro.idParceiro %>" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este parceiro?')">Deletar</button>
           </form>
         </td>
       </tr>
     <% }); %>
   </tbody>
 </table>
+<a href="/parceiros/new" class="btn btn-primary">Adicionar Novo Parceiro</a>

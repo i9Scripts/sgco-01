@@ -1,17 +1,32 @@
 // src/controllers/parceiroController.js
 import { PrismaClient } from '@prisma/client';
+import path from 'path';
 
 const prisma = new PrismaClient();
+const configPath = path.join(process.cwd(), 'src/config', 'parceiroSelecionado.json');
+
+async function findParceiroDoConsultorio(idParceiro, idConsultorio) {
+  return await prisma.parceiro.findFirst({
+    where: {
+      idParceiro: parseInt(idParceiro),
+      consultorioId: idConsultorio,
+    },
+  });
+}
 
 export const parceiroController = {
-  // Exibir formulário para criar um novo parceiro
   async newParceiroForm(req, res) {
     try {
+      if (!req.session.idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
       res.render('parceiros/new', {
         pageTitle: 'Novo Parceiro',
         pageIcon: 'ri-handshake-line',
-        formData: {}, // Dados do formulário
-        messages: req.flash(), // Mensagens flash
+        formData: {},
+        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de parceiro:', error);
@@ -19,32 +34,31 @@ export const parceiroController = {
     }
   },
 
-  // Criar um novo parceiro
   async createParceiro(req, res) {
     try {
       const { nome, endereco, telefone, contato, credito } = req.body;
+      const idConsultorio = req.session.idConsultorio;
 
-      console.log('Dados recebidos:', req.body); // Log dos dados recebidos
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
 
       if (!nome || !telefone) {
-        console.log('Erro: Campos obrigatórios não preenchidos'); // Log de erro
         req.flash('error', 'Nome e telefone são obrigatórios.');
         return res.redirect('/parceiros/new');
       }
 
-      // Criar o parceiro no banco de dados
-      const novoParceiro = await prisma.parceiro.create({
+      await prisma.parceiro.create({
         data: {
           nome,
           endereco: endereco || null,
           telefone,
           contato: contato || null,
           credito: credito ? parseFloat(credito) : null,
-          consultorioId: req.session.idConsultorio, // Relaciona ao consultório atual
+          consultorioId: idConsultorio,
         },
       });
-
-      console.log('Parceiro criado com sucesso:', novoParceiro);
 
       req.flash('success', 'Parceiro registrado com sucesso!');
       return res.redirect('/parceiros');
@@ -55,11 +69,43 @@ export const parceiroController = {
     }
   },
 
-  // Listar todos os parceiros
+  async getParceiroById(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
+      const parceiro = await findParceiroDoConsultorio(req.params.idParceiro, idConsultorio);
+      if (!parceiro) {
+        req.flash('error', 'Parceiro não encontrado.');
+        return res.redirect('/parceiros');
+      }
+
+      res.render('parceiros/show', {
+        pageTitle: 'Detalhes do Parceiro',
+        pageIcon: 'ri-handshake-line',
+        parceiro,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar parceiro:', error);
+      req.flash('error', 'Erro ao buscar parceiro. Tente novamente.');
+      return res.redirect('/parceiros');
+    }
+  },
+
   async getAllParceiros(req, res) {
     try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
       const parceiros = await prisma.parceiro.findMany({
-        where: { consultorioId: req.session.idConsultorio }, // Filtra pelo consultório atual
+        where: { consultorioId: idConsultorio },
       });
 
       res.render('parceiros/index', {
@@ -75,13 +121,89 @@ export const parceiroController = {
     }
   },
 
-  // Deletar um parceiro
-  async deleteParceiro(req, res) {
+  async searchParceiros(req, res) {
     try {
+      const { query } = req.query;
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
+      const parceiros = await prisma.parceiro.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          OR: [
+            { nome: { contains: query, mode: 'insensitive' } },
+            { contato: { contains: query, mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      res.render('parceiros/index', {
+        pageTitle: 'Resultados da Busca',
+        pageIcon: 'ri-search-line',
+        parceiros,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar parceiros:', error);
+      req.flash('error', 'Erro ao buscar parceiros. Tente novamente.');
+      return res.redirect('/parceiros');
+    }
+  },
+
+  async updateParceiro(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
       const { idParceiro } = req.params;
 
-      if (!idParceiro || isNaN(idParceiro)) {
-        req.flash('error', 'ID do parceiro inválido.');
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
+      const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);
+      if (!parceiro) {
+        req.flash('error', 'Parceiro não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/parceiros');
+      }
+
+      const { nome, endereco, telefone, contato, credito } = req.body;
+
+      await prisma.parceiro.update({
+        where: { idParceiro: parseInt(idParceiro) },
+        data: {
+          nome,
+          endereco: endereco || null,
+          telefone,
+          contato: contato || null,
+          credito: credito ? parseFloat(credito) : null,
+        },
+      });
+
+      req.flash('success', 'Parceiro atualizado com sucesso!');
+      return res.redirect('/parceiros');
+    } catch (error) {
+      console.error('Erro ao atualizar parceiro:', error);
+      req.flash('error', 'Erro ao atualizar parceiro. Tente novamente.');
+      return res.redirect(`/parceiros/${req.params.idParceiro}/edit`);
+    }
+  },
+
+  async deleteParceiro(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idParceiro } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
+      const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);
+      if (!parceiro) {
+        req.flash('error', 'Parceiro não encontrado ou não pertence ao seu consultório.');
         return res.redirect('/parceiros');
       }
 
@@ -94,6 +216,35 @@ export const parceiroController = {
     } catch (error) {
       console.error('Erro ao deletar parceiro:', error);
       req.flash('error', 'Erro ao deletar parceiro. Tente novamente.');
+      return res.redirect('/parceiros');
+    }
+  },
+
+  async editParceiroForm(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idParceiro } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios');
+      }
+
+      const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);
+      if (!parceiro) {
+        req.flash('error', 'Parceiro não encontrado.');
+        return res.redirect('/parceiros');
+      }
+
+      res.render('parceiros/edit', {
+        pageTitle: 'Editar Parceiro',
+        pageIcon: 'ri-edit-line',
+        parceiro,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao exibir formulário de edição:', error);
+      req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
       return res.redirect('/parceiros');
     }
   },

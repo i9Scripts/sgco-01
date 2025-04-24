@@ -13,6 +13,7 @@ dotenv.config();
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
+import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
@@ -37,6 +38,9 @@ app.use(
   })
 );
 app.use(flash());
+
+// Middleware para carregar os dados do consultório na sessão
+app.use(loadConsultorioToSession);
 
 // Configuração do mecanismo de visualização EJS
 app.set('view engine', 'ejs');
@@ -67,6 +71,8 @@ app.get('/', (req, res) => {
 // Rota para o formulário de registro de consultório
 app.use('/consultorios', consultorioPublicRoutes);
 app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes);
+// Rotas para parceiros
+app.use('/parceiros', parceiroRoutes);
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
@@ -108,9 +114,6 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
   }
 });
 // ***********************************************************//
-
-// Rotas para parceiros
-app.use('/parceiros', parceiroRoutes);
 
 // Página 404
 // app.get('*', (req, res) => {

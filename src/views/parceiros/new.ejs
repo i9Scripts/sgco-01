@@ -1,5 +1,6 @@
 <h1>Novo Parceiro</h1>
 <form action="/parceiros" method="post">
+  <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
   <div class="form-group">
     <input type="text" id="nome" name="nome" class="form-control" autofocus tabindex="1" maxlength="60" required />
     <label for="nome">Nome</label>
