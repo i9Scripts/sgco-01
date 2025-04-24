@@ -16,6 +16,7 @@ import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js'
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
+import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 
 // Configuração da aplicação
@@ -68,11 +69,12 @@ app.get('/', (req, res) => {
     pageIcon: 'bi bi-house-door',
   }); // Passa o pageTitle para o render
 });
-// Rota para o formulário de registro de consultório
-app.use('/consultorios', consultorioPublicRoutes);
-app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes);
-// Rotas para parceiros
-app.use('/parceiros', parceiroRoutes);
+
+// Rotas
+app.use('/consultorios', consultorioPublicRoutes); // Rotas públicas para consultórios
+app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes); // Rotas protegidas
+app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
+app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(

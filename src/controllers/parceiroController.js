@@ -1,10 +1,7 @@
 // src/controllers/parceiroController.js
 import { PrismaClient } from '@prisma/client';
-import path from 'path';
-
 const prisma = new PrismaClient();
-const configPath = path.join(process.cwd(), 'src/config', 'parceiroSelecionado.json');
-
+// para garantir que os dados estão vinculados com a tabela Consultorio
 async function findParceiroDoConsultorio(idParceiro, idConsultorio) {
   return await prisma.parceiro.findFirst({
     where: {
@@ -19,7 +16,7 @@ export const parceiroController = {
     try {
       if (!req.session.idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       res.render('parceiros/new', {
@@ -33,7 +30,7 @@ export const parceiroController = {
       return res.status(500).json({ error: 'Erro ao exibir o formulário', details: error.message });
     }
   },
-
+  // Criar um novo Parceiro
   async createParceiro(req, res) {
     try {
       const { nome, endereco, telefone, contato, credito } = req.body;
@@ -41,7 +38,7 @@ export const parceiroController = {
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       if (!nome || !telefone) {
@@ -68,13 +65,13 @@ export const parceiroController = {
       return res.redirect('/parceiros/new');
     }
   },
-
+  // Buscar Parceiro por ID
   async getParceiroById(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiro = await findParceiroDoConsultorio(req.params.idParceiro, idConsultorio);
@@ -95,13 +92,13 @@ export const parceiroController = {
       return res.redirect('/parceiros');
     }
   },
-
+  // Lista dos Parceiros
   async getAllParceiros(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiros = await prisma.parceiro.findMany({
@@ -120,14 +117,14 @@ export const parceiroController = {
       return res.redirect('/parceiros');
     }
   },
-
+  // Buscar Parceiros por nome ou contato
   async searchParceiros(req, res) {
     try {
       const { query } = req.query;
       const idConsultorio = req.session.idConsultorio;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiros = await prisma.parceiro.findMany({
@@ -152,7 +149,7 @@ export const parceiroController = {
       return res.redirect('/parceiros');
     }
   },
-
+  // Atualizar Parceiros
   async updateParceiro(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
@@ -160,7 +157,7 @@ export const parceiroController = {
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);
@@ -190,7 +187,7 @@ export const parceiroController = {
       return res.redirect(`/parceiros/${req.params.idParceiro}/edit`);
     }
   },
-
+  // Deletar Parceiros
   async deleteParceiro(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
@@ -198,7 +195,7 @@ export const parceiroController = {
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);
@@ -219,7 +216,7 @@ export const parceiroController = {
       return res.redirect('/parceiros');
     }
   },
-
+  // para editar Parceiro
   async editParceiroForm(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
@@ -227,7 +224,7 @@ export const parceiroController = {
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios');
+        return res.redirect('/consultorios/new');
       }
 
       const parceiro = await findParceiroDoConsultorio(idParceiro, idConsultorio);

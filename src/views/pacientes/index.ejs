@@ -1,0 +1,46 @@
+<div>
+  <!-- Formulário de busca -->
+  <form action="/pacientes/search" method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Buscar por nome ou responsável" name="termo" />
+      <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    </div>
+  </form>
+
+  <!-- Lista de pacientes -->
+  <% if (pacientes && pacientes.length > 0) { %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Responsável</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pacientes.forEach(paciente => { %>
+      <tr>
+        <td><%= paciente.nome %></td>
+        <td><%= paciente.responsavel %></td>
+        <td>
+          <a href="/pacientes/<%= paciente.idPaciente %>" class="btn btn-sm btn-info">Ver Detalhes</a>
+          <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-sm btn-warning">Editar</a>
+          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline">
+            <button
+              type="submit"
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Tem certeza que deseja excluir?')"
+            >
+              Excluir
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p>Nenhum paciente encontrado.</p>
+  <% } %>
+</div>
+<div>  <a href="/pacientes/new" class="btn btn-primary">Adicionar Novo Paciente</a></div>

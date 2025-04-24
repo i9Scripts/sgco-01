@@ -1,0 +1,15 @@
+<ul>
+  <li><strong>ID:</strong> <%= paciente.idPaciente %></li>
+  <li><strong>Nome:</strong> <%= paciente.nome %></li>
+  <li><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></li>
+  <li><strong>Data Nascimento:</strong> <%= paciente.dataNasc %></li>
+  <li><strong>Celular:</strong> <%= paciente.celular %></li>
+  <li><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %></li>
+  <li><strong>Endereço:</strong> <%= paciente.endereco %></li>
+  <li><strong>Numero:</strong> <%= paciente.numero %></li>
+  <li><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %></li>
+  <li><strong>Cidade:</strong> <%= paciente.cidade || 'Não informado' %></li>
+  <li><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %></li>
+  <li><strong>Profissão:</strong> <%= paciente.profissao %></li>
+</ul>
+<a href="/pacientes" class="btn btn-secondary">Voltar</a>
