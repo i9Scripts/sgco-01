@@ -1,0 +1,21 @@
+<div>
+  <form action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
+    <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control" id="motivo" name="motivo" value="<%= anamnese.motivo %>" required maxlength="100" />
+        <label for="motivo">Motivo</label>
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control" id="ultimoExame" name="ultimoExame" value="<%= anamnese.ultimoExame %>" maxlength="20" />
+        <label for="ultimoExame">Último Exame</label>
+      </div>
+    </div>
+
+    <!-- Outros campos seguem o mesmo padrão do formulário de criação -->
+
+    <div class="form-group mb-2">
+      <button class="btn btn-outline-primary" type="submit">Salvar Alterações</button>
+    </div>
+  </form>
+</div>

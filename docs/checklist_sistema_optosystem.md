@@ -17,6 +17,7 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
 - [x] **1.9.** **(Escopo 1 - Obrigatório)** Implementar funcionalidade de Cadastro do Consultório:
   - [x] 1.9.1. Criar rotas, controller e view (EJS) para o formulário de cadastro do consultório.
   - [x] 1.9.2. Implementar lógica no backend para salvar os dados do consultório (será o registro "pai").
+  - [x] 1.9.2.1 Corrigir erros idConsultorio
   - [ ] 1.9.3. Garantir que futuros registros (usuários, pacientes, etc.) se vinculem a um `consultorioId`.
 - [ ] **1.10.** (Opcional) Configurar Swagger para documentação da API (se aplicável).
 

@@ -1,0 +1,280 @@
+// src/controllers/anamneseController.js
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+export const anamneseController = {
+  async newAnamneseForm(req, res) {
+    try {
+      const { idPaciente, idConsultorio } = req.session;
+
+      if (!idPaciente || !idConsultorio) {
+        req.flash('error', 'Paciente ou consultório não encontrado.');
+        return res.redirect('/pacientes');
+      }
+
+      res.render('anamnese/new', {
+        pageTitle: 'Nova Anamnese',
+        pageIcon: 'ri-file-text-line',
+        idPaciente,
+        idConsultorio,
+        formData: {},
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao exibir formulário de anamnese:', error);
+      return res.status(500).json({ error: 'Erro ao exibir formulário', details: error.message });
+    }
+  },
+
+  async createAnamnese(req, res) {
+    try {
+      const { idPaciente, idConsultorio } = req.session;
+      const {
+        motivo,
+        ultimoExame,
+        usuarioOculos,
+        usuarioLC,
+        trauma,
+        dm,
+        has,
+        glauc,
+        dmFam,
+        glaucFam,
+        sintomas,
+        remedio,
+        obsGerais,
+        adicao,
+        cilOD,
+        esfOD,
+        eixoOD,
+        cilOE,
+        esfOE,
+        eixoOE,
+      } = req.body;
+
+      if (!idPaciente || !idConsultorio) {
+        req.flash('error', 'Paciente ou consultório não encontrado.');
+        return res.redirect('/pacientes');
+      }
+      if (!motivo || !ultimoExame || !usuarioOculos || !usuarioLC || !dm || !has || !glauc) {
+        req.flash('error', 'tem campos obrigatórios.');
+        return res.redirect('/pacientes/new');
+      }
+
+      await prisma.anamnese.createAnamnese({
+        data: {
+          pacienteId: idPaciente,
+          consultorioId: idConsultorio,
+          motivo,
+          ultimoExame,
+          usuarioOculos: usuarioOculos === 'true',
+          usuarioLC: usuarioLC === 'true',
+          trauma: trauma || null,
+          dm: dm === 'true',
+          has: has === 'true',
+          glauc: glauc === 'true',
+          dmFam: dmFam || null,
+          glaucFam: glaucFam || null,
+          sintomas: sintomas || null,
+          remedio: remedio || null,
+          obsGerais: obsGerais || null,
+          adicao: adicao || null,
+          cilOD: cilOD || null,
+          esfOD: esfOD || null,
+          eixoOD: eixoOD || null,
+          cilOE: cilOE || null,
+          esfOE: esfOE || null,
+          eixoOE: eixoOE || null,
+        },
+      });
+      // >>>> Guardar o idPaciente na sessão <<<<
+      // req.session.idPaciente = novoPaciente.idPaciente;
+
+      req.flash('success', 'Anamnese salva com sucesso!');
+      // Opcional: limpar idPaciente da sessão após cadastrar
+      // delete req.session.idPaciente;
+      return res.redirect('/pacientes');
+    } catch (error) {
+      console.error('Erro ao salvar anamnese:', error);
+      req.flash('error', 'Erro ao salvar anamnese.');
+      return res.redirect('/anamnese/new');
+    }
+  },
+
+  // Buscar anamnese pelo ID
+  async getAnamneseById(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const anamnese = await findAnamneseDoConsultorio(req.params.idAnamnese, idConsultorio);
+      if (!anamnese) {
+        req.flash('error', 'Anamnese não encontrada.');
+        return res.redirect('/anamneses');
+      }
+
+      res.render('anamneses/show', {
+        pageTitle: 'Detalhes da Anamnese',
+        pageIcon: 'ri-file-list-line',
+        anamnese,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar anamnese:', error);
+      req.flash('error', 'Erro ao buscar anamnese. Tente novamente.');
+      return res.redirect('/anamneses');
+    }
+  },
+
+  // Listar todas as anamneses
+  async getAllAnamneses(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const anamneses = await prisma.anamnese.findMany({
+        where: { consultorioId: idConsultorio },
+      });
+
+      res.render('anamneses/index', {
+        pageTitle: 'Lista de Anamneses',
+        pageIcon: 'ri-file-list-line',
+        anamneses,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar anamneses:', error);
+      req.flash('error', 'Erro ao buscar anamneses. Tente novamente.');
+      return res.redirect('/anamneses');
+    }
+  },
+
+  // Atualizar anamnese
+  async updateAnamnese(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idAnamnese } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      if (!anamnese) {
+        req.flash('error', 'Anamnese não encontrada ou não pertence ao seu consultório.');
+        return res.redirect('/anamneses');
+      }
+
+      const {
+        motivo,
+        ultimoExame,
+        usuarioOculos,
+        usuarioLC,
+        trauma,
+        dm,
+        has,
+        glauc,
+        dmFam,
+        hasFam,
+        glaucFam,
+        sintomas,
+        remedio,
+        obsGerais,
+      } = req.body;
+
+      await prisma.anamnese.update({
+        where: { idAnam: parseInt(idAnamnese) },
+        data: {
+          motivo,
+          ultimoExame: ultimoExame || null,
+          usuarioOculos: usuarioOculos === 'true',
+          usuarioLC: usuarioLC === 'true',
+          trauma: trauma || null,
+          dm: dm || null,
+          has: has || null,
+          glauc: glauc || null,
+          dmFam: dmFam || null,
+          hasFam: hasFam || null,
+          glaucFam: glaucFam || null,
+          sintomas: sintomas || null,
+          remedio: remedio || null,
+          obsGerais: obsGerais || null,
+        },
+      });
+
+      req.flash('success', 'Anamnese atualizada com sucesso!');
+      return res.redirect('/anamneses');
+    } catch (error) {
+      console.error('Erro ao atualizar anamnese:', error);
+      req.flash('error', 'Erro ao atualizar anamnese. Tente novamente.');
+      return res.redirect(`/anamneses/${req.params.idAnamnese}/edit`);
+    }
+  },
+
+  // Deletar anamnese
+  async deleteAnamnese(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idAnamnese } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      if (!anamnese) {
+        req.flash('error', 'Anamnese não encontrada ou não pertence ao seu consultório.');
+        return res.redirect('/anamneses');
+      }
+
+      await prisma.anamnese.delete({
+        where: { idAnam: parseInt(idAnamnese) },
+      });
+
+      req.flash('success', 'Anamnese deletada com sucesso!');
+      return res.redirect('/anamneses');
+    } catch (error) {
+      console.error('Erro ao deletar anamnese:', error);
+      req.flash('error', 'Erro ao deletar anamnese. Tente novamente.');
+      return res.redirect('/anamneses');
+    }
+  },
+
+  // Formulário para editar anamnese
+  async editAnamneseForm(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idAnamnese } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      if (!anamnese) {
+        req.flash('error', 'Anamnese não encontrada.');
+        return res.redirect('/anamneses');
+      }
+
+      res.render('anamneses/edit', {
+        pageTitle: 'Editar Anamnese',
+        pageIcon: 'ri-edit-line',
+        anamnese,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao exibir formulário de edição:', error);
+      req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
+      return res.redirect('/anamneses');
+    }
+  },
+};

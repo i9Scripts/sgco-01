@@ -1,5 +1,12 @@
 // src/controllers/pacienteController.js
 import { PrismaClient } from '@prisma/client';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
+
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
+
 const prisma = new PrismaClient();
 // para garantir que os dados estão vinculados com a tabela Consultorio
 async function findPacienteDoConsultorio(idPaciente, idConsultorio) {
@@ -33,9 +40,11 @@ export const pacienteController = {
   },
 
   // Criar um novo paciente
+
   async createPaciente(req, res) {
     try {
-      const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+      const { nome, responsavel, dataNasc, idade, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } =
+        req.body;
       const idConsultorio = req.session.idConsultorio;
 
       if (!idConsultorio) {
@@ -43,16 +52,19 @@ export const pacienteController = {
         return res.redirect('/consultorios/new');
       }
 
-      if (!nome || !dataNasc || !celular || !endereco || !numero || !bairro || !cidade || !profissao) {
+      if (!nome || !dataNasc || !idade || !celular || !endereco || !numero || !bairro || !cidade || !profissao) {
         req.flash('error', 'Todos os campos são obrigatórios.');
         return res.redirect('/pacientes/new');
       }
+      // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
+      const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
-      await prisma.paciente.create({
+      const novoPaciente = await prisma.paciente.create({
         data: {
           nome,
           responsavel: responsavel || null,
-          dataNasc: new Date(dataNasc),
+          dataNasc: dataNascimentoCorrigida,
+          idade: dayjs().diff(dataNascimentoCorrigida, 'year'),
           celular,
           cep: cep || null,
           endereco,
@@ -64,6 +76,8 @@ export const pacienteController = {
           consultorioId: idConsultorio,
         },
       });
+      // >>>> Guardar o idPaciente na sessão <<<<
+      req.session.idPaciente = novoPaciente.idPaciente;
 
       req.flash('success', 'Paciente registrado com sucesso!');
       return res.redirect('/pacientes');
@@ -88,6 +102,8 @@ export const pacienteController = {
         req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
+      // FORMATA A DATA CERTO USANDO UTC
+      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
       res.render('pacientes/show', {
         pageTitle: 'Detalhes do Paciente',
@@ -133,21 +149,30 @@ export const pacienteController = {
     try {
       const { query } = req.query;
       const idConsultorio = req.session.idConsultorio;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
+      if (!query || query.trim() === '') {
+        req.flash('error', 'Digite um termo para buscar.');
+        return res.redirect('/pacientes');
+      }
+
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
-          OR: [{ nome: { contains: query, mode: 'insensitive' } }, { cpf: { contains: query, mode: 'insensitive' } }],
+          OR: [
+            { nome: { contains: query.trim(), mode: 'insensitive' } },
+            { cpf: { contains: query.trim(), mode: 'insensitive' } },
+          ],
         },
       });
 
       res.render('pacientes/index', {
-        pageTitle: 'Resultado de busca de Pacientes',
-        pageIcon: 'ri-folder-user-line',
+        pageTitle: `Resultados para "${query}"`,
+        pageIcon: 'ri-search-line',
         pacientes,
         messages: req.flash(),
       });
@@ -176,13 +201,16 @@ export const pacienteController = {
       }
 
       const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+      // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
+      const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
       await prisma.paciente.update({
         where: { idPaciente: parseInt(idPaciente) },
         data: {
           nome,
           responsavel: responsavel || null,
-          dataNasc: new Date(dataNasc),
+          dataNasc: dataNascimentoCorrigida,
+          idade: dayjs().diff(dataNascimentoCorrigida, 'year'),
           celular,
           cep: cep || null,
           endereco,
@@ -249,6 +277,8 @@ export const pacienteController = {
         req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
+
+      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
       res.render('pacientes/edit', {
         pageTitle: 'Editar Paciente',

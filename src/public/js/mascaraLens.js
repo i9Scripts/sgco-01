@@ -7,6 +7,7 @@ function applyMask(input) {
   if (type === 'esfOD' || type === 'cilOD' || type === 'esfOE' || type === 'cilOE' || type === 'adicao') {
     // Remove tudo que não for número, vírgula, mais ou menos
     value = value.replace(/[^0-9,+,-]/g, '');
+
     // Garante que o sinal apareça apenas no início
     if (value.length > 0 && (value[0] === '+' || value[0] === '-')) {
       let signal = value[0];
@@ -15,6 +16,7 @@ function applyMask(input) {
     } else {
       value = value.replace(/[-+]/g, ''); // Remove sinais se não estiverem no início
     }
+
     // Formata o valor para ter sempre duas casas decimais
     if (value.length > 0) {
       let parts = value.split(',');
@@ -23,10 +25,12 @@ function applyMask(input) {
       }
       value = parts.join(',');
     }
+
     // Limita o tamanho do campo
     if (value.length > 6) {
       value = value.slice(0, 6);
     }
+
     input.value = value;
   } else if (type === 'eixoOD' || type === 'eixoOE') {
     // Para campos de eixo (exemplo: 000°)

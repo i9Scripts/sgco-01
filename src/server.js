@@ -14,6 +14,7 @@ dotenv.config();
 import methodOverride from 'method-override';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
+import anamneseRoutes from './routes/anamneseRoutes.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
@@ -61,20 +62,12 @@ app.use((req, res, next) => {
 // Configuração do method-override
 app.use(methodOverride('_method'));
 
-// Rotas para o frontend
-app.get('/', (req, res) => {
-  req.flash('welcome', 'Bem-vindo!'); // Adiciona mensagem de boas-vindas
-  res.render('index', {
-    pageTitle: 'Página Inicial',
-    pageIcon: 'bi bi-house-door',
-  }); // Passa o pageTitle para o render
-});
-
 // Rotas
 app.use('/consultorios', consultorioPublicRoutes); // Rotas públicas para consultórios
 app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes); // Rotas protegidas
 app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
+app.use('/anamnese', anamneseRoutes); //Rotas para Anamneses
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
@@ -88,7 +81,15 @@ app.use(
   },
   consultorioProtectedRoutes
 );
-
+// Rotas para o frontend
+app.get('/', (req, res) => {
+  req.flash('welcome', 'Bem-vindo!'); // Adiciona mensagem de boas-vindas
+  res.render('index', {
+    pageTitle: 'Página Inicial',
+    pageIcon: 'bi bi-house-door',
+  }); // Passa o pageTitle para o render
+});
+// Rota para exibir a mensagem de boas-vindas
 app.get('/display-message', (req, res) => {
   req.flash('message', 'Bem-vindo!');
   res.send(req.flash('message'));
@@ -117,7 +118,7 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
 });
 // ***********************************************************//
 
-// Página 404
+//Página 404
 // app.get('*', (req, res) => {
 //   res.status(404).render('404.ejs', {
 //     pageTitle: 'Página Não Encontrada',

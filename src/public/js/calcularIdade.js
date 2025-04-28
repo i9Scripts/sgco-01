@@ -1,29 +1,27 @@
-// Calcular idade
-function calcularIdadeFrontend() {
-  const dataNasc = document.getElementById('dataNasc').value;
-  const idadeInput = document.getElementById('idade');
-  const responsavelField = document.getElementById('responsavel');
+function calcularIdadeFrontend(input) {
+  const valorData = input.value;
 
-  try {
-    const idade = calcularIdade(dataNasc);
-    idadeInput.value = idade;
-
-    if (idade < 18) {
-      responsavelField.required = true;
-      responsavelField.classList.add('required'); 
-    } else {
-      responsavelField.required = false;
-      responsavelField.classList.remove('required'); 
-    }
-
-  } catch (error) {
-    alert(error.message); 
-    idadeInput.value = ''; 
-    responsavelField.required = true; 
-    responsavelField.classList.add('required');
+  if (!valorData || valorData.length !== 10) {
+    document.getElementById('idade').value = '';
+    return;
   }
-}
 
-// Calcular idade ao sair do campo de data de nascimento
-const dataNascInput = document.getElementById('dataNasc');
-dataNascInput.addEventListener('blur', calcularIdadeFrontend);
+  const partes = valorData.split('/');
+  const dia = parseInt(partes[0], 10);
+  const mes = parseInt(partes[1], 10) - 1; // mês começa em 0 no JS
+  const ano = parseInt(partes[2], 10);
+
+  const nascimento = new Date(ano, mes, dia);
+  const hoje = new Date();
+
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const mesAtual = hoje.getMonth();
+  const diaAtual = hoje.getDate();
+
+  // Ajustar se ainda não fez aniversário esse ano
+  if (mesAtual < mes || (mesAtual === mes && diaAtual < dia)) {
+    idade--;
+  }
+
+  document.getElementById('idade').value = idade;
+}

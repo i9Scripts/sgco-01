@@ -58,6 +58,7 @@ model Paciente {
   nome          String        @db.VarChar(60)
   responsavel   String?       @db.VarChar(60)
   dataNasc      DateTime      @db.Date
+  idade         Int
   celular       String        @db.VarChar(15)
   cep           String?       @db.VarChar(9)
   endereco      String        @db.VarChar(60)
@@ -122,9 +123,9 @@ model Anamnese {
   usuarioOculos Boolean
   usuarioLC     Boolean
   trauma        String?     @db.VarChar(50)
-  dm            String?     @db.VarChar(50)
-  has           String?     @db.VarChar(50)
-  glauc         String?     @db.VarChar(50)
+  dm            Boolean
+  has           Boolean
+  glauc         Boolean
   dmFam         String?     @db.VarChar(50)
   hasFam        String?     @db.VarChar(50)
   glaucFam      String?     @db.VarChar(50)
