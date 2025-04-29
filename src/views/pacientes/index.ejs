@@ -2,11 +2,10 @@
   <!-- Formulário de busca -->
   <form action="/pacientes/search" method="get" class="mb-3">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Buscar por nome ou responsável" name="termo" />
+      <input type="text" name="query" class="form-control" placeholder="Buscar por nome ou CPF" required />
       <button class="btn btn-outline-secondary" type="submit">Buscar</button>
     </div>
   </form>
-
   <!-- Lista de pacientes -->
   <% if (pacientes && pacientes.length > 0) { %>
   <table class="table table-striped">
@@ -26,11 +25,7 @@
           <a href="/pacientes/<%= paciente.idPaciente %>" class="btn btn-sm btn-info">Ver Detalhes</a>
           <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-sm btn-warning">Editar</a>
           <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline">
-            <button
-              type="submit"
-              class="btn btn-sm btn-danger"
-              onclick="return confirm('Tem certeza que deseja excluir?')"
-            >
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
               Excluir
             </button>
           </form>
@@ -43,4 +38,4 @@
   <p>Nenhum paciente encontrado.</p>
   <% } %>
 </div>
-<div>  <a href="/pacientes/new" class="btn btn-primary">Adicionar Novo Paciente</a></div>
+<div> <a href="/pacientes/new" class="btn btn-primary">Adicionar Novo Paciente</a></div>

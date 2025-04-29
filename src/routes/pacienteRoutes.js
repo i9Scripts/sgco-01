@@ -1,17 +1,23 @@
+// src/routes/pacientesRoutes.js
+
 import { Router } from 'express';
 import { pacienteController } from '../controllers/pacienteController.js';
 
 const router = Router();
-router.get('/new', pacienteController.newPacienteForm); // Formulário para novo paciente
-router.post('/', pacienteController.createPaciente); // Criar paciente
 
-// Essas rotas precisam de consultório registrado
-router.get('/:idPaciente', pacienteController.getPacienteById); // Buscar paciente pelo ID
-router.get('/', pacienteController.getAllPacientes); // Listar todos os pacientes
-router.get('/search', pacienteController.searchPacientes); // Buscar pacientes por nome ou contato
-router.put('/:idPaciente', pacienteController.updatePaciente); // Atualizar paciente
-router.delete('/:idPaciente', pacienteController.deletePaciente); // Deletar paciente
-router.get('/:idPaciente/edit', pacienteController.editPacienteForm); // Formulário para editar paciente
-router.get('/index', pacienteController.getAllPacientes); // Página de listagem de pacientes
+// Agora todas as rotas são relativas a /pacientes (definido no app.use)
+
+router.get('/', pacienteController.getAllPacientes); // GET /pacientes
+router.get('/new', pacienteController.newPacienteForm); // GET /pacientes/new
+router.post('/', pacienteController.createPaciente); // POST /pacientes
+
+// Busca antes da rota dinâmica
+router.get('/search', pacienteController.searchPacientes); // GET /pacientes/search
+
+// Rota dinâmica depois
+router.get('/:idPaciente', pacienteController.getPacienteById); // GET /pacientes/2
+router.get('/:idPaciente/edit', pacienteController.editPacienteForm); // GET /pacientes/2/edit
+router.put('/:idPaciente', pacienteController.updatePaciente); // PUT /pacientes/2
+router.delete('/:idPaciente', pacienteController.deletePaciente); // DELETE /pacientes/2
 
 export default router;

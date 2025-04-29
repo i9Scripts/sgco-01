@@ -9,13 +9,17 @@ dayjs.extend(customParseFormat);
 
 const prisma = new PrismaClient();
 // para garantir que os dados estão vinculados com a tabela Consultorio
-async function findPacienteDoConsultorio(idPaciente, idConsultorio) {
-  return await prisma.paciente.findFirst({
+async function findPacienteDoConsultorio(idPaciente, consultorioId) {
+  const paciente = await prisma.paciente.findFirst({
     where: {
-      idPaciente: parseInt(idPaciente),
-      consultorioId: idConsultorio,
+      consultorioId: consultorioId,
+      idPaciente: {
+        equals: parseInt(idPaciente),
+      },
     },
   });
+
+  return paciente;
 }
 
 export const pacienteController = {
@@ -91,18 +95,26 @@ export const pacienteController = {
   // Buscar paciente pelo ID
   async getPacienteById(req, res) {
     try {
+      console.log('[getPacienteById] Params:', req.params); // 👈 ADICIONE ISSO
       const idConsultorio = req.session.idConsultorio;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const paciente = await findPacienteDoConsultorio(req.params.idPaciente, idConsultorio);
+      const idPaciente = parseInt(req.params.idPaciente);
+      if (isNaN(idPaciente)) {
+        req.flash('error', 'ID do paciente inválido.');
+        return res.redirect('/pacientes');
+      }
+
+      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
+
       if (!paciente) {
         req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
-      // FORMATA A DATA CERTO USANDO UTC
+
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
       res.render('pacientes/show', {
@@ -147,7 +159,7 @@ export const pacienteController = {
   // Buscar pacientes por nome ou CPF
   async searchPacientes(req, res) {
     try {
-      const { query } = req.query;
+      const { query } = req.query; // Obtém o termo de busca da query string
       const idConsultorio = req.session.idConsultorio;
 
       if (!idConsultorio) {
@@ -160,16 +172,21 @@ export const pacienteController = {
         return res.redirect('/pacientes');
       }
 
+      // Realiza a busca no banco de dados
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
-          OR: [
-            { nome: { contains: query.trim(), mode: 'insensitive' } },
-            { cpf: { contains: query.trim(), mode: 'insensitive' } },
-          ],
+          OR: [{ nome: { contains: query.trim() } }, { cpf: { contains: query.trim() } }],
         },
       });
 
+      // Verifica se encontrou pacientes
+      if (pacientes.length === 0) {
+        req.flash('warning', 'Nenhum paciente encontrado.');
+        return res.redirect('/pacientes');
+      }
+
+      // Renderiza a página com os resultados
       res.render('pacientes/index', {
         pageTitle: `Resultados para "${query}"`,
         pageIcon: 'ri-search-line',
@@ -177,7 +194,7 @@ export const pacienteController = {
         messages: req.flash(),
       });
     } catch (error) {
-      console.error('Erro ao buscar pacientes:', error);
+      console.error('Erro ao buscar pacientes:', error); // Log detalhado do erro
       req.flash('error', 'Erro ao buscar pacientes. Tente novamente.');
       return res.redirect('/pacientes');
     }
