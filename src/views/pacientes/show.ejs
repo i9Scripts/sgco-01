@@ -1,15 +1,23 @@
-<ul>
-  <li><strong>ID:</strong> <%= paciente.idPaciente %></li>
-  <li><strong>Nome:</strong> <%= paciente.nome %></li>
-  <li><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></li>
-  <li><strong>Data Nascimento:</strong> <%= paciente.dataNascFormatada %></li>
-  <li><strong>Celular:</strong> <%= paciente.celular %></li>
-  <li><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %></li>
-  <li><strong>Endereço:</strong> <%= paciente.endereco %></li>
-  <li><strong>Numero:</strong> <%= paciente.numero %></li>
-  <li><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %></li>
-  <li><strong>Cidade:</strong> <%= paciente.cidade || 'Não informado' %></li>
-  <li><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %></li>
-  <li><strong>Profissão:</strong> <%= paciente.profissao %></li>
-</ul>
+<div class="alert alert-secondary mb-4">
+  <h5 class="mb-1">
+    <i class="ri-user-line"></i> Paciente selecionado:
+  </h5>
+  <p class="mb-1 fs-6">
+    <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+    <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
+  </p>
+  <ul>
+    <li><strong>ID:</strong> <%= paciente.idPaciente %></li>
+    <li><strong>Data Nascimento:</strong> <%= paciente.dataNascFormatada %></li>
+    <li><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></li>
+    <li><strong>Celular:</strong> <%= paciente.celular %></li>
+    <li><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %></li>
+    <li><strong>Endereço:</strong> <%= paciente.endereco %></li>
+    <li><strong>Numero:</strong> <%= paciente.numero %></li>
+    <li><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %></li>
+    <li><strong>Cidade:</strong> <%= paciente.cidade || 'Não informado' %></li>
+    <li><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %></li>
+    <li><strong>Profissão:</strong> <%= paciente.profissao %></li>
+  </ul>
+</div>
 <a href="/pacientes" class="btn btn-secondary">Voltar</a>

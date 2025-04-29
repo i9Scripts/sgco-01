@@ -67,7 +67,7 @@ app.use('/consultorios', consultorioPublicRoutes); // Rotas públicas para consu
 app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes); // Rotas protegidas
 app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
-app.use('/anamnese', anamneseRoutes); //Rotas para Anamneses
+app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(

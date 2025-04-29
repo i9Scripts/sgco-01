@@ -1,4 +1,5 @@
 <div>
+
   <form action="/pacientes" method="post">
     <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
 
@@ -46,7 +47,7 @@
         <label for="numero">Número</label>
       </div>
       <div class="col-md-3 mb-3">
-        <input type="text" class="form-control <%= messages.errors && messages.errors.complemento ? 'is-invalid' : '' %>" id="complemento" name="complemento" value="<%= formData && formData.complemento %>" required maxlength="30">
+        <input type="text" class="form-control <%= messages.errors && messages.errors.complemento ? 'is-invalid' : '' %>" id="complemento" name="complemento" value="<%= formData && formData.complemento %>" maxlength="30">
         <label for="complemento">Complemento</label>
       </div>
     </div>
@@ -67,7 +68,12 @@
     </div>
 
     <div class="form-group mb-2">
-      <button class="btn btn-outline-primary" type="submit">Adicionar Paciente</button>
+      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
+        <i class="ri-save-line"></i> Salvar
+      </button>
+      <a class="btn btn-secondary btn-hover-outline" href="/pacientes" title="Voltar">
+        <i class="ri-arrow-left-line"></i> Voltar
+      </a>
     </div>
   </form>
 </div>

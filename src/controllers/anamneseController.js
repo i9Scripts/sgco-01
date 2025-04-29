@@ -1,5 +1,6 @@
 // src/controllers/anamneseController.js
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 export const anamneseController = {
@@ -12,11 +13,21 @@ export const anamneseController = {
         return res.redirect('/pacientes');
       }
 
-      res.render('anamnese/new', {
+      const paciente = await prisma.paciente.findFirst({
+        where: { idPaciente, consultorioId: idConsultorio },
+      });
+
+      if (!paciente) {
+        req.flash('error', 'Paciente inválido.');
+        return res.redirect('/pacientes');
+      }
+
+      res.render('anamneses/new', {
         pageTitle: 'Nova Anamnese',
         pageIcon: 'ri-file-text-line',
         idPaciente,
         idConsultorio,
+        paciente,
         formData: {},
         messages: req.flash(),
       });
@@ -61,7 +72,7 @@ export const anamneseController = {
         return res.redirect('/pacientes/new');
       }
 
-      await prisma.anamnese.createAnamnese({
+      await prisma.anamnese.create({
         data: {
           pacienteId: idPaciente,
           consultorioId: idConsultorio,
@@ -97,7 +108,7 @@ export const anamneseController = {
     } catch (error) {
       console.error('Erro ao salvar anamnese:', error);
       req.flash('error', 'Erro ao salvar anamnese.');
-      return res.redirect('/anamnese/new');
+      return res.redirect('/anamneses/new');
     }
   },
 
@@ -105,21 +116,39 @@ export const anamneseController = {
   async getAnamneseById(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
+      const { idAnamnese } = req.params;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const anamnese = await findAnamneseDoConsultorio(req.params.idAnamnese, idConsultorio);
+      // Buscar a anamnese vinculada ao consultório
+      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada.');
         return res.redirect('/anamneses');
       }
 
+      // Buscar o paciente associado à anamnese
+      const paciente = await prisma.paciente.findFirst({
+        where: {
+          idPaciente: anamnese.pacienteId,
+          consultorioId: idConsultorio,
+        },
+      });
+
+      if (!paciente) {
+        req.flash('error', 'Paciente associado à anamnese não encontrado.');
+        return res.redirect('/anamneses');
+      }
+
+      // Renderizar a view de detalhes
       res.render('anamneses/show', {
         pageTitle: 'Detalhes da Anamnese',
         pageIcon: 'ri-file-list-line',
         anamnese,
+        paciente, // Passa os dados do paciente para a view
         messages: req.flash(),
       });
     } catch (error) {
@@ -140,6 +169,9 @@ export const anamneseController = {
 
       const anamneses = await prisma.anamnese.findMany({
         where: { consultorioId: idConsultorio },
+        include: {
+          paciente: true, // <- isso é necessário para incluir o idpaciente
+        },
       });
 
       res.render('anamneses/index', {
@@ -259,16 +291,32 @@ export const anamneseController = {
         return res.redirect('/consultorios/new');
       }
 
+      // Buscar a anamnese vinculada ao consultório
       const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada.');
         return res.redirect('/anamneses');
       }
 
+      // Buscar o paciente associado à anamnese
+      const paciente = await prisma.paciente.findFirst({
+        where: {
+          idPaciente: anamnese.pacienteId,
+          consultorioId: idConsultorio,
+        },
+      });
+
+      if (!paciente) {
+        req.flash('error', 'Paciente associado à anamnese não encontrado.');
+        return res.redirect('/anamneses');
+      }
+
+      // Renderizar a view de edição
       res.render('anamneses/edit', {
         pageTitle: 'Editar Anamnese',
         pageIcon: 'ri-edit-line',
         anamnese,
+        paciente, // Passa os dados do paciente para a view
         messages: req.flash(),
       });
     } catch (error) {
@@ -278,3 +326,13 @@ export const anamneseController = {
     }
   },
 };
+
+// Função auxiliar para buscar uma anamnese vinculada ao consultório
+async function findAnamneseDoConsultorio(idAnamnese, idConsultorio) {
+  return await prisma.anamnese.findFirst({
+    where: {
+      idAnam: parseInt(idAnamnese),
+      consultorioId: idConsultorio,
+    },
+  });
+}

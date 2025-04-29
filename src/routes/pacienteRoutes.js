@@ -13,6 +13,9 @@ router.post('/', pacienteController.createPaciente); // POST /pacientes
 
 // Busca antes da rota dinâmica
 router.get('/search', pacienteController.searchPacientes); // GET /pacientes/search
+// Rota específica para busca por CPF
+router.get('/search/cpf', pacienteController.searchPacienteByCpf); // GET /pacientes/search/cpf/12345678900
+router.get('/:idPaciente/selecionar', pacienteController.selecionarPaciente);
 
 // Rota dinâmica depois
 router.get('/:idPaciente', pacienteController.getPacienteById); // GET /pacientes/2

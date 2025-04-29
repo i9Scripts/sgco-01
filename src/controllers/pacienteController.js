@@ -84,7 +84,7 @@ export const pacienteController = {
       req.session.idPaciente = novoPaciente.idPaciente;
 
       req.flash('success', 'Paciente registrado com sucesso!');
-      return res.redirect('/pacientes');
+      return res.redirect('/anamneses/new');
     } catch (error) {
       console.error('Erro ao registrar paciente:', error);
       req.flash('error', 'Erro ao registrar paciente. Verifique os dados e tente novamente.');
@@ -141,6 +141,14 @@ export const pacienteController = {
 
       const pacientes = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio },
+        include: {
+          anamneses: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 1, // recebe um array, mas só com a anamnese mais recente
+          },
+        },
       });
 
       res.render('pacientes/index', {
@@ -308,5 +316,49 @@ export const pacienteController = {
       req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
       return res.redirect('/pacientes');
     }
+  },
+  async searchPacienteByCpf(req, res) {
+    try {
+      const { cpf } = req.query;
+      const idConsultorio = req.session.idConsultorio;
+
+      const paciente = await prisma.paciente.findFirst({
+        where: {
+          consultorioId: idConsultorio,
+          cpf: cpf.replace(/\D/g, ''), // Remove formatação
+        },
+      });
+
+      return res.json(paciente || null);
+    } catch (error) {
+      console.error('Erro na busca por CPF:', error);
+      return res.status(500).json({ error: 'Erro na busca' });
+    }
+  },
+  // Selecionar paciente para anamnese
+  async selecionarPaciente(req, res) {
+    const idConsultorio = req.session.idConsultorio;
+    const idPaciente = parseInt(req.params.idPaciente);
+
+    if (!idConsultorio) {
+      req.flash('error', 'Nenhum consultório selecionado.');
+      return res.redirect('/consultorios/new');
+    }
+
+    // Verifica se o paciente pertence ao consultório
+    const paciente = await prisma.paciente.findFirst({
+      where: {
+        idPaciente,
+        consultorioId: idConsultorio,
+      },
+    });
+
+    if (!paciente) {
+      req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+      return res.redirect('/pacientes');
+    }
+
+    req.session.idPaciente = idPaciente; // salva o paciente selecionado
+    return res.redirect('/anamneses/new'); // redireciona para o formulário de anamnese
   },
 };

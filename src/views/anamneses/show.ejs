@@ -1,13 +1,28 @@
-<h1>Detalhes da Anamnese</h1>
-<ul>
-  <li><strong>ID:</strong> <%= anamnese.idAnam %></li>
-  <li><strong>Motivo:</strong> <%= anamnese.motivo %></li>
-  <li><strong>Último Exame:</strong> <%= anamnese.ultimoExame || 'Não informado' %></li>
-  <li><strong>Usuário de Óculos:</strong> <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %></li>
-  <li><strong>Usuário de Lentes de Contato:</strong> <%= anamnese.usuarioLC ? 'Sim' : 'Não' %></li>
-  <li><strong>Trauma:</strong> <%= anamnese.trauma || 'Não informado' %></li>
-  <li><strong>DM:</strong> <%= anamnese.dm || 'Não informado' %></li>
-  <li><strong>HAS:</strong> <%= anamnese.has || 'Não informado' %></li>
-  <li><strong>Glaucoma:</strong> <%= anamnese.glauc || 'Não informado' %></li>
-</ul>
-<a href="/anamneses" class="btn btn-secondary">Voltar</a>
+<div class="alert alert-secondary mb-4">
+  <h5 class="mb-1">
+    <i class="ri-user-line"></i> Paciente Selecionado:
+  </h5>
+  <p class="mb-0">
+    <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+    <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
+  </p>
+
+  <ul>
+    <li><strong>ID:</strong> <%= anamnese.idAnam %></li>
+    <li><strong>Motivo:</strong> <%= anamnese.motivo %></li>
+    <li><strong>Último Exame:</strong> <%= anamnese.ultimoExame || 'Não informado' %></li>
+    <li><strong>Usuário de Óculos:</strong> <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %></li>
+    <li><strong>Usuário de Lentes de Contato:</strong> <%= anamnese.usuarioLC ? 'Sim' : 'Não' %></li>
+    <li><strong>Trauma:</strong> <%= anamnese.trauma || 'Não informado' %></li>
+    <li><strong>DM:</strong> <%= anamnese.dm || 'Não informado' %></li>
+    <li><strong>HAS:</strong> <%= anamnese.has || 'Não informado' %></li>
+    <li><strong>Glaucoma:</strong> <%= anamnese.glauc || 'Não informado' %></li>
+  </ul>
+</div>
+<a href="/anamneses" class="btn btn-sm btn-outline-info" title="Voltar">
+  <i class="ri-arrow-left-line"></i>
+</a>
+
+<a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-outline-warning" title="Editar anamnese">
+  <i class="ri-pencil-line"></i>
+</a>

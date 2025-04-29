@@ -14,6 +14,7 @@
         <th>Nome</th>
         <th>Responsável</th>
         <th>Ações</th>
+        <th>Anamnese</th>
       </tr>
     </thead>
     <tbody>
@@ -22,13 +23,41 @@
         <td><%= paciente.nome %></td>
         <td><%= paciente.responsavel %></td>
         <td>
-          <a href="/pacientes/<%= paciente.idPaciente %>" class="btn btn-sm btn-info">Ver Detalhes</a>
-          <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-sm btn-warning">Editar</a>
-          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline">
+          <a href="/pacientes/<%= paciente.idPaciente %>" class="btn btn-sm btn-info" title="Ver Paciente">
+            <i class="ri-eye-line"></i>
+          </a>
+
+          <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-sm btn-warning" title="Editar paciente">
+            <i class="ri-edit-line"></i>
+          </a>
+
+          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir paciente">
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
-              Excluir
+              <i class="ri-delete-bin-line"></i>
             </button>
           </form>
+        </td>
+
+        <!--Anamnese  -->
+        <td>
+          <% if (paciente.anamneses && paciente.anamneses.length > 0) { 
+        const anamnese = paciente.anamneses[0]; %>
+          <span class="badge bg-success">Registrada</span>
+          <a href="/pacientes/<%= paciente.idPaciente %>/selecionar" class="btn btn-sm btn-success" title="Selecionar para anamnese">
+            <i class="ri-check-line"></i>
+          </a>
+          <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
+            <i class="ri-file-search-line"></i>
+          </a>
+          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-warning" title="Editar anamnese">
+            <i class="ri-pencil-line"></i>
+          </a>
+          <% } else { %>
+          <span class="badge bg-secondary">Não registrada</span>
+          <a href="/pacientes/<%= paciente.idPaciente %>/selecionar" class="btn btn-sm btn-primary" title="Criar nova anamnese">
+            <i class="ri-add-line"></i>
+          </a>
+          <% } %>
         </td>
       </tr>
       <% }); %>
@@ -38,4 +67,8 @@
   <p>Nenhum paciente encontrado.</p>
   <% } %>
 </div>
-<div> <a href="/pacientes/new" class="btn btn-primary">Adicionar Novo Paciente</a></div>
+<div>
+  <a class="btn btn-primary btn-hover-outline" href="/pacientes/new" title="Adicionar Novo Paciente">
+    <i class="ri-folder-user-line"></i> Novo
+  </a>
+</div>

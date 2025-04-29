@@ -1,28 +1,32 @@
-<h1>Lista de Anamneses</h1>
 <table class="table">
   <thead>
     <tr>
       <th>ID</th>
-      <th>Motivo</th>
+      <th>Paciente</th>
       <th>Último Exame</th>
-      <th>Ações</th>
+      <th>Motivo</th>
     </tr>
   </thead>
   <tbody>
     <% anamneses.forEach(anamnese => { %>
     <tr>
       <td><%= anamnese.idAnam %></td>
-      <td><%= anamnese.motivo %></td>
+      <td><%= anamnese.paciente.nome %></td>
       <td><%= anamnese.ultimoExame || 'Não informado' %></td>
+      <td><%= anamnese.motivo %></td>
       <td>
-        <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-info btn-sm">Ver</a>
-        <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-warning btn-sm">Editar</a>
-        <form action="/anamneses/<%= anamnese.idAnam %>?_method=DELETE" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-        </form>
+        <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
+          <i class="ri-file-search-line"></i>
+        </a>
+        <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-warning" title="Editar anamnese">
+          <i class="ri-pencil-line"></i>
+        </a>
       </td>
+
     </tr>
     <% }); %>
   </tbody>
 </table>
-<a href="/anamneses/new" class="btn btn-primary">Adicionar Nova Anamnese</a>
+<a class="btn btn-primary btn-hover-outline" href="/anamneses/new" title="Adicionar Nova Anamnese">
+  <i class="ri-folder-user-line"></i> Novo
+</a>

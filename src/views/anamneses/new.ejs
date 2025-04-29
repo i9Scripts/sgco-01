@@ -3,7 +3,17 @@
     <div class="row form-group">
       <input type="hidden" name="idPaciente" value="<%= idPaciente %>">
       <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>">
-
+      <!-- Resumo do paciente -->
+      <div class="alert alert-secondary mb-4">
+        <h5 class="mb-1">
+          <i class="ri-user-line"></i> Paciente Selecionado:
+        </h5>
+        <p class="mb-0">
+          <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+          <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
+          <strong>Data de Nasc.:</strong> <%= paciente?.dataNascFormatada || 'N/D' %>
+        </p>
+      </div>
       <div class="col-md-12 mb-3">
         <input type="text" class="form-control" id="motivo" name="motivo" required maxlength="100" />
         <label for="motivo">Motivo</label>
@@ -127,7 +137,10 @@
       </div>
     </div>
     <div class="form-group mb-2">
-      <button class="btn btn-outline-primary" type="submit">Adicionar Anamnese</button>
+      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
+        <i class="ri-save-line"></i> Salvar
+      </button>
+      <a href="/anamneses" class="btn btn-secondary">Voltar</a>
     </div>
   </form>
 </div>
