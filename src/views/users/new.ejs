@@ -1,0 +1,36 @@
+<div>
+  <form action="/users" method="post">
+    <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
+
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control" id="nome" name="nome" value="<%= formData && formData.nome %>" required maxlength="60" />
+        <label for="nome">Nome</label>
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="email" class="form-control" id="email" name="email" value="<%= formData && formData.email %>" required maxlength="30" />
+        <label for="email">Email</label>
+      </div>
+    </div>
+
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control" id="celular" name="celular" value="<%= formData && formData.celular %>" oninput="mascaraCelular(this)" required maxlength="15" />
+        <label for="celular">Celular</label>
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="password" class="form-control" id="password" name="password" required maxlength="20" />
+        <label for="password">Senha</label>
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar">
+        <i class="ri-save-line"></i> Salvar
+      </button>
+      <a class="btn btn-secondary btn-hover-outline" href="/users" title="Voltar">
+        <i class="ri-arrow-left-line"></i> Voltar
+      </a>
+    </div>
+  </form>
+</div>

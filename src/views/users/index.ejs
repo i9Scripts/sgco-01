@@ -1,0 +1,42 @@
+<div>
+
+  <% if (users && users.length > 0) { %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Celular</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+      <tr>
+        <td><%= user.nome %></td>
+        <td><%= user.email %></td>
+        <td><%= user.celular %></td>
+        <td>
+          <a href="/users/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Usuário">
+            <i class="ri-user-add-line"></i>
+          </a>
+          <a href="/users/<%= user.idUser %>" class="btn btn-sm btn-outline-info" title="Ver Usuário">
+            <i class="ri-eye-line"></i>
+          </a>
+          <a href="/users/<%= user.idUser %>/edit" class="btn btn-sm btn-outline-warning" title="Editar Usuário">
+            <i class="ri-edit-line"></i>
+          </a>
+          <form action="/users/<%= user.idUser %>?_method=DELETE" method="post" class="d-inline">
+            <button class="btn btn-sm btn-outline-danger" type="submit" title="Excluir Usuário">
+              <i class="ri-delete-bin-line"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p>Nenhum usuário encontrado.</p>
+  <% } %>
+</div>

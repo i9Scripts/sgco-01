@@ -95,8 +95,8 @@ export const pacienteController = {
   // Buscar paciente pelo ID
   async getPacienteById(req, res) {
     try {
-      console.log('[getPacienteById] Params:', req.params); // 👈 ADICIONE ISSO
       const idConsultorio = req.session.idConsultorio;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');

@@ -19,6 +19,7 @@ import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 // Configuração da aplicação
 const app = express();
@@ -68,6 +69,7 @@ app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRou
 app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
+app.use('/users', userRoutes); // Rotas para usuários
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
@@ -118,13 +120,13 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
 });
 // ***********************************************************//
 
-//Página 404
-// app.get('*', (req, res) => {
-//   res.status(404).render('404.ejs', {
-//     pageTitle: 'Página Não Encontrada',
-//     pageIcon: 'ri-error-warning-line',
-//   });
-// });
+// Rota 404 - Página não encontrada
+app.use((req, res) => {
+  res.status(404).render('404', {
+    pageTitle: 'Página Não Encontrada',
+    pageIcon: 'ri-error-warning-line', // Ícone opcional
+  });
+});
 
 // Iniciar o servidor
 app.listen(port, () => {

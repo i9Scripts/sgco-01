@@ -1,5 +1,3 @@
-<h1>Lista de Parceiros</h1>
-
 <table class="table">
   <thead>
     <tr>
@@ -11,24 +9,31 @@
   </thead>
   <tbody>
     <% parceiros.forEach(parceiro => { %>
-      <tr>
-        <td><%= parceiro.idParceiro %></td>
-        <td><%= parceiro.nome %></td>
-        <td><%= parceiro.telefone %></td>
-        <td>
-          <!-- Botão Visualizar Detalhes -->
-          <a href="/parceiros/<%= parceiro.idParceiro %>" class="btn btn-info btn-sm">Ver</a>
-
-          <!-- Botão Editar -->
-          <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-warning btn-sm">Editar</a>
-
-          <!-- Formulário para deletar -->
-          <form action="/parceiros/delete/<%= parceiro.idParceiro %>" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este parceiro?')">Deletar</button>
-          </form>
-        </td>
-      </tr>
+    <tr>
+      <td><%= parceiro.idParceiro %></td>
+      <td><%= parceiro.nome %></td>
+      <td><%= parceiro.telefone %></td>
+      <td>
+        <!-- Botão para adicionar novo parceiro -->
+        <a href="/parceiros/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Parceiro">
+          <span class="material-symbols-outlined icon-btn">person_add</span>
+        </a>
+        <!-- Botão para visualizar parceiro -->
+        <a href="/parceiros/<%= parceiro.idParceiro %>" class="btn btn-sm btn-info" title="Ver Parceiro">
+          <span class="material-symbols-outlined icon-btn">visibility</span>
+        </a>
+        <!-- Botão para editar parceiro -->
+        <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-sm btn-warning" title="Editar Parceiro">
+          <span class="material-symbols-outlined icon-btn">edit</span>
+        </a>
+        <!-- Botão para excluir parceiro -->
+        <form action="/parceiros/<%= parceiro.idParceiro %>?_method=DELETE" method="post" class="d-inline">
+          <button class="btn btn-sm btn-danger" type="submit" title="Excluir Parceiro">
+            <span class="material-symbols-outlined icon-btn">delete</span>
+          </button>
+        </form>
+      </td>
+    </tr>
     <% }); %>
   </tbody>
 </table>
-<a href="/parceiros/new" class="btn btn-primary">Adicionar Novo Parceiro</a>

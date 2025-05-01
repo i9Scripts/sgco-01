@@ -30,6 +30,14 @@ a:hover {
   color: var(--clr);
   background: var(--clr);
 }
+/* === config dos icones do google === */
+.icon-btn {
+  font-size: 18px !important; /* Ajusta o tamanho do ícone */
+  font-weight: lighter;
+  vertical-align: middle; /* Centraliza o ícone verticalmente */
+  display: inline-block; /* Garante que o ícone seja tratado como bloco inline */
+  line-height: 1; /* Remove espaçamento extra */
+}
 
 /* ====Estilo da página==== */
 .wrapper {
@@ -56,6 +64,22 @@ body {
   background-size: 100%;
   background-attachment: fixed;
   background-repeat: no-repeat;
+}
+/* === fixar botões de salvar e outros === */
+.fixed-buttons {
+  position: sticky;
+  bottom: 40px;
+  margin-left: 700px;
+  z-index: 800;
+  display: flex;
+  gap: 10px; /* Espaçamento entre os botões */
+}
+
+.fixed-buttons button,
+.fixed-buttons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .alert {

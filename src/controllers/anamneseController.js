@@ -2,6 +2,15 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+// para garantir que os dados estão vinculados com a tabela Consultorio
+async function findAnamneseDoConsultorio(idAnam, idConsultorio) {
+  return await prisma.anamnese.findFirst({
+    where: {
+      idAnam: parseInt(idAnam), // Certifique-se de que idAnam é um número
+      consultorioId: idConsultorio,
+    },
+  });
+}
 
 export const anamneseController = {
   async newAnamneseForm(req, res) {
@@ -116,15 +125,20 @@ export const anamneseController = {
   async getAnamneseById(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
-      const { idAnamnese } = req.params;
+      const { idAnam } = req.params;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
+      if (!idAnam) {
+        req.flash('error', 'ID da anamnese não fornecido.');
+        return res.redirect('/anamneses');
+      }
+
       // Buscar a anamnese vinculada ao consultório
-      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      const anamnese = await findAnamneseDoConsultorio(idAnam, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada.');
         return res.redirect('/anamneses');
@@ -191,14 +205,14 @@ export const anamneseController = {
   async updateAnamnese(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
-      const { idAnamnese } = req.params;
+      const { idAdam } = req.params;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      const anamnese = await findAnamneseDoConsultorio(idAdam, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada ou não pertence ao seu consultório.');
         return res.redirect('/anamneses');
@@ -222,16 +236,16 @@ export const anamneseController = {
       } = req.body;
 
       await prisma.anamnese.update({
-        where: { idAnam: parseInt(idAnamnese) },
+        where: { idAnam: parseInt(idAdam) },
         data: {
           motivo,
           ultimoExame: ultimoExame || null,
           usuarioOculos: usuarioOculos === 'true',
           usuarioLC: usuarioLC === 'true',
           trauma: trauma || null,
-          dm: dm || null,
-          has: has || null,
-          glauc: glauc || null,
+          dm: dm === 'true',
+          has: has === 'true',
+          glauc: glauc === 'true',
           dmFam: dmFam || null,
           hasFam: hasFam || null,
           glaucFam: glaucFam || null,
@@ -246,7 +260,7 @@ export const anamneseController = {
     } catch (error) {
       console.error('Erro ao atualizar anamnese:', error);
       req.flash('error', 'Erro ao atualizar anamnese. Tente novamente.');
-      return res.redirect(`/anamneses/${req.params.idAnamnese}/edit`);
+      return res.redirect(`/anamneses/${req.params.idAdam}/edit`);
     }
   },
 
@@ -254,21 +268,21 @@ export const anamneseController = {
   async deleteAnamnese(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
-      const { idAnamnese } = req.params;
+      const { idAdam } = req.params;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      const anamnese = await findAnamneseDoConsultorio(idAdam, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada ou não pertence ao seu consultório.');
         return res.redirect('/anamneses');
       }
 
       await prisma.anamnese.delete({
-        where: { idAnam: parseInt(idAnamnese) },
+        where: { idAnam: parseInt(idAdam) },
       });
 
       req.flash('success', 'Anamnese deletada com sucesso!');
@@ -284,15 +298,20 @@ export const anamneseController = {
   async editAnamneseForm(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
-      const { idAnamnese } = req.params;
+      const { idAnam } = req.params; // Certifique-se de usar idAnam
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
+      if (!idAnam) {
+        req.flash('error', 'ID da anamnese não fornecido.');
+        return res.redirect('/anamneses');
+      }
+
       // Buscar a anamnese vinculada ao consultório
-      const anamnese = await findAnamneseDoConsultorio(idAnamnese, idConsultorio);
+      const anamnese = await findAnamneseDoConsultorio(idAnam, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada.');
         return res.redirect('/anamneses');
@@ -326,13 +345,3 @@ export const anamneseController = {
     }
   },
 };
-
-// Função auxiliar para buscar uma anamnese vinculada ao consultório
-async function findAnamneseDoConsultorio(idAnamnese, idConsultorio) {
-  return await prisma.anamnese.findFirst({
-    where: {
-      idAnam: parseInt(idAnamnese),
-      consultorioId: idConsultorio,
-    },
-  });
-}

@@ -1,0 +1,20 @@
+<div class="alert alert-secondary mb-4">
+
+  <ul>
+    <li><strong>Nome:</strong> <%= user.nome %></li>
+    <li><strong>Email:</strong> <%= user.email %></li>
+    <li><strong>Celular:</strong> <%= user.celular %></li>
+    <li><strong>Ativo:</strong> <%= user.isActive ? 'Sim' : 'Não' %></li>
+    <li><strong>Criado em:</strong> <%= user.createdAt.toLocaleDateString() %></li>
+    <li><strong>Atualizado em:</strong> <%= user.updatedAt.toLocaleDateString() %></li>
+  </ul>
+
+  <div>
+    <a href="/users" class="btn btn-secondary btn-hover-outline" title="Voltar">
+      <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+    </a>
+    <a href="/users/<%= user.idUser %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Usuário">
+      <span class="material-symbols-outlined icon-btn">edit</span> Editar.
+    </a>
+  </div>
+</div>

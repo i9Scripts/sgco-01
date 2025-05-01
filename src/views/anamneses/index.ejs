@@ -15,18 +15,20 @@
       <td><%= anamnese.ultimoExame || 'Não informado' %></td>
       <td><%= anamnese.motivo %></td>
       <td>
-        <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
-          <i class="ri-file-search-line"></i>
+        <!-- Botão para adicionar nova anamnese -->
+        <a class="btn btn-sm btn-primary btn-hover-outline" href="/pacientes" title="Adicionar Nova Anamnese">
+          <span class="material-symbols-outlined icon-btn">person_add</span>
         </a>
+        <!-- Botão para visualizar anamnese -->
+        <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
+          <span class="material-symbols-outlined icon-btn">visibility</span>
+        </a>
+        <!-- Botão para editar anamnese -->
         <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-warning" title="Editar anamnese">
-          <i class="ri-pencil-line"></i>
+          <span class="material-symbols-outlined icon-btn">edit</span>
         </a>
       </td>
-
     </tr>
     <% }); %>
   </tbody>
 </table>
-<a class="btn btn-primary btn-hover-outline" href="/anamneses/new" title="Adicionar Nova Anamnese">
-  <i class="ri-folder-user-line"></i> Novo
-</a>

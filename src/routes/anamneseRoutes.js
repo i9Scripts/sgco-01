@@ -11,9 +11,9 @@ router.post('/', anamneseController.createAnamnese);
 
 // Outras rotas como editar, listar, deletar, etc.
 router.get('/', anamneseController.getAllAnamneses);
-router.get('/:idAnamnese', anamneseController.getAnamneseById);
-router.get('/:idAnamnese/edit', anamneseController.editAnamneseForm);
-router.put('/:idAnamnese', anamneseController.updateAnamnese);
-router.delete('/:idAnamnese', anamneseController.deleteAnamnese);
+router.get('/:idAnam', anamneseController.getAnamneseById);
+router.get('/:idAnam/edit', anamneseController.editAnamneseForm);
+router.put('/:idAnam', anamneseController.updateAnamnese);
+router.delete('/:idAnam', anamneseController.deleteAnamnese);
 
 export default router;

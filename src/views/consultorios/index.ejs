@@ -26,19 +26,23 @@
         <td><%= consultorio.nome %></td>
         <td><%= consultorio.responsavel || 'N/A' %></td>
         <td>
-          <a href="/consultorios/<%= consultorio.idConsultorio %>" class="btn btn-sm btn-info">Ver Detalhes</a>
-          <a href="/consultorios/<%= consultorio.idConsultorio %>/edit" class="btn btn-sm btn-warning">Editar</a>
-          <form action="/consultorios/<%= consultorio.idConsultorio %>?_method=DELETE" method="post" class="d-inline">
-            <button
-type="submit"
-class="btn btn-sm btn-danger"
-              onclick="return confirm('Tem certeza que deseja excluir?')"
-            >
-              Excluir
+          <!-- Botão para adicionar novo consultório -->
+          <a class="btn btn-sm btn-primary btn-hover-outline" href="/consultorios/new" title="Adicionar Novo Consultório">
+            <span class="material-symbols-outlined icon-btn">folder_shared</span>
+          </a>
+          <!-- Botão para visualizar consultório -->
+          <a href="/consultorios/<%= consultorio.idConsultorio %>" class="btn btn-sm btn-info" title="Ver Consultório">
+            <span class="material-symbols-outlined icon-btn">visibility</span>
+          </a>
+          <!-- Botão para editar consultório -->
+          <a href="/consultorios/<%= consultorio.idConsultorio %>/edit" class="btn btn-sm btn-warning" title="Editar Consultório">
+            <span class="material-symbols-outlined icon-btn">edit</span>
+          </a>
+          <!-- Botão para excluir consultório -->
+          <form action="/consultorios/<%= consultorio.idConsultorio %>?_method=DELETE" method="post" class="d-inline" title="Excluir Consultório">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+              <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
-          </form>
-          <form action="/consultorios/selecionar/<%= consultorio.idConsultorio %>" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-primary btn-sm">Selecionar</button>
           </form>
         </td>
       </tr>

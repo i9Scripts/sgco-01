@@ -69,6 +69,7 @@ export const parceiroController = {
   async getParceiroById(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');

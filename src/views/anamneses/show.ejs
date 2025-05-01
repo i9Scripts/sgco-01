@@ -19,10 +19,11 @@
     <li><strong>Glaucoma:</strong> <%= anamnese.glauc || 'Não informado' %></li>
   </ul>
 </div>
-<a href="/anamneses" class="btn btn-sm btn-outline-info" title="Voltar">
-  <i class="ri-arrow-left-line"></i>
-</a>
-
-<a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-outline-warning" title="Editar anamnese">
-  <i class="ri-pencil-line"></i>
-</a>
+<div>
+  <a href="/anamneses" class="btn btn-secondary btn-hover-outline" title="Voltar">
+    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+  </a>
+  <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Anamnese">
+    <span class="material-symbols-outlined icon-btn">edit</span> Editar.
+  </a>
+</div>

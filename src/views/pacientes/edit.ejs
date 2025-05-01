@@ -43,7 +43,7 @@
         <label for="numero">Número</label>
       </div>
       <div class="col-md-3 mb-3">
-        <input type="text" class="form-control <%= messages.errors && messages.errors.complemento? 'is-invalid' : '' %>" id="complemento" name="complemento" value="<%= paciente.complemento%>" required min="1" />
+        <input type="text" class="form-control <%= messages.errors && messages.errors.complemento? 'is-invalid' : '' %>" id="complemento" name="complemento" value="<%= paciente.complemento%>" min="1" />
         <label for="complemento">Complemento</label>
       </div>
     </div>
@@ -64,8 +64,11 @@
 
     <div class="form-group mb-2">
       <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
-        <i class="ri-save-line"></i> Salvar
+        <span class="material-symbols-outlined icon-btn">save</span> Salvar
       </button>
+      <a class="btn btn-secondary btn-hover-outline" href="/pacientes" title="Voltar">
+        <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+      </a>
     </div>
   </form>
 </div>
