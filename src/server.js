@@ -19,6 +19,7 @@ import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
+import profissionalRoutes from './routes/profissionalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 // Configuração da aplicação
@@ -70,7 +71,7 @@ app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
 app.use('/users', userRoutes); // Rotas para usuários
-
+app.use('/profissionais', profissionalRoutes);
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
   '/consultorios',

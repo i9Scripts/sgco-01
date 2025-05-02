@@ -64,5 +64,11 @@
   "files.autoSave": "onFocusChange", // optional but recommended
   "vs-code-prettier-eslint.prettierLast": true,
   "svg.preview.background": "editor", // set as true to run 'prettier' last not first
-  "aider-composer.pythonPath": ".venv/bin"
+  "aider-composer.pythonPath": ".venv/bin",
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  }
 }

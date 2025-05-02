@@ -1,29 +1,54 @@
-<div class="alert alert-secondary mb-4">
-  <h5 class="mb-1">
-    <i class="ri-user-line"></i> Paciente Selecionado:
-  </h5>
-  <p class="mb-0">
-    <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-    <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
-  </p>
+<div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
+  <div class="card-header bg-secondary text-white d-flex align-items-center">
+    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
+    <h5 class="mb-0">Informações da Anamnese</h5>
+  </div>
+  <div class="card-body">
+    <p>
+      <strong>ID:</strong> <%= anamnese.idAnam %> |
+      <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+      <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos
+    </p>
 
-  <ul>
-    <li><strong>ID:</strong> <%= anamnese.idAnam %></li>
-    <li><strong>Motivo:</strong> <%= anamnese.motivo %></li>
-    <li><strong>Último Exame:</strong> <%= anamnese.ultimoExame || 'Não informado' %></li>
-    <li><strong>Usuário de Óculos:</strong> <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %></li>
-    <li><strong>Usuário de Lentes de Contato:</strong> <%= anamnese.usuarioLC ? 'Sim' : 'Não' %></li>
-    <li><strong>Trauma:</strong> <%= anamnese.trauma || 'Não informado' %></li>
-    <li><strong>DM:</strong> <%= anamnese.dm || 'Não informado' %></li>
-    <li><strong>HAS:</strong> <%= anamnese.has || 'Não informado' %></li>
-    <li><strong>Glaucoma:</strong> <%= anamnese.glauc || 'Não informado' %></li>
-  </ul>
-</div>
-<div>
-  <a href="/anamneses" class="btn btn-secondary btn-hover-outline" title="Voltar">
-    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-  </a>
-  <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Anamnese">
-    <span class="material-symbols-outlined icon-btn">edit</span> Editar.
-  </a>
-</div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Motivo:</strong> <%= anamnese.motivo || 'Não informado' %></p>
+        <p><strong>Último Exame:</strong> <%= anamnese.ultimoExame || 'Não informado' %></p>
+        <p><strong>Usuário de Óculos:</strong> <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %></p>
+        <p><strong>Usuário de Lentes de Contato:</strong> <%= anamnese.usuarioLC ? 'Sim' : 'Não' %></p>
+        <p><strong>Trauma:</strong> <%= anamnese.trauma || 'Não informado' %></p>
+        <p><strong>Sintomas:</strong> <%= anamnese.sintomas || 'Não informado' %></p>
+        <p><strong>Remédios:</strong> <%= anamnese.remedio || 'Não informado' %></p>
+        <p><strong>Observações Gerais:</strong> <%= anamnese.obsGerais || 'Não informado' %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>DM:</strong> <%= anamnese.dm ? 'Sim' : 'Não' %> | <strong>HAS:</strong> <%= anamnese.has ? 'Sim' : 'Não' %> | <strong>Glaucoma:</strong> <%= anamnese.glauc ? 'Sim' : 'Não' %></p>
+        <p><strong>DM Familiar:</strong> <%= anamnese.dmFam || 'Não informado' %> | <strong>HAS Familiar:</strong> <%= anamnese.hasFam || 'Não informado' %> | <strong>Glaucoma Familiar:</strong> <%= anamnese.glaucFam || 'Não informado' %></p>
+        <div class="row">
+          <hr>
+          <p><strong>Esférico OD:</strong> <%= anamnese.esfOD || '00,00' %> | <strong>Cilindro OD:</strong> <%= anamnese.cilOD || '00,00' %> | <strong>Eixo OD:</strong> <%= anamnese.eixoOD || '00,00' %></p>
+        </div>
+        <div class="row">
+          <p><strong>Esférico OE:</strong> <%= anamnese.esfOE || '00,00' %> | <strong>Cilindro OE:</strong> <%= anamnese.cilOE || '00,00' %> | <strong>Eixo OE:</strong> <%= anamnese.eixoOE || '00,00' %></p>
+          <p><strong>Adição:</strong> <%= anamnese.adicao || '00,00' %></p>
+        </div>
+      </div>
+
+      <hr>
+      <p>
+        <span class="material-symbols-outlined me-2 icon-relat">event</span>
+        Criado em: <%= anamnese.createdAt.toLocaleDateString() || 'Não informado' %> |
+        Atualizado em: <%= anamnese.updatedAt.toLocaleDateString() || 'Não informado' %>
+      </p>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 fixed-buttons">
+    <a href="/anamneses" class="btn btn-secondary" title="Voltar">
+      <span class="material-symbols-outlined">arrow_back</span> Voltar
+    </a>
+    <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-warning" title="Editar Anamnese">
+      <span class="material-symbols-outlined">edit</span> Editar
+    </a>
+  </div>

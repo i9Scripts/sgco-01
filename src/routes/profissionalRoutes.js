@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { profissionalController } from '../controllers/profissionalController.js';
+
+const router = Router();
+
+// Rotas para Profissional
+router.get('/', profissionalController.getAllProfissionais); // Listar todos os profissionais
+router.get('/new', profissionalController.newProfissionalForm); // Formulário para criar novo profissional
+router.post('/', profissionalController.createProfissional); // Criar novo profissional
+router.get('/:idProfissional', profissionalController.getProfissionalById); // Detalhes de um profissional
+router.get('/:idProfissional/edit', profissionalController.editProfissionalForm); // Formulário para editar profissional
+router.put('/:idProfissional', profissionalController.updateProfissional); // Atualizar profissional
+router.delete('/:idProfissional', profissionalController.deleteProfissional); // Deletar profissional
+
+export default router;

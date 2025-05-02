@@ -220,22 +220,10 @@ export const userController = {
   // Deletar usuário
   async deleteUser(req, res) {
     try {
-      const idConsultorio = req.session.idConsultorio;
       const { idUser } = req.params;
 
-      if (!idConsultorio) {
-        req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios/new');
-      }
-
-      const user = await findUserDoConsultorio(idUser, idConsultorio);
-      if (!user) {
-        req.flash('error', 'Usuário não encontrado.');
-        return res.redirect('/users');
-      }
-
       await prisma.user.delete({
-        where: { id: parseInt(idUser) },
+        where: { idUser: parseInt(idUser) },
       });
 
       req.flash('success', 'Usuário deletado com sucesso!');

@@ -1,15 +1,17 @@
-<div class="alert alert-secondary mb-4">
-  <h5 class="mb-1">
-    <span class="material-symbols-outlined" style="font-size: 30px !important;">patient_list</span> Usuário:
-  </h5>
-  <ul>
-    <li><strong>Nome:</strong> <%= user.nome %></li>
-    <li><strong>Email:</strong> <%= user.email %></li>
-    <li><strong>Celular:</strong> <%= user.celular %></li>
-    <li><strong>Ativo:</strong> <%= user.isActive ? 'Sim' : 'Não' %></li>
-    <li><strong>Criado em:</strong> <%= user.createdAt.toLocaleDateString() %></li>
-    <li><strong>Atualizado em:</strong> <%= user.updatedAt.toLocaleDateString() %></li>
-  </ul>
+<div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
+  <div class="card-header bg-secondary text-white d-flex align-items-center">
+    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
+    <h5 class="mb-0">Dados do Usuário</h5>
+  </div>
+
+  <div>
+    <p><strong>Nome:</strong> <%= user.nome %> | <strong> Celular:</strong> <%= user.celular %></p>
+    <hr>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Ativo:</strong> <%= user.isActive ? 'Sim' : 'Não' %></p>
+    <hr>
+    <p><strong>Criado em:</strong> <%= user.createdAt.toLocaleDateString() %> | <strong> Atualizado em:</strong> <%= user.updatedAt.toLocaleDateString() %></p>
+  </div>
 
   <div>
     <a href="/users" class="btn btn-secondary btn-hover-outline" title="Voltar">

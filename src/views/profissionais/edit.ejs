@@ -1,0 +1,39 @@
+<div>
+  <form action="/profissionais/<%= profissional.idProfissional %>?_method=PUT" method="post">
+    <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
+
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control <%= messages.errors && messages.errors.nome ? 'is-invalid' : '' %>" id="nome" name="nome" value="<%= profissional.nome %>" required maxlength="60" />
+        <label for="nome">Nome</label>
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control <%= messages.errors && messages.errors.especialidade ? 'is-invalid' : '' %>" id="especialidade" name="especialidade" value="<%= profissional.especialidade %>" required maxlength="30" />
+        <label for="especialidade">Especialidade</label>
+      </div>
+    </div>
+
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control <%= messages.errors && messages.errors.celular ? 'is-invalid' : '' %>" id="celular" name="celular" oninput="mascaraCelular(this)" value="<%= profissional.celular %>" required maxlength="15" />
+        <label for="celular">Celular</label>
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control <%= messages.errors && messages.errors.cboo ? 'is-invalid' : '' %>" id="cboo" name="cboo" value="<%= profissional.cboo %>" required maxlength="10" />
+        <label for="cboo">CBOO</label>
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <!-- Botão de salvar -->
+      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar">
+        <span class="material-symbols-outlined icon-btn">save</span> Salvar
+      </button>
+
+      <!-- Botão de voltar -->
+      <a class="btn btn-secondary btn-hover-outline" href="/profissionais" title="Voltar">
+        <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+      </a>
+    </div>
+  </form>
+</div>

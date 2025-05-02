@@ -1,39 +1,48 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nome</th>
-      <th>Telefone</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% parceiros.forEach(parceiro => { %>
-    <tr>
-      <td><%= parceiro.idParceiro %></td>
-      <td><%= parceiro.nome %></td>
-      <td><%= parceiro.telefone %></td>
-      <td>
-        <!-- Botão para adicionar novo parceiro -->
-        <a href="/parceiros/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Parceiro">
-          <span class="material-symbols-outlined icon-btn">person_add</span>
-        </a>
-        <!-- Botão para visualizar parceiro -->
-        <a href="/parceiros/<%= parceiro.idParceiro %>" class="btn btn-sm btn-info" title="Ver Parceiro">
-          <span class="material-symbols-outlined icon-btn">visibility</span>
-        </a>
-        <!-- Botão para editar parceiro -->
-        <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-sm btn-warning" title="Editar Parceiro">
-          <span class="material-symbols-outlined icon-btn">edit</span>
-        </a>
-        <!-- Botão para excluir parceiro -->
-        <form action="/parceiros/<%= parceiro.idParceiro %>?_method=DELETE" method="post" class="d-inline">
-          <button class="btn btn-sm btn-danger" type="submit" title="Excluir Parceiro">
-            <span class="material-symbols-outlined icon-btn">delete</span>
-          </button>
-        </form>
-      </td>
-    </tr>
-    <% }); %>
-  </tbody>
-</table>
+<div>
+  <!-- Lista de parceiros -->
+  <% if (parceiros && parceiros.length > 0) { %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% parceiros.forEach(parceiro => { %>
+      <tr>
+        <td><%= parceiro.idParceiro %></td>
+        <td><%= parceiro.nome %></td>
+        <td><%= parceiro.telefone %></td>
+        <td>
+          <!-- Botão para adicionar novo parceiro -->
+          <a href="/parceiros/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Parceiro">
+            <span class="material-symbols-outlined icon-btn">person_add</span>
+          </a>
+          <!-- Botão para visualizar parceiro -->
+          <a href="/parceiros/<%= parceiro.idParceiro %>" class="btn btn-sm btn-info" title="Ver Parceiro">
+            <span class="material-symbols-outlined icon-btn">visibility</span>
+          </a>
+          <!-- Botão para editar parceiro -->
+          <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-sm btn-warning" title="Editar Parceiro">
+            <span class="material-symbols-outlined icon-btn">edit</span>
+          </a>
+          <!-- Botão para excluir parceiro -->
+          <form action="/parceiros/<%= parceiro.idParceiro %>?_method=DELETE" method="post" class="d-inline">
+            <button class="btn btn-sm btn-danger" type="submit" title="Excluir Parceiro">
+              <span class="material-symbols-outlined icon-btn">delete</span>
+            </button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="text-white">Nenhum Parceiro encontrado.</p>
+  <a class="btn btn-secondary btn-hover-outline" href="/parceiros/new" title="Voltar">
+    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+  </a>
+  <% } %>
+</div>

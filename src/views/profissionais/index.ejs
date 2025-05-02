@@ -1,0 +1,49 @@
+<div>
+  <!-- Lista de pacientes -->
+  <% if (profissionais && profissionais.length > 0) { %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Especialidade</th>
+        <th>Celular</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% profissionais.forEach(profissional => { %>
+      <tr>
+        <td><%= profissional.nome %></td>
+        <td><%= profissional.especialidade %></td>
+        <td><%= profissional.celular %></td>
+        <td>
+          <!-- Botão para adicionar novo paciente -->
+          <a href="/profissionais/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Profissional">
+            <span class="material-symbols-outlined icon-btn">person_add</span>
+          </a>
+          <!-- Botão para visualizar profissional -->
+          <a href="/profissionais/<%= profissional.idProfissional %>" class="btn btn-sm btn-info" title="Ver Profissional">
+            <span class="material-symbols-outlined icon-btn">visibility</span>
+          </a>
+          <!-- Botão para editar profissional -->
+          <a href="/profissionais/<%= profissional.idProfissional %>/edit" class="btn btn-sm btn-warning" title="Editar Profissional">
+            <span class="material-symbols-outlined icon-btn">edit</span>
+          </a>
+          <!-- Botão para excluir profissional -->
+          <form action="/profissionais/<%= profissional.idProfissional %>?_method=DELETE" method="post" class="d-inline" title="Excluir Profissional">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+              <span class="material-symbols-outlined icon-btn">delete</span>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="text-white">Nenhum Profissional encontrado.</p>
+  <a class="btn btn-secondary btn-hover-outline" href="/profissionais/new" title="Voltar">
+    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
+  </a>
+  <% } %>
+</div>
