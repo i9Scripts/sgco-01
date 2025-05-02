@@ -24,12 +24,23 @@
       </div>
     </div>
 
+    <!-- Campo para alterar o status do usuário -->
+    <div class="row form-group">
+      <div class="col-md-6 mb-3">
+        <select class="form-control" id="isActive" name="isActive" required>
+          <option value="true" <%= user.isActive ? 'selected' : '' %>>Ativo</option>
+          <option value="false" <%= !user.isActive ? 'selected' : '' %>>Inativo</option>
+        </select>
+        <label for="isActive">Status</label>
+      </div>
+    </div>
+
     <div class="form-group mb-2">
-      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar">
-        <i class="ri-save-line"></i> Salvar
+      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
+        <span class="material-symbols-outlined icon-btn">save</span> Salvar
       </button>
       <a class="btn btn-secondary btn-hover-outline" href="/users" title="Voltar">
-        <i class="ri-arrow-left-line"></i> Voltar
+        <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
       </a>
     </div>
   </form>

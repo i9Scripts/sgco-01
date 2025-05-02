@@ -17,18 +17,22 @@
         <td><%= user.email %></td>
         <td><%= user.celular %></td>
         <td>
+          <!-- Botão para adicionar novo paciente -->
           <a href="/users/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Usuário">
-            <i class="ri-user-add-line"></i>
+            <span class="material-symbols-outlined icon-btn">person_add</span>
           </a>
-          <a href="/users/<%= user.idUser %>" class="btn btn-sm btn-outline-info" title="Ver Usuário">
-            <i class="ri-eye-line"></i>
+          <!-- Botão para visualizar paciente -->
+          <a href="/users/<%= user.idUser %>" class="btn btn-sm btn-info" title="Ver Usuário">
+            <span class="material-symbols-outlined icon-btn">visibility</span>
           </a>
-          <a href="/users/<%= user.idUser %>/edit" class="btn btn-sm btn-outline-warning" title="Editar Usuário">
-            <i class="ri-edit-line"></i>
+          <!-- Botão para editar Users -->
+          <a href="/users/<%= user.idUser %>/edit" class="btn btn-sm btn-warning" title="Editar Usuário">
+            <span class="material-symbols-outlined icon-btn">edit</span>
           </a>
-          <form action="/users/<%= user.idUser %>?_method=DELETE" method="post" class="d-inline">
-            <button class="btn btn-sm btn-outline-danger" type="submit" title="Excluir Usuário">
-              <i class="ri-delete-bin-line"></i>
+          <!-- Botão para excluir Users -->
+          <form action="/users/<%= user.idUser %>?_method=DELETE" method="post" class="d-inline" title="Excluir Usuário">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+              <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
           </form>
         </td>

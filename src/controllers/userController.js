@@ -178,23 +178,33 @@ export const userController = {
         return res.redirect('/consultorios/new');
       }
 
-      const user = await findUserDoConsultorio(idUser, idConsultorio);
+      const { nome, email, celular, password, isActive } = req.body;
+
+      // Buscar o usuário atual para obter a senha existente
+      const user = await prisma.user.findFirst({
+        where: {
+          idUser: parseInt(idUser),
+          consultorioId: idConsultorio,
+        },
+      });
+
       if (!user) {
         req.flash('error', 'Usuário não encontrado.');
         return res.redirect('/users');
       }
 
-      const { nome, email, celular, password } = req.body;
-
+      // Criptografar a nova senha, se fornecida
       const hashedPassword = password ? await bcrypt.hash(password, 10) : user.password;
 
+      // Atualizar o usuário no banco de dados
       await prisma.user.update({
-        where: { id: parseInt(idUser) },
+        where: { idUser: parseInt(idUser) },
         data: {
           nome,
           email,
           celular,
-          password: hashedPassword,
+          password: hashedPassword, // Atualiza a senha apenas se fornecida
+          isActive: isActive === 'true', // Converte para booleano
         },
       });
 
