@@ -1,0 +1,30 @@
+<div>
+
+  <a href="/diagnosticos/new" class="btn btn-primary">Novo Diagnóstico</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Paciente</th>
+        <th>Profissional</th>
+        <th>Descrição</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% diagnosticos.forEach(diagnostico => { %>
+      <tr>
+        <td><%= diagnostico.paciente.nome %></td>
+        <td><%= diagnostico.profissional.nome %></td>
+        <td><%= diagnostico.descricao %></td>
+        <td>
+          <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-info">Ver</a>
+          <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-warning">Editar</a>
+          <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este diagnóstico?')">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

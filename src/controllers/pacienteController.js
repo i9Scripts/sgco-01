@@ -35,10 +35,15 @@ export const pacienteController = {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
         formData: {},
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de paciente:', error);
+      if (error instanceof prisma.PrismaClientInitializationError) {
+        req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
+      } else {
+        req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
+      }
       return res.status(500).json({ error: 'Erro ao exibir o formulário', details: error.message });
     }
   },
@@ -121,7 +126,7 @@ export const pacienteController = {
         pageTitle: 'Detalhes do Paciente',
         pageIcon: 'ri-folder-user-line',
         paciente,
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar paciente:', error);
@@ -155,7 +160,7 @@ export const pacienteController = {
         pageTitle: 'Lista de Pacientes',
         pageIcon: 'ri-folder-user-line',
         pacientes,
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar pacientes:', error);
@@ -199,7 +204,7 @@ export const pacienteController = {
         pageTitle: `Resultados para "${query}"`,
         pageIcon: 'ri-search-line',
         pacientes,
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar pacientes:', error); // Log detalhado do erro
@@ -309,7 +314,7 @@ export const pacienteController = {
         pageTitle: 'Editar Paciente',
         pageIcon: 'ri-edit-line',
         paciente,
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

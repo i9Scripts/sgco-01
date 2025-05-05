@@ -3,6 +3,7 @@
 Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído.
 
 ## Fase 1: Configuração Inicial e Estrutura Base
+### ✔️ Etapas concluídas:
 
 - [x] **1.1.** Configurar ambiente de desenvolvimento (Node.js, npm/yarn, MariaDB).
 - [x] **1.2.** Inicializar projeto Node.js com Express.js (`npm init`, `npm install express`).
@@ -20,6 +21,41 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
   - [x] 1.9.2.1 Corrigir erros idConsultorio
   - [ ] 1.9.3. Garantir que futuros registros (usuários, pacientes, etc.) se vinculem a um `consultorioId`.
 - [ ] **1.10.** (Opcional) Configurar Swagger para documentação da API (se aplicável).
+```
+### 🟡 Próximos Passos:
+
+#### 🗃 Banco de Dados:
+
+* [ ] Revisar `schema.prisma` ou migrations para garantir todos os relacionamentos necessários (Paciente, Profissional, Diagnóstico, Consulta, Fila)
+* [ ] Criar migrations/tabelas para controle financeiro (receitas, despesas)
+
+#### 🔧 Backend:
+
+* [ ] Criar CRUD de pacientes com integração à fila de espera
+* [ ] Criar endpoints para visualização e atualização da fila de espera
+* [ ] Criar endpoints para registro de diagnósticos
+* [ ] Criar endpoints para geração de relatórios (fila, atendimentos)
+
+#### 🎨 Frontend:
+* [ ] Implementação da autenticação com guard e middleware
+* [ ] Criação do layout base e dashboard
+* [ ] Desenvolver tela de recepção: cadastro de pacientes + fila
+* [ ] Adicionar botões para mudar o status na fila ("aguardando", "em atendimento", etc.)
+* [ ] Desenvolver tela de profissional: diagnósticos, tratamento, retorno
+* [ ] Criar tela para relatórios de atendimentos e fila
+
+#### 🧩 Divisão em Módulos:
+
+* [ ] Módulo de Pacientes (CRUD + integração com fila)
+* [ ] Módulo de Fila (visualização, ordenação, status)
+* [ ] Módulo de Diagnósticos (registro, associação com consulta)
+* [ ] Módulo de Relatórios (atendimentos, fila, financeiro)
+
+#### ✅ Testes:
+
+* [ ] Testar o fluxo de cadastro de pacientes + integração com fila
+* [ ] Verificar atualizações de status e baixas automáticas na fila
+
 
 ## Fase 2: Gestão de Usuários e Autenticação/Autorização
 

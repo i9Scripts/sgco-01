@@ -13,15 +13,16 @@ dotenv.config();
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
+import { clearFlashMessages } from './middlewares/clearFlashMiddleware.js';
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
 import anamneseRoutes from './routes/anamneseRoutes.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
+import diagnosticoRoutes from './routes/diagnosticoRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-
 // Configuração da aplicação
 const app = express();
 const port = process.env.PORT || 3000;
@@ -52,6 +53,7 @@ app.set('views', join(process.cwd(), 'src/views'));
 app.set('layout', './layouts/main.ejs');
 
 // Middleware para definir mensagens globais
+app.use(clearFlashMessages);
 app.use((req, res, next) => {
   res.locals.messages = {
     success: req.query.success || null,
@@ -72,6 +74,7 @@ app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
 app.use('/users', userRoutes); // Rotas para usuários
 app.use('/profissionais', profissionalRoutes);
+app.use('/diagnosticos', diagnosticoRoutes);
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
   '/consultorios',

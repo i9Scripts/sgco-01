@@ -50,6 +50,11 @@ export const profissionalController = {
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de profissional:', error);
+      if (error instanceof prisma.PrismaClientInitializationError) {
+        req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
+      } else {
+        req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
+      }
       req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
       return res.redirect('/profissionais');
     }

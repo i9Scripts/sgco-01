@@ -1,0 +1,8 @@
+<div>
+  <h1><%= pageTitle %></h1>
+  <p><strong>Paciente:</strong> <%= diagnostico.paciente.nome %></p>
+  <p><strong>Profissional:</strong> <%= diagnostico.profissional.nome %></p>
+  <p><strong>Descrição:</strong> <%= diagnostico.descricao %></p>
+  <a href="/diagnosticos" class="btn btn-secondary">Voltar</a>
+  <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-warning">Editar</a>
+</div>

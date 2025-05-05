@@ -1,4 +1,4 @@
-A estrutura de um sistema de gerenciamento de fila de espera para um consultório ou clínica. Vou detalhar os principais componentes do sistema e como ele pode funcionar.
+A estrutura de um sistema de gerenciamento e fila de espera para um consultório ou clínica. Vou detalhar os principais componentes do sistema e como ele pode funcionar.
 
 ### 1. **Estrutura Geral**
 

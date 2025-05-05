@@ -38,10 +38,15 @@ export const anamneseController = {
         idConsultorio,
         paciente,
         formData: {},
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de anamnese:', error);
+      if (error instanceof prisma.PrismaClientInitializationError) {
+        req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
+      } else {
+        req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
+      }
       return res.status(500).json({ error: 'Erro ao exibir formulário', details: error.message });
     }
   },
@@ -163,7 +168,7 @@ export const anamneseController = {
         pageIcon: 'ri-file-list-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar anamnese:', error);
@@ -192,7 +197,7 @@ export const anamneseController = {
         pageTitle: 'Lista de Anamneses',
         pageIcon: 'ri-file-list-line',
         anamneses,
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar anamneses:', error);
@@ -336,7 +341,7 @@ export const anamneseController = {
         pageIcon: 'ri-edit-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
-        messages: req.flash(),
+        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

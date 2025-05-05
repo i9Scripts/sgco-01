@@ -1,0 +1,32 @@
+<div>
+
+  <form action="/diagnosticos" method="post">
+    <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
+    <div>
+      <label for="pacienteId">Paciente</label>
+      <select id="pacienteId" name="pacienteId" required>
+        <% pacientes.forEach(paciente => { %>
+        <option value="<%= paciente.idPaciente %>" <%= diagnostico && diagnostico.pacienteId === paciente.idPaciente ? 'selected' : '' %>>
+          <%= paciente.nome %>
+        </option>
+        <% }) %>
+      </select>
+    </div>
+    <div>
+      <label for="profissionalId">Profissional</label>
+      <select id="profissionalId" name="profissionalId" required>
+        <% profissionais.forEach(profissional => { %>
+        <option value="<%= profissional.idProfissional %>" <%= diagnostico && diagnostico.profissionalId === profissional.idProfissional ? 'selected' : '' %>>
+          <%= profissional.nome %>
+        </option>
+        <% }) %>
+      </select>
+    </div>
+    <div>
+      <label for="descricao">Descrição</label>
+      <textarea id="descricao" name="descricao" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

@@ -30,6 +30,11 @@ export const userController = {
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de usuário:', error);
+      if (error instanceof prisma.PrismaClientInitializationError) {
+        req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
+      } else {
+        req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
+      }
       return res.status(500).json({ error: 'Erro ao exibir o formulário', details: error.message });
     }
   },
