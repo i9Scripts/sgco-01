@@ -23,6 +23,7 @@ export const parceiroController = {
         pageTitle: 'Novo Parceiro',
         pageIcon: 'ri-handshake-line',
         formData: {},
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -90,6 +91,7 @@ export const parceiroController = {
         pageTitle: 'Detalhes do Parceiro',
         pageIcon: 'ri-handshake-line',
         parceiro,
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -243,6 +245,7 @@ export const parceiroController = {
         pageTitle: 'Editar Parceiro',
         pageIcon: 'ri-edit-line',
         parceiro,
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {

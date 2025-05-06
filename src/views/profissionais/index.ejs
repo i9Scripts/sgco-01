@@ -17,18 +17,18 @@
         <td><%= profissional.especialidade %></td>
         <td><%= profissional.celular %></td>
         <td>
-          <!-- Botão para adicionar novo paciente -->
-          <a href="/profissionais/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Profissional">
+          <!-- Botão para adicionar novo profissional -->
+          <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/profissionais/new', 'Novo Profissional')" title="Adicionar Novo Profissional">
             <span class="material-symbols-outlined icon-btn">person_add</span>
-          </a>
+          </button>
           <!-- Botão para visualizar profissional -->
-          <a href="/profissionais/<%= profissional.idProfissional %>" class="btn btn-sm btn-info" title="Ver Profissional">
+          <button class="btn btn-sm btn-info" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>', 'Dados do Profissional')" title="Ver Profissional">
             <span class="material-symbols-outlined icon-btn">visibility</span>
-          </a>
+          </button>
           <!-- Botão para editar profissional -->
-          <a href="/profissionais/<%= profissional.idProfissional %>/edit" class="btn btn-sm btn-warning" title="Editar Profissional">
+          <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>/edit', 'Editar Dados')" title="Editar Profissional">
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </a>
+          </button>
           <!-- Botão para excluir profissional -->
           <form action="/profissionais/<%= profissional.idProfissional %>?_method=DELETE" method="post" class="d-inline" title="Excluir Profissional">
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
@@ -47,3 +47,5 @@
   </a>
   <% } %>
 </div>
+<!-- Modal genérico -->
+<div><%- include('../partials/_modal') %></div>

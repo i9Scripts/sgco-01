@@ -68,6 +68,7 @@ model Paciente {
   cidade        String        @db.VarChar(30)
   cpf           String?       @unique @db.VarChar(15)
   profissao     String        @db.VarChar(30)
+  naFila        Boolean       @default(true) 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   consultorioId Int

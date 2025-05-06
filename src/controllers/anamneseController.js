@@ -37,6 +37,7 @@ export const anamneseController = {
         idPaciente,
         idConsultorio,
         paciente,
+        layout: false,
         formData: {},
         messages: req.flash(''),
       });
@@ -168,6 +169,7 @@ export const anamneseController = {
         pageIcon: 'ri-file-list-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
+        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -341,6 +343,7 @@ export const anamneseController = {
         pageIcon: 'ri-edit-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
+        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {

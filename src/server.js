@@ -19,6 +19,7 @@ import anamneseRoutes from './routes/anamneseRoutes.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import diagnosticoRoutes from './routes/diagnosticoRoutes.js';
+import filaRoutes from './routes/filaRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
@@ -75,6 +76,9 @@ app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
 app.use('/users', userRoutes); // Rotas para usuários
 app.use('/profissionais', profissionalRoutes);
 app.use('/diagnosticos', diagnosticoRoutes);
+// Registro das rotas da fila de espera
+app.use('/', filaRoutes);
+
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(
   '/consultorios',

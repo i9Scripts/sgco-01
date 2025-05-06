@@ -19,17 +19,17 @@
         <td><%= anamnese.motivo %></td>
         <td>
           <!-- Botão para adicionar nova anamnese -->
-          <a class="btn btn-sm btn-primary btn-hover-outline" href="/pacientes" title="Adicionar Nova Anamnese">
+          <a class="btn btn-sm btn-primary btn-hover-outline" href="/pacientes" title="Nova Anamnese">
             <span class="material-symbols-outlined icon-btn">person_add</span>
           </a>
           <!-- Botão para visualizar anamnese -->
-          <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
+          <button class="btn btn-sm btn-info" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Dados da Anamnese')" title="Ver anamnese">
             <span class="material-symbols-outlined icon-btn">visibility</span>
-          </a>
+          </button>
           <!-- Botão para editar anamnese -->
-          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-warning" title="Editar anamnese">
+          <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Dados')" title="Editar anamnese">
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </a>
+          </button>
         </td>
       </tr>
       <% }); %>
@@ -37,8 +37,9 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhuma Anamnese encontrada.</p>
-  <a class="btn btn-secondary btn-hover-outline" href="/anamneses/new" title="Voltar">
+  <a class="btn btn-secondary btn-hover-outline" href="/pacientes" title="Voltar">
     <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
   </a>
   <% } %>
 </div>
+<div><%- include('../partials/_modal') %></div>

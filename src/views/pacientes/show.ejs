@@ -1,33 +1,25 @@
 <div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
-  <div class="card-header bg-secondary text-white d-flex align-items-center">
-    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
-    <h5 class="mb-0">Dados do Paciente</h5>
-  </div>
-  <div>
-    <p>
-      <strong>ID:</strong> <%= paciente.idPaciente %> |
-      <strong> Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-      <strong> Idade:</strong> <%= paciente?.idade || 'N/D' %> anos | <strong> Data Nascimento:</strong> <%= paciente.dataNascFormatada %>
-    </p>
-    <hr>
-    <div class="row">
-      <div class="col-md-6">
-        <p><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></p>
-      </div>
-      <hr>
-
-      <p><strong>Celular:</strong> <%= paciente.celular %></p>
-      <p><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %> | <strong> Endereço:</strong> <%= paciente.endereco %> <strong>, </strong> <%= paciente.numero %></p>
-      <p><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %> | <strong> Cidade:</strong> <%= paciente.cidade || 'Não informado' %></p>
-      <p><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %> | <strong> Profissão:</strong> <%= paciente.profissao %></p>
+  <p>
+    <strong>ID:</strong> <%= paciente.idPaciente %> |
+    <strong> Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+    <strong> Idade:</strong> <%= paciente?.idade || 'N/D' %> anos | <strong> Data Nascimento:</strong> <%= paciente.dataNascFormatada %>
+  </p>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></p>
     </div>
-  </div>
-  <div>
-    <a href="/pacientes" class="btn btn-secondary btn-hover-outline" title="Voltar">
-      <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-    </a>
-    <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Paciente">
-      <span class="material-symbols-outlined icon-btn">edit</span> Editar.
-    </a>
+    <hr>
+
+    <p><strong>Celular:</strong> <%= paciente.celular %></p>
+    <p><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %> | <strong> Endereço:</strong> <%= paciente.endereco %> <strong>, </strong> <%= paciente.numero %></p>
+    <p><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %> | <strong> Cidade:</strong> <%= paciente.cidade || 'Não informado' %></p>
+    <p><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %> | <strong> Profissão:</strong> <%= paciente.profissao %></p>
+
+    <p>
+      <span class="material-symbols-outlined me-2 icon-relat">event</span>
+      Criado em: <%= paciente.createdAt.toLocaleDateString() || 'Não informado' %> |
+      Atualizado em: <%= paciente.updatedAt.toLocaleDateString() || 'Não informado' %>
+    </p>
   </div>
 </div>

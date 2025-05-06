@@ -26,6 +26,7 @@ export const userController = {
         pageTitle: 'Novo Usuário',
         pageIcon: 'ri-user-add-line',
         formData: {},
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -105,6 +106,7 @@ export const userController = {
         pageTitle: 'Detalhes do Usuário',
         pageIcon: 'ri-user-line',
         user, // Passa os dados do usuário para a view
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -163,6 +165,7 @@ export const userController = {
         pageTitle: 'Editar Usuário',
         pageIcon: 'ri-user-edit-line',
         user, // Passa os dados do usuário para a view
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {

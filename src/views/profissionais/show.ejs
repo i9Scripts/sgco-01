@@ -1,22 +1,13 @@
 <div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
-  <div class="card-header bg-secondary text-white d-flex align-items-center">
-    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
-    <h5 class="mb-0">Dados do Profissional</h5>
-  </div>
 
-  <div>
-    <p><strong>Nome:</strong> <%= profissional.nome %></p>
-    <p><strong>Especialidade:</strong> <%= profissional.especialidade %></p>
-    <p><strong>Celular:</strong> <%= profissional.celular %></p>
-    <p><strong>CBOO:</strong> <%= profissional.cboo %></p>
-    <hr>
-  </div>
-  <div>
-    <a href="/profissionais" class="btn btn-secondary btn-hover-outline" title="Voltar">
-      <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-    </a>
-    <a href="/profissionais/<%= profissional.idProfissional %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Paciente">
-      <span class="material-symbols-outlined icon-btn">edit</span> Editar.
-    </a>
-  </div>
+  <p><strong>Nome:</strong> <%= profissional.nome %></p>
+  <p><strong>Especialidade:</strong> <%= profissional.especialidade %></p>
+  <p><strong>Celular:</strong> <%= profissional.celular %></p>
+  <p><strong>CBOO:</strong> <%= profissional.cboo %></p>
+  <hr>
+  <p>
+    <span class="material-symbols-outlined me-2 icon-relat">event</span>
+    Criado em: <%= profissional.createdAt.toLocaleDateString() || 'Não informado' %> |
+    Atualizado em: <%= profissional.updatedAt.toLocaleDateString() || 'Não informado' %>
+  </p>
 </div>

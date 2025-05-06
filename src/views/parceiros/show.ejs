@@ -1,8 +1,4 @@
 <div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
-  <div class="card-header bg-secondary text-white d-flex align-items-center">
-    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
-    <h5 class="mb-0">Dados do Parceiro</h5>
-  </div>
   <div class="alert alert-secondary mb-4">
 
     <p><strong>ID:</strong> <%= parceiro.idParceiro %> | <strong> Nome:</strong> <%= parceiro.nome %></p>
@@ -10,13 +6,10 @@
     <p><strong>Endereço:</strong> <%= parceiro.endereco || 'Não informado' %></p>
     <p><strong>Contato:</strong> <%= parceiro.contato || 'Não informado' %></p>
     <p><strong>Crédito:</strong> <%= parceiro.credito || '0.00' %></p>
-    <div>
-      <a href="/parceiros" class="btn btn-secondary btn-hover-outline" title="Voltar">
-        <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-      </a>
-      <a href="/parceiros/<%= parceiro.idParceiro %>/edit" class="btn btn-warning btn-hover-outline" title="Editar Paciente">
-        <span class="material-symbols-outlined icon-btn">edit</span> Editar.
-      </a>
-    </div>
   </div>
+  <p>
+    <span class="material-symbols-outlined me-2 icon-relat">event</span>
+    Criado em: <%= parceiro.createdAt.toLocaleDateString() || 'Não informado' %> |
+    Atualizado em: <%= parceiro.updatedAt.toLocaleDateString() || 'Não informado' %>
+  </p>
 </div>

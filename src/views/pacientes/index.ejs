@@ -13,7 +13,7 @@
       <tr>
         <th>Nome</th>
         <th>Responsável</th>
-        <th>Ações</th>
+        <th>Pacientes</th>
         <th>Anamnese</th>
       </tr>
     </thead>
@@ -24,19 +24,19 @@
         <td><%= paciente.responsavel %></td>
         <td>
           <!-- Botão para adicionar novo paciente -->
-          <a href="/pacientes/new" class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente">
+          <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
             <span class="material-symbols-outlined icon-btn">person_add</span>
-          </a>
+          </button>
           <!-- Botão para visualizar paciente -->
-          <a href="/pacientes/<%= paciente.idPaciente %>" class="btn btn-sm btn-info" title="Ver Paciente">
+          <button class="btn btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
-          </a>
+          </button>
           <!-- Botão para editar paciente -->
-          <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="btn btn-sm btn-warning" title="Editar paciente">
+          <button class="btn btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </a>
+          </button>
           <!-- Botão para excluir paciente -->
-          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir paciente">
+          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir Paciente">
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
               <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
@@ -48,20 +48,20 @@
           <% if (paciente.anamneses && paciente.anamneses.length > 0) { 
             const anamnese = paciente.anamneses[0]; %>
           <span class="badge bg-success">Registrada</span>
-          <a href="/pacientes/<%= paciente.idPaciente %>/selecionar" class="btn btn-sm btn-success" title="Nova anamnese">
+          <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/selecionar', 'Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">check</span>
-          </a>
-          <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-sm btn-info" title="Ver anamnese">
+          </button>
+          <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
-          </a>
-          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-sm btn-warning" title="Editar anamnese">
+          </button>
+          <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </a>
+          </button>
           <% } else { %>
           <span class="badge bg-secondary">Não registrada</span>
-          <a href="/pacientes/<%= paciente.idPaciente %>/selecionar" class="btn btn-sm btn-primary" title="Criar nova anamnese">
+          <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/selecionar', 'Criar Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">add</span>
-          </a>
+          </button>
           <% } %>
         </td>
       </tr>
@@ -75,3 +75,4 @@
   </a>
   <% } %>
 </div>
+<div><%- include('../partials/_modal') %></div>

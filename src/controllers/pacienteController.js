@@ -35,6 +35,7 @@ export const pacienteController = {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
         formData: {},
+        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -126,6 +127,7 @@ export const pacienteController = {
         pageTitle: 'Detalhes do Paciente',
         pageIcon: 'ri-folder-user-line',
         paciente,
+        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -314,6 +316,7 @@ export const pacienteController = {
         pageTitle: 'Editar Paciente',
         pageIcon: 'ri-edit-line',
         paciente,
+        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {

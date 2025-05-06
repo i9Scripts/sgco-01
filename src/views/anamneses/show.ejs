@@ -1,8 +1,4 @@
 <div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
-  <div class="card-header bg-secondary text-white d-flex align-items-center">
-    <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
-    <h5 class="mb-0">Informações da Anamnese</h5>
-  </div>
   <div class="card-body">
     <p>
       <strong>ID:</strong> <%= anamnese.idAnam %> |
@@ -34,7 +30,6 @@
           <p><strong>Adição:</strong> <%= anamnese.adicao || '00,00' %></p>
         </div>
       </div>
-
       <hr>
       <p>
         <span class="material-symbols-outlined me-2 icon-relat">event</span>
@@ -43,12 +38,4 @@
       </p>
     </div>
   </div>
-
-  <div class="d-flex gap-2 fixed-buttons">
-    <a href="/anamneses" class="btn btn-secondary" title="Voltar">
-      <span class="material-symbols-outlined">arrow_back</span> Voltar
-    </a>
-    <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-warning" title="Editar Anamnese">
-      <span class="material-symbols-outlined">edit</span> Editar
-    </a>
-  </div>
+</div>

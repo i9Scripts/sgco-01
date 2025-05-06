@@ -46,6 +46,7 @@ export const profissionalController = {
         pageTitle: 'Novo Profissional',
         pageIcon: 'ri-user-add-line',
         formData: {},
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -117,6 +118,7 @@ export const profissionalController = {
         pageTitle: 'Detalhes do Profissional',
         pageIcon: 'ri-user-line',
         profissional,
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -153,6 +155,7 @@ export const profissionalController = {
         pageTitle: 'Editar Profissional',
         pageIcon: 'ri-edit-line',
         profissional,
+        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
