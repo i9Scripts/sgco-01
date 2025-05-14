@@ -1,12 +1,11 @@
-<div id="modalGenerico" class="custom-modal">
-  <div class="custom-modal-content">
-    <span class="custom-close-btn text-white" onclick="fecharModalGenerico()">×</span>
-    <h3 class="card-header bg-secondary text-white d-flex align-items-center mb-3">
-      <span class="material-symbols-outlined me-2 icon-relat">patient_list</span>
-      <span id="modal-generico-title"></span>
-    </h3>
-    <div id="modal-generico-body"></div>
-    <div id="modal-generico-footer" class="d-flex gap-2"></div>
+<div id="modalGenerico" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="modal-generico-title" class="modal-title"></h5>
+        <button type="button" class="btn-close" onclick="fecharModalGenerico()">x</button>
+      </div>
+      <div id="modal-generico-body" class="modal-body"></div>
+    </div>
   </div>
 </div>
-<script src="/js/modalG.js"></script>

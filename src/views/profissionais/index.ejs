@@ -42,9 +42,10 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhum Profissional encontrado.</p>
-  <a class="btn btn-secondary btn-hover-outline" href="/profissionais/new" title="Voltar">
-    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-  </a>
+  <!-- Botão para adicionar novo profissional -->
+  <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/profissionais/new', 'Novo Profissional')" title="Adicionar Novo Profissional">
+    <span class="material-symbols-outlined icon-btn">person_add</span>
+  </button>
   <% } %>
 </div>
 <!-- Modal genérico -->

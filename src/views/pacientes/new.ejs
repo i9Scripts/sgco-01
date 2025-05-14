@@ -5,7 +5,7 @@
 
     <div class="row form-group">
       <div class="col-md-3 mb-3">
-        <input type="text" class="form-control <%= messages.errors && messages.errors.cpf ? 'is-invalid' : '' %>" id="cpf" oninput="mascaraCpf(this)" name="cpf" value="<%= formData && formData.cpf %>" autofocus maxlength="14" />
+        <input type="text" class="form-control <%= messages.errors && messages.errors.cpf ? 'is-invalid' : '' %>" id="cpf" oninput="mascaraCpf(this)" name="cpf" value="<%= formData && formData.cpf %>" maxlength="14" />
         <label for="cpf">CPF</label>
       </div>
       <div class="col-md-7 mb-3">
@@ -20,7 +20,7 @@
 
     <div class="row form-group">
       <div class="col-md-3 mb-3">
-        <input type="text" class="form-control <%= messages.errors && messages.errors.dataNasc ? 'is-invalid' : '' %>" id="dataNasc" name="dataNasc" value="<%= formData && formData.dataNasc %>" onkeyup="mascaraData(this, event)" onblur="calcularIdadeFrontend(this)" maxlength="10" />
+        <input type="text" class="form-control <%= messages.errors && messages.errors.dataNasc ? 'is-invalid' : '' %>" id="dataNasc" name="dataNasc" value="<%= formData && formData.dataNasc %>" oninput="mascaraData(this); this.value = this.value.replace(/[^0-9/]/g, '')" onblur="calcularIdadeFrontend(this)" maxlength="10" />
         <label for="dataNasc">Data Nascimento</label>
       </div>
       <div class="col-md-2 mb-3">
@@ -67,9 +67,8 @@
       </div>
     </div>
 
-    <div class="form-group mb-2">
-      <!-- Ícone de salvar -->
-      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
+    <div class="fixed-buttons">
+      <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar alterações">
         <span class="material-symbols-outlined icon-btn">save</span> Salvar
       </button>
     </div>

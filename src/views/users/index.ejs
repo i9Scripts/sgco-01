@@ -1,5 +1,4 @@
 <div>
-
   <% if (users && users.length > 0) { %>
   <table class="table table-striped">
     <thead>
@@ -11,33 +10,33 @@
       </tr>
     </thead>
     <tbody>
-      <button% users.forEach(user=> { %>
-        <tr>
-          <td><%= user.nome %></td>
-          <td><%= user.email %></td>
-          <td><%= user.celular %></td>
-          <td>
-            <!-- Botão para adicionar novo paciente -->
-            <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/users/new', 'Novo Usuário')" title="Adicionar Novo Usuário">
-              <span class="material-symbols-outlined icon-btn">person_add</span>
+      <% users.forEach(user => { %>
+      <tr>
+        <td><%= user.nome %></td>
+        <td><%= user.email %></td>
+        <td><%= user.celular %></td>
+        <td>
+          <!-- Botão para adicionar novo usuário -->
+          <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/users/new', 'Novo Usuário')" title="Adicionar Novo Usuário">
+            <span class="material-symbols-outlined icon-btn">person_add</span>
+          </button>
+          <!-- Botão para visualizar usuário -->
+          <button class="btn btn-sm btn-info" onclick="abrirModalGenerico('/users/<%= user.idUser %>', 'Dados do Usuário')" title="Ver Usuário">
+            <span class="material-symbols-outlined icon-btn">visibility</span>
+          </button>
+          <!-- Botão para editar usuário -->
+          <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/users/<%= user.idUser %>/edit', 'Editar Dados')" title="Editar Usuário">
+            <span class="material-symbols-outlined icon-btn">edit</span>
+          </button>
+          <!-- Botão para excluir usuário -->
+          <form action="/users/<%= user.idUser %>?_method=DELETE" method="post" class="d-inline" title="Excluir Usuário">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+              <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
-            <!-- Botão para visualizar paciente -->
-            <button class="btn btn-sm btn-info" onclick="(abrirModalGenerico('/users/<%= user.idUser %>', 'Dados do Usuário'))" title="Ver Usuário">
-              <span class="material-symbols-outlined icon-btn">visibility</span>
-            </button>
-            <!-- Botão para editar Users -->
-            <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/users/<%= user.idUser %>/edit', 'Editar Dados')" title="Editar Usuário">
-              <span class="material-symbols-outlined icon-btn">edit</span>
-            </button>
-            <!-- Botão para excluir Users -->
-            <form action="/users/<%= user.idUser %>?_method=DELETE" method="post" class="d-inline" title="Excluir Usuário">
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
-                <span class="material-symbols-outlined icon-btn">delete</span>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <% }); %>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
     </tbody>
   </table>
   <% } else { %>

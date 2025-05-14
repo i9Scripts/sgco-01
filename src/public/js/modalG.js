@@ -2,15 +2,15 @@ function abrirModalGenerico(url, titulo) {
   const modal = document.getElementById('modalGenerico');
   const title = document.getElementById('modal-generico-title');
   const body = document.getElementById('modal-generico-body');
-  const footer = document.getElementById('modal-generico-footer');
 
-  // Configurar o título do modal
+  if (!modal || !title || !body) {
+    console.error('Erro: Elementos do modal não encontrados.');
+    return;
+  }
+
   title.innerText = titulo;
-  // Limpar o corpo e o rodapé do modal
   body.innerHTML = '<p>Carregando...</p>';
-  footer.innerHTML = '';
 
-  // Fazer a requisição para buscar o conteúdo
   fetch(url)
     .then((response) => {
       if (!response.ok) {
@@ -19,16 +19,42 @@ function abrirModalGenerico(url, titulo) {
       return response.text();
     })
     .then((html) => {
-      // Inserir o conteúdo no corpo do modal
       body.innerHTML = html;
 
-      // Configurar os botões no rodapé
-      footer.innerHTML = '<button class="btn btn-secondary btn-sm" onclick="fecharModalGenerico()">Fechar</button>';
-
-      // Exibir o modal
-      modal.style.display = 'block';
+      // Reaplica máscaras e eventos
+      inicializarEventos();
+    })
+    .catch((error) => {
+      console.error(error);
+      body.innerHTML = '<p>Erro ao carregar o conteúdo. Tente novamente mais tarde.</p>';
     });
+
+  modal.style.display = 'block';
 }
+
+function inicializarEventos() {
+  // Reaplica máscaras
+  document.querySelectorAll('input[name="dataNasc"]').forEach((campo) => {
+    campo.addEventListener('input', () => {
+      mascaraData(campo);
+    });
+  });
+
+  document.querySelectorAll('input[name="cpf"]').forEach((campo) => {
+    campo.addEventListener('input', () => {
+      mascaraCpf(campo);
+    });
+  });
+
+  document.querySelectorAll('input[name="celular"]').forEach((campo) => {
+    campo.addEventListener('input', () => {
+      mascaraCelular(campo);
+    });
+  });
+
+  // Outros eventos podem ser adicionados aqui
+}
+
 function fecharModalGenerico() {
   const modal = document.getElementById('modalGenerico');
   modal.style.display = 'none';
@@ -47,6 +73,7 @@ function fecharModalGenerico() {
     }
   });
 }
+
 function marcarComoAtendido(event, idPaciente) {
   event.preventDefault(); // Impede o envio padrão do formulário
 

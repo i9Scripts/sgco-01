@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', profissionalController.getAllProfissionais); // Listar todos os profissionais
 router.get('/new', profissionalController.newProfissionalForm); // Formulário para criar novo profissional
 router.post('/', profissionalController.createProfissional); // Criar novo profissional
+// Rota dinâmica depois
 router.get('/:idProfissional', profissionalController.getProfissionalById); // Detalhes de um profissional
 router.get('/:idProfissional/edit', profissionalController.editProfissionalForm); // Formulário para editar profissional
 router.put('/:idProfissional', profissionalController.updateProfissional); // Atualizar profissional

@@ -1,14 +1,10 @@
-function mascaraData(campo, e) {
-  var kC = (document.all) ? event.keyCode : e.keyCode;
-  var data = campo.value;
-
-  if (kC != 8 && kC != 46) {
-    if (data.length == 2) {
-      campo.value = data += '/';
-    } else if (data.length == 5) {
-      campo.value = data += '/';
-    } else {
-      campo.value = data;
-    }
+function mascaraData(input) {
+  let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+  if (value.length > 2) {
+    value = value.replace(/^(\d{2})(\d)/, '$1/$2'); // Adiciona a primeira barra
   }
+  if (value.length > 5) {
+    value = value.replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3'); // Adiciona a segunda barra
+  }
+  input.value = value.substring(0, 10); // Limita o valor a 10 caracteres
 }
