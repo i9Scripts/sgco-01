@@ -19,7 +19,7 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
   - [x] 1.9.1. Criar rotas, controller e view (EJS) para o formulário de cadastro do consultório.
   - [x] 1.9.2. Implementar lógica no backend para salvar os dados do consultório (será o registro "pai").
   - [x] 1.9.2.1 Corrigir erros idConsultorio
-  - [ ] 1.9.3. Garantir que futuros registros (usuários, pacientes, etc.) se vinculem a um `consultorioId`.
+  - [x] 1.9.3. Garantir que futuros registros (usuários, pacientes, etc.) se vinculem a um `consultorioId`.
 - [ ] **1.10.** (Opcional) Configurar Swagger para documentação da API (se aplicável).
 ```
 ### 🟡 Próximos Passos:
@@ -31,9 +31,9 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
 
 #### 🔧 Backend:
 
-* [ ] Criar CRUD de pacientes com integração à fila de espera
-* [ ] Criar endpoints para visualização e atualização da fila de espera
-* [ ] Criar endpoints para registro de diagnósticos
+* [x] Criar CRUD de pacientes com integração à fila de espera
+* [x] Criar endpoints para visualização e atualização da fila de espera
+* [ ] Criar endpoints para registro de diagnósticos vinculado ao Profissional
 * [ ] Criar endpoints para geração de relatórios (fila, atendimentos)
 
 #### 🎨 Frontend:
@@ -46,7 +46,7 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
 
 #### 🧩 Divisão em Módulos:
 
-* [ ] Módulo de Pacientes (CRUD + integração com fila)
+* [x] Módulo de Pacientes (CRUD + integração com fila)
 * [ ] Módulo de Fila (visualização, ordenação, status)
 * [ ] Módulo de Diagnósticos (registro, associação com consulta)
 * [ ] Módulo de Relatórios (atendimentos, fila, financeiro)
