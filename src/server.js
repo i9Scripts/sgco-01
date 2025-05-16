@@ -20,10 +20,12 @@ import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import diagnosticoRoutes from './routes/diagnosticoRoutes.js';
 import filaRoutes from './routes/filaRoutes.js';
+import indexRoutes from './routes/index.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+
 // Configuração da aplicação
 const app = express();
 const port = process.env.PORT || 3000;
@@ -70,6 +72,8 @@ app.use(methodOverride('_method'));
 // Rotas
 app.use('/consultorios', consultorioPublicRoutes); // Rotas públicas para consultórios
 app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes); // Rotas protegidas
+
+app.use('/', indexRoutes);
 app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses

@@ -3,9 +3,17 @@ document.addEventListener('input', (event) => {
 
   // Verifica se o campo é um dos que precisam de capitalização
   if (
-    ['nome', 'responsavel', 'endereco', 'bairro', 'cidade', 'profissao', 'complemento', 'especialidade'].includes(
-      campo.name
-    )
+    [
+      'nome',
+      'responsavel',
+      'endereco',
+      'bairro',
+      'cidade',
+      'profissao',
+      'complemento',
+      'especialidade',
+      'contato',
+    ].includes(campo.name)
   ) {
     capitalizarPrimeiraLetra(campo);
   }

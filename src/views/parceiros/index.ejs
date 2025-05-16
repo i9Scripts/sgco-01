@@ -42,9 +42,9 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhum Parceiro encontrado.</p>
-  <a class="btn btn-secondary btn-hover-outline" href="/parceiros/new" title="Voltar">
-    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-  </a>
+  <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
+    <span class="material-symbols-outlined icon-btn">person_add</span> Novo
+  </button>
   <% } %>
 </div>
 <!-- Modal genérico -->

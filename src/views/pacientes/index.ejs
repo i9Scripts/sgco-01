@@ -46,20 +46,24 @@
         <!-- Anamnese -->
         <td>
           <% if (paciente.anamneses && paciente.anamneses.length > 0) { 
-            const anamnese = paciente.anamneses[0]; %>
+    const anamnese = paciente.anamneses[0]; %>
           <span class="badge bg-success">Registrada</span>
-          <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/selecionar', 'Nova Anamnese')">
+          <!-- Botão para criar nova anamnese (caso queira permitir múltiplas) -->
+          <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">check</span>
           </button>
+          <!-- Botão para visualizar anamnese -->
           <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
+          <!-- Botão para editar anamnese -->
           <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <% } else { %>
           <span class="badge bg-secondary">Não registrada</span>
-          <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/selecionar', 'Criar Nova Anamnese')">
+          <!-- Botão para criar nova anamnese -->
+          <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">add</span>
           </button>
           <% } %>
@@ -70,9 +74,9 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhum Paciente encontrado.</p>
-  <a class="btn btn-secondary btn-hover-outline" href="/pacientes/new" title="Voltar">
-    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-  </a>
+  <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
+    <span class="material-symbols-outlined icon-btn">person_add</span> Novo
+  </button>
   <% } %>
 </div>
 <div><%- include('../partials/_modal') %></div>

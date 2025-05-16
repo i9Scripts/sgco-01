@@ -15,7 +15,9 @@ async function findAnamneseDoConsultorio(idAnam, idConsultorio) {
 export const anamneseController = {
   async newAnamneseForm(req, res) {
     try {
-      const { idPaciente, idConsultorio } = req.session;
+      const idPaciente = req.query.idPaciente || req.session.idPaciente;
+      if (idPaciente) req.session.idPaciente = idPaciente;
+      const { idConsultorio } = req.session;
 
       if (!idPaciente || !idConsultorio) {
         req.flash('error', 'Paciente ou consultório não encontrado.');
@@ -23,7 +25,7 @@ export const anamneseController = {
       }
 
       const paciente = await prisma.paciente.findFirst({
-        where: { idPaciente, consultorioId: idConsultorio },
+        where: { idPaciente: parseInt(idPaciente), consultorioId: parseInt(idConsultorio) },
       });
 
       if (!paciente) {
@@ -84,13 +86,13 @@ export const anamneseController = {
       }
       if (!motivo || !ultimoExame || !usuarioOculos || !usuarioLC || !dm || !has || !glauc) {
         req.flash('error', 'tem campos obrigatórios.');
-        return res.redirect('/pacientes/new');
+        // return res.redirect('/pacientes/new');
       }
 
       await prisma.anamnese.create({
         data: {
-          pacienteId: idPaciente,
-          consultorioId: idConsultorio,
+          pacienteId: parseInt(idPaciente),
+          consultorioId: parseInt(idConsultorio),
           motivo,
           ultimoExame,
           usuarioOculos: usuarioOculos === 'true',
@@ -123,7 +125,7 @@ export const anamneseController = {
     } catch (error) {
       console.error('Erro ao salvar anamnese:', error);
       req.flash('error', 'Erro ao salvar anamnese.');
-      return res.redirect('/anamneses/new');
+      // return res.redirect('/anamneses/new');
     }
   },
 

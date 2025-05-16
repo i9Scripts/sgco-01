@@ -49,7 +49,7 @@ export const parceiroController = {
 
       if (!nome || !telefone) {
         req.flash('error', 'Nome e telefone são obrigatórios.');
-        return res.redirect('/parceiros/new');
+        // return res.redirect('/parceiros/new');
       }
 
       await prisma.parceiro.create({
@@ -68,7 +68,7 @@ export const parceiroController = {
     } catch (error) {
       console.error('Erro ao registrar parceiro:', error);
       req.flash('error', 'Erro ao registrar parceiro. Verifique os dados e tente novamente.');
-      return res.redirect('/parceiros/new');
+      // return res.redirect('/parceiros/new');
     }
   },
   // Buscar Parceiro por ID

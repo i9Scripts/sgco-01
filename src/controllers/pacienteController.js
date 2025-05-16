@@ -64,7 +64,7 @@ export const pacienteController = {
 
       if (!nome || !dataNasc || !idade || !celular || !endereco || !numero || !bairro || !cidade || !profissao) {
         req.flash('error', 'Todos os campos são obrigatórios.');
-        return res.redirect('/pacientes/new');
+        return res.redirect('/pacientes');
       }
       // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
       const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
@@ -90,11 +90,11 @@ export const pacienteController = {
       req.session.idPaciente = novoPaciente.idPaciente;
 
       req.flash('success', 'Paciente registrado com sucesso!');
-      return res.redirect('/anamneses/new');
+      return res.redirect('/pacientes');
     } catch (error) {
       console.error('Erro ao registrar paciente:', error);
       req.flash('error', 'Erro ao registrar paciente. Verifique os dados e tente novamente.');
-      return res.redirect('/pacientes/new');
+      return res.redirect('/pacientes');
     }
   },
 
@@ -367,6 +367,6 @@ export const pacienteController = {
     }
 
     req.session.idPaciente = idPaciente; // salva o paciente selecionado
-    return res.redirect('/anamneses/new'); // redireciona para o formulário de anamnese
+    return res.redirect('/anamneses'); // redireciona para o formulário de anamnese
   },
 };
