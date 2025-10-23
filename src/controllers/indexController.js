@@ -15,7 +15,7 @@ export const indexController = {
 
       res.render('index', {
         pageTitle: 'OptoSystem',
-        pageIcon: '',
+        pageIcon: 'ri-information-line',
         pacientes, // Passa para o include da fila de espera
         // Adicione outros dados que quiser exibir na central
       });

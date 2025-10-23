@@ -10,7 +10,8 @@
       </h5>
       <p class="mb-0">
         <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-        <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
+        <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
+        <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
       </p>
     </div>
 
@@ -147,3 +148,4 @@
   </form>
 </div>
 <script src="/js/mascaraLens.js"></script>
+<script src="/js/calcularIdade.js"></script>

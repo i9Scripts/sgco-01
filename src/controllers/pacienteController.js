@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import utc from 'dayjs/plugin/utc.js';
+import { calcularIdadeFromDate } from '../utils/dateUtils.js';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
@@ -120,6 +121,8 @@ export const pacienteController = {
         req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
+      // calcula idade no servidor
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
 
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
@@ -127,6 +130,7 @@ export const pacienteController = {
         pageTitle: 'Detalhes do Paciente',
         pageIcon: 'ri-folder-user-line',
         paciente,
+        idadePaciente,
         layout: false,
         messages: req.flash(''),
       });
@@ -200,12 +204,13 @@ export const pacienteController = {
         req.flash('warning', 'Nenhum paciente encontrado.');
         return res.redirect('/pacientes');
       }
-
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
       // Renderiza a página com os resultados
       res.render('pacientes/index', {
         pageTitle: `Resultados para "${query}"`,
         pageIcon: 'ri-search-line',
         pacientes,
+        idadePaciente,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -309,6 +314,8 @@ export const pacienteController = {
         req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
+      // calcula idade no servidor
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
 
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
@@ -316,6 +323,7 @@ export const pacienteController = {
         pageTitle: 'Editar Paciente',
         pageIcon: 'ri-edit-line',
         paciente,
+        idadePaciente,
         layout: false,
         messages: req.flash(''),
       });

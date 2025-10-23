@@ -61,8 +61,11 @@ app.use((req, res, next) => {
   res.locals.messages = {
     success: req.query.success || null,
     error: req.query.error || null,
-    welcome: req.flash('welcome') || null, // Adiciona mensagem de boas-vindas
+    welcome: req.flash('welcome') || null,
   };
+  // defaults para título/ícone quando não fornecidos nas rotas
+  res.locals.pageTitle = res.locals.pageTitle || 'OptoSystem';
+  res.locals.pageIcon = res.locals.pageIcon || 'ri-information-line';
   next();
 });
 

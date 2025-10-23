@@ -1,5 +1,7 @@
 // src/controllers/anamneseController.js
 import { PrismaClient } from '@prisma/client';
+import dayjs from 'dayjs';
+import { calcularIdadeFromDate } from '../utils/dateUtils.js';
 
 const prisma = new PrismaClient();
 // para garantir que os dados estão vinculados com a tabela Consultorio
@@ -166,11 +168,16 @@ export const anamneseController = {
       }
 
       // Renderizar a view de detalhes
+      // calcula idade no servidor
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
+      // formatar a data de nascimento e anexar ao objeto paciente antes de renderizar
+      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
       res.render('anamneses/show', {
         pageTitle: 'Ficha da Anamnese',
         pageIcon: 'ri-file-list-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
+        idadePaciente,
         layout: false,
         messages: req.flash(''),
       });
@@ -339,12 +346,18 @@ export const anamneseController = {
         return res.redirect('/anamneses');
       }
 
+      // calcula idade no servidor
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
+
       // Renderizar a view de edição
+      // formatar a data de nascimento e anexar ao objeto paciente antes de renderizar
+      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
       res.render('anamneses/edit', {
         pageTitle: 'Editar Anamnese',
         pageIcon: 'ri-edit-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
+        idadePaciente, // passa para a view
         layout: false,
         messages: req.flash(''),
       });
