@@ -91,7 +91,7 @@ export const anamneseController = {
         // return res.redirect('/pacientes/new');
       }
 
-      await prisma.anamnese.create({
+      const nova = await prisma.anamnese.create({
         data: {
           pacienteId: parseInt(idPaciente),
           consultorioId: parseInt(idConsultorio),
@@ -117,17 +117,20 @@ export const anamneseController = {
           eixoOE: eixoOE || null,
         },
       });
-      // >>>> Guardar o idPaciente na sessão <<<<
-      // req.session.idPaciente = novoPaciente.idPaciente;
+
+      // Resposta para AJAX
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.json({ success: true, anamnese: nova, pacienteId: idPaciente });
+      }
 
       req.flash('success', 'Anamnese salva com sucesso!');
-      // Opcional: limpar idPaciente da sessão após cadastrar
-      // delete req.session.idPaciente;
-      return res.redirect('/pacientes');
+      return res.redirect('/');
     } catch (error) {
       console.error('Erro ao salvar anamnese:', error);
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(500).json({ success: false, error: 'Erro ao salvar anamnese.' });
+      }
       req.flash('error', 'Erro ao salvar anamnese.');
-      // return res.redirect('/anamneses/new');
     }
   },
 

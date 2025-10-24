@@ -4,20 +4,24 @@ const prisma = new PrismaClient();
 export const indexController = {
   async index(req, res) {
     try {
-      // Exemplo: busca pacientes do consultório da sessão, se existir
       let pacientes = [];
       if (req.session.idConsultorio) {
         pacientes = await prisma.paciente.findMany({
           where: { consultorioId: req.session.idConsultorio },
           orderBy: { nome: 'asc' },
+          include: {
+            anamneses: {
+              orderBy: { createdAt: 'desc' },
+              take: 1, // pega a anamnese mais recente
+            },
+          },
         });
       }
 
       res.render('index', {
         pageTitle: 'OptoSystem',
         pageIcon: 'ri-information-line',
-        pacientes, // Passa para o include da fila de espera
-        // Adicione outros dados que quiser exibir na central
+        pacientes,
       });
     } catch (error) {
       console.error('Erro ao carregar a central:', error);
@@ -25,6 +29,28 @@ export const indexController = {
         pacientes: [],
         error: 'Erro ao carregar dados da central.',
       });
+    }
+  },
+
+  // rota que renderiza apenas o partial da fila (usada pelo cliente via fetch)
+  async filaParcial(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const pacientes = idConsultorio
+        ? await prisma.paciente.findMany({
+            where: { consultorioId: idConsultorio },
+            orderBy: { nome: 'asc' },
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },
+            },
+          })
+        : [];
+
+      // renderiza apenas o partial (sem layout)
+      return res.render('fila-espera', { pacientes, layout: false });
+    } catch (error) {
+      console.error('Erro ao renderizar partial da fila:', error);
+      return res.status(500).send('Erro ao atualizar fila');
     }
   },
 };

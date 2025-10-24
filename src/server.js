@@ -12,6 +12,7 @@ import { join } from 'path';
 dotenv.config();
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
+import { indexController } from './controllers/indexController.js';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
 import { clearFlashMessages } from './middlewares/clearFlashMiddleware.js';
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
@@ -142,6 +143,8 @@ app.use((req, res) => {
     pageIcon: 'ri-error-warning-line', // Ícone opcional
   });
 });
+
+app.get('/_fila-espera', indexController.filaParcial);
 
 // Iniciar o servidor
 app.listen(port, () => {

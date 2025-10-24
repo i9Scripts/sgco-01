@@ -1,16 +1,14 @@
 <div>
-  <form action="/anamneses" method="post">
+  <form class="ajax-remote" action="/anamneses" method="post">
     <div class="row form-group">
-      <input type="hidden" name="idPaciente" value="<%= idPaciente %>">
-      <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>">
+      <input type="hidden" name="idPaciente" value="<%= idPaciente %>" />
+      <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
       <!-- Resumo do paciente -->
       <div class="alert alert-secondary mb-4">
-        <h5 class="mb-1">
-          <i class="ri-user-line"></i> Paciente Selecionado:
-        </h5>
+        <h5 class="mb-1"><i class="ri-user-line"></i> Paciente Selecionado:</h5>
         <p class="mb-0">
-          <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-          <strong>Idade:</strong> <%= paciente?.idade || 'N/D' %> anos |
+          <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> | <strong>Idade:</strong> <%= paciente?.idade || 'N/D'
+          %> anos |
         </p>
       </div>
     </div>
@@ -141,3 +139,5 @@
       </button>
     </div>
     <script src="/js/mascaraLens.js"></script>
+  </form>
+</div>

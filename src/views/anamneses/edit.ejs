@@ -1,5 +1,5 @@
 <div>
-  <form action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
+  <form class="ajax-remote" action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
     <input type="hidden" name="idPaciente" value="<%= anamnese.pacienteId %>" />
     <input type="hidden" name="idConsultorio" value="<%= anamnese.consultorioId %>" />
 
