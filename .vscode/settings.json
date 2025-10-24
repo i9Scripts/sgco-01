@@ -25,7 +25,7 @@
   "editor.semanticHighlighting.enabled": false,
   "breadcrumbs.enabled": false,
   "workbench.activityBar.location": "bottom",
-  "editor.minimap.autohide": false,
+  "editor.minimap.autohide": "none",
   "window.commandCenter": false,
   "window.title": " ", // sem barra de título
   "workbench.layoutControl.enabled": true,
@@ -51,20 +51,20 @@
   "terminal.integrated.fontLigatures": true,
   //Format Settings
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnType": false, // required
-  // "editor.formatOnPaste": true, // optional
-  "editor.formatOnSave": true, // optional
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll": "explicit",
-    "eslint.autoFixOnSave": "explicit",
-    "source.organizeImports": "explicit"
+    "source.fixAll.eslint": true
   },
-  "editor.formatOnSaveMode": "file", // required to format on save
-  "files.autoSave": "onFocusChange", // optional but recommended
-  "vs-code-prettier-eslint.prettierLast": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "svg.preview.background": "editor", // set as true to run 'prettier' last not first
-  "aider-composer.pythonPath": ".venv/bin",
   "github.copilot.enable": {
     "*": false,
     "plaintext": false,

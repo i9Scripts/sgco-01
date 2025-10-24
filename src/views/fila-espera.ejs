@@ -6,6 +6,7 @@
         <th>Nome</th>
         <th>Data de Cadastro</th>
         <th>Ações</th>
+        <th>Anamnese</th>
       </tr>
     </thead>
     <tbody>
@@ -13,44 +14,46 @@
       <tr>
         <td><%= paciente.nome %></td>
         <td><%= new Date(paciente.createdAt).toLocaleString() %></td>
+
         <td class="d-flex gap-2">
-          <!-- Botão para abrir o modal com a ficha do paciente -->
-          <!-- Botão para abrir o modal de visualização -->
+          <!-- Botão para abrir o modal de visualização com a ficha do paciente -->
           <button class="btn btn-info btn-sm" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
 
-          <!-- Botão para abrir o modal de edição -->
+          <!-- Botão para abrir o modal de edição do Paciente -->
           <button class="btn btn-warning btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
 
-          <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
           <!-- Botão para marcar como atendido -->
           <form action="/paciente/<%= paciente.idPaciente %>/atendido?_method=PUT" method="post" class="d-inline">
             <button type="submit" class="btn btn-success btn-sm" title="Marcar como Atendido">
               <span class="material-symbols-outlined icon-btn">check_circle</span>
             </button>
           </form>
-          <% } else { %>
-          <!-- Mensagem ou botão desabilitado -->
-          <button class="btn btn-secondary btn-sm" title="Na fila de atendimento">
-            <span class="material-symbols-outlined icon-btn">block</span> Sem Anamnese
-          </button>
-          <% } %>
+        </td>
 
-          <!-- Botões para anamnese -->
+        <td>
           <% if (paciente.anamneses && paciente.anamneses.length > 0) { 
-            const anamnese = paciente.anamneses[0]; %>
-          <!-- ver anamnese -->
-          <button class="btn btn-info btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
+               const anamnese = paciente.anamneses[0]; %>
+          <span class="badge bg-success">Registrada</span>
+          <!-- Botão para criar nova anamnese (caso queira permitir múltiplas) -->
+          <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
+            <span class="material-symbols-outlined icon-btn">check</span>
+          </button>
+          <!-- Botão para visualizar anamnese -->
+          <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
-          <button class="btn btn-warning btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
+          <!-- Botão para editar anamnese -->
+          <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <% } else { %>
-          <button class="btn btn-info btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/selecionar', 'Nova Anamnese')">
+          <span class="badge bg-secondary">Não registrada</span>
+          <!-- Botão para criar nova anamnese -->
+          <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">add</span>
           </button>
           <% } %>
