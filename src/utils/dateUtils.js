@@ -1,3 +1,17 @@
+//Formatar data
+export function formatarData(data) {
+  if (!(data instanceof Date) || isNaN(data.getTime())) {
+    return null; // Retorna null se não for uma data válida
+  }
+
+  const dia = String(data.getDate()).padStart(2, '0');
+  // getMonth() retorna 0-11, então somamos 1
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+
+  return `${dia}/${mes}/${ano}`;
+}
+// Calcular idade
 export function calcularIdadeFromDate(dateInput) {
   if (!dateInput) return null;
 

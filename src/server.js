@@ -26,6 +26,7 @@ import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import registerWeather from './routes/weather.js';
 
 // Configuração da aplicação
 const app = express();
@@ -135,7 +136,28 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
   }
 });
 // ***********************************************************//
-
+// Rota para a página de espera na TV
+app.get('/espera', async (req, res) => {
+  try {
+    // Remova essa parte, pois a conexão com o Prisma deve ser feita corretamente
+    //const pacientesDB = await db.paciente.findMany({
+    //  select: {
+    //    nome: true,
+    //  },
+    //});
+    res.render('espera/index', {
+      layout: false, // Não utiliza o layout principal
+      pacientes: [], // Ou uma lista vazia, até que você configure o Prisma corretamente
+    });
+  } catch (error) {
+    console.error('Erro ao buscar pacientes:', error);
+    res.status(500).send('Erro ao carregar a página de espera.');
+  }
+});
+// Registrar rota de clima
+registerWeather(app);
+app.get('/_fila-espera', indexController.filaParcial);
+app.get('/espera/index', indexController.filaParcial);
 // Rota 404 - Página não encontrada
 app.use((req, res) => {
   res.status(404).render('404', {
@@ -143,9 +165,6 @@ app.use((req, res) => {
     pageIcon: 'ri-error-warning-line', // Ícone opcional
   });
 });
-
-app.get('/_fila-espera', indexController.filaParcial);
-
 // Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando http://localhost:${port}/`);

@@ -1,21 +1,22 @@
-Princípios Gerais de Design de Dashboard:
-Hierarquia Visual: Destaque as informações mais importantes (ex: pacientes do dia) com tamanho, cor e posicionamento.
-Consistência: Use a mesma tipografia, cores e estilo visual em todo o dashboard.
-Simplicidade: Evite sobrecarregar o usuário com informações desnecessárias.
-Responsividade: Garanta que o dashboard se adapte bem a diferentes tamanhos de tela (desktop, tablets, celulares).
-Interatividade: Se possível, permita que o usuário filtre dados, explore detalhes e personalize a visualização.
-Sugestões de Layouts:
-Aqui estão algumas opções, combinando diferentes abordagens:
-Layout Clássico em Grade:
-Cabeçalho: Título do dashboard, período de exibição dos dados (ex: "Dashboard - Visão Geral de Janeiro 2024"), controles de filtro (data, clínica, etc.).
-Coluna Lateral (Opcional): Menu de navegação para outras seções do sistema.
-Painéis Principais (em grade):
-Pacientes do Dia: Grande número centralizado, com um pequeno gráfico de linha mostrando a evolução ao longo do dia.
-Pacientes do Mês: Gráfico de barras comparando o número de pacientes em cada semana do mês.
-Pacientes do Ano: Gráfico de linha mostrando a tendência de pacientes ao longo dos meses.
-Miopia vs. Hipermetropia: Gráfico de pizza ou barras comparando as proporções.
-Resultados Financeiros: Valor total, gráfico de linha mostrando a receita ao longo do tempo, comparação com o período anterior (ex: "Aumento de 15% em relação ao mês passado").
-Rodapé: Informações de direitos autorais, links úteis.
+# Princípios Gerais de Design de Dashboard:
+  - Hierarquia Visual: Destaque as informações mais importantes (ex: pacientes do dia) com tamanho, cor e posicionamento.
+  - Consistência: Use a mesma tipografia, cores e estilo visual em todo o dashboard.
+  - Simplicidade: Evite sobrecarregar o usuário com informações desnecessárias.
+  - Responsividade: Garanta que o dashboard se adapte bem a diferentes tamanhos de tela (desktop, tablets, celulares).
+  - Interatividade: Se possível, permita que o usuário filtre dados, explore detalhes e personalize a visualização.
+  
+## Sugestões de Layouts:
+  Aqui estão algumas opções, combinando diferentes abordagens:
+### Layout Clássico em Grade:
+  - Cabeçalho: Título do dashboard, período de exibição dos dados (ex: "Dashboard - Visão Geral de Janeiro 2024"), controles de filtro (data, clínica, etc.).
+  - Coluna Lateral (Opcional): Menu de navegação para outras seções do sistema.
+  - Painéis Principais (em grade):
+  - Pacientes do Dia: Grande número centralizado, com um pequeno gráfico de linha mostrando a evolução ao longo do dia.
+  - Pacientes do Mês: Gráfico de barras comparando o número de pacientes em cada semana do mês.
+  - Pacientes do Ano: Gráfico de linha mostrando a tendência de pacientes ao longo dos meses.
+  - Miopia vs. Hipermetropia: Gráfico de pizza ou barras comparando as proporções.
+  - Resultados Financeiros: Valor total, gráfico de linha mostrando a receita ao longo do tempo, comparação com o período anterior (ex: "Aumento de 15% em relação ao mês passado").
+  - Rodapé: Informações de direitos autorais, links úteis.
 EJS: Use EJS para iterar sobre os dados e gerar os painéis dinamicamente. Por exemplo:
 <div class="grid-container">
     <div class="panel">

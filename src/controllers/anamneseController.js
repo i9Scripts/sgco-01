@@ -1,7 +1,12 @@
 // src/controllers/anamneseController.js
 import { PrismaClient } from '@prisma/client';
 import dayjs from 'dayjs';
-import { calcularIdadeFromDate } from '../utils/dateUtils.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
+import { calcularIdadeFromDate, formatarData } from '../utils/dateUtils.js';
+
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 
 const prisma = new PrismaClient();
 // para garantir que os dados estão vinculados com a tabela Consultorio
@@ -173,13 +178,19 @@ export const anamneseController = {
       // Renderizar a view de detalhes
       // calcula idade no servidor
       const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
+      // 1. Criar o objeto Date (se ainda não for um objeto Date)
+      const dataObjeto = new Date(anamnese.createdAt);
+      // 3. Formatar a data para DD/MM/YYYY (usando a nova função)
+      const dataCreatedAt = formatarData(dataObjeto);
       // formatar a data de nascimento e anexar ao objeto paciente antes de renderizar
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
+
       res.render('anamneses/show', {
         pageTitle: 'Ficha da Anamnese',
         pageIcon: 'ri-file-list-line',
         anamnese,
         paciente, // Passa os dados do paciente para a view
+        dataCreatedAt,
         idadePaciente,
         layout: false,
         messages: req.flash(''),
@@ -205,12 +216,21 @@ export const anamneseController = {
         include: {
           paciente: true, // <- isso é necessário para incluir o idpaciente
         },
+        // 💡 PARA ORDENAR POR DATA MAIS RECENTE
+        orderBy: {
+          createdAt: 'desc', // 'desc' para decrescente (mais recente primeiro)
+        },
       });
-
+      // Mapeie a lista para formatar a data de criação
+      const anamnesesFormatadas = anamneses.map((anamnese) => ({
+        ...anamnese,
+        // Formata o createdAt e anexa como dataCreatedAt ao objeto
+        dataCreatedAt: formatarData(new Date(anamnese.createdAt)),
+      }));
       res.render('anamneses/index', {
         pageTitle: 'Lista de Anamneses',
         pageIcon: 'ri-file-list-line',
-        anamneses,
+        anamneses: anamnesesFormatadas,
         messages: req.flash(''),
       });
     } catch (error) {

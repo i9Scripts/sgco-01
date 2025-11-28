@@ -1,209 +1,241 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Corpo da página */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f1f9ff;
-    color: #333;
-    padding: 0;
-    margin: 0;
-    min-height: 100vh; /* Garante que a altura mínima da página seja 100% da tela */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Espaçamento entre as seções */
+  font-family: Arial, sans-serif;
+  background-color: #dfdfe0e6;
+  color: #333;
+  padding: 20px;
+  margin: 0;
+  min-height: 100vh; /* Garante que a altura mínima da página seja 100% da tela */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Espaçamento entre as seções */
 }
 
 /* Header */
 header {
-    background-color: #007bff;
-    color: white;
-    max-height: 10%;
-    display: flex;
-    justify-content: center;
-    align-items:center;
-    font-size: 0.8rem;
-    flex-shrink: 0; /* Impede que o header encolha */
+  background-color: #1b1d96e6;
+  color: white;
+  height: 65px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  flex-shrink: 0; /* Impede que o header encolha */
 }
-
-#clinic-name{
-    margin-left: 20px;
-    padding: 10px;    
-    font-size: 2rem;
-    font-weight: 500;
+header .logotipo {
+  max-height: 50px;
+  margin: 20px;
+}
+header h1 {
+  font-size: 2rem;
+  margin-left: 20px;
+}
+#clinic-name {
+  margin-left: 20px;
+  padding: 10px;
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 /* Corpo (Body) com o vídeo */
 .video-container {
-    width: 100%;
-    height: 65vh; /* O vídeo ocupará da altura da tela */
-    position: relative;
-    background-color: #e1e7f3;
-    overflow: hidden;
+  width: 60%;
+  height: 63vh; /* O vídeo ocupará da altura da tela */
+  position: relative;
+  overflow: hidden;
 }
 
 .video-container iframe {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  border: 6px solid white;
 }
 
 /* API de tempo ou notícias */
 .api-section {
-    background-color: #fff;
-    max-height: 10vh; /* A sessão ocupará da altura da tela */
-    padding: 10px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-top: 10px;
-    flex-grow: 1; /* Faz com que a seção ocupe o espaço restante */
-    font: 0.7rem;
+  background-color: #fff;
+  max-height: 15vh; /* A sessão ocupará da altura da tela */
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 10px;
+  flex-grow: 1; /* Faz com que a seção ocupe o espaço restante */
+  font: 0.7rem;
 }
-#api-content{
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+.api-noticias {
+  padding: 10px;
+  color: #0f52ba; /* azul safira */
 }
-#api-content p{
-    margin-left: 10px;
+/* API Clima */
+#api-content {
+  display: flex;
+  flex-direction: column; /* empilha ícone + informações */
+  align-items: center; /* centraliza horizontalmente */
+  justify-content: center; /* centraliza verticalmente */
+  text-align: center;
+  background: #f9f9fae6;
+  color: #0f52ba; /* azul safira */
+  padding: 12px 18px;
+  border-radius: 10px;
+  min-width: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 990;
+}
+#api-content p {
+  margin: 6px 0;
+  color: #0f52ba; /* garante cor nos parágrafos */
+}
+
+/* Ícone e layout do bloco de clima */
+.weather-icon {
+  font-size: 44px;
+  color: #0f52ba; /* ícone na cor safira */
+  margin-bottom: 6px;
+}
+.weather-info p {
+  margin: 4px 0;
+  font-weight: 600;
+  color: #0f52ba;
 }
 /* Footer */
 footer {
-    background-color: #007bff;
-    color: white;
-    height: 10vh; /* O footer ocupará da altura da tela */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    flex-shrink: 0; /* Impede que o footer encolha */
+  background-color: #1b1d96e6;
+  color: white;
+  width: 85%;
+  height: 7vh; /* O footer ocupará da altura da tela */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  flex-shrink: 0; /* Impede que o footer encolha */
 }
-
-/* Mensagem aleatória flutuante */
+/* Mensagem Paciente flutuante */
 .floating-message {
-    position: fixed;
-    top: 65%; /* Ajusta a posição para o topo da tela */
-    left: 12%;
-    transform: translateX(-50%); /* Centraliza a mensagem horizontalmente */
-    background-color: rgba(27, 29, 150, 0.9); /* Fundo escuro semi-transparente */
-    color: white;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    border-radius: 10px;
-    z-index: 1000; /* Garante que fique acima de outros elementos */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 40%;
-    max-width: 300px; /* Evita que a mensagem fique muito grande */
-    height: 90px;
-    line-height: 1.4;   /** Ajuste para garantir que o texto se ajuste**/
-    overflow: hidden;
-    animation: fadeInOut 5s ease-in-out infinite;
+  position: fixed;
+  top: 68%; /* Ajusta a posição para o topo da tela */
+  margin-left: 76%;
+  transform: translateX(-50%); /* Centraliza a mensagem horizontalmente */
+  background-color: rgba(27, 29, 150, 0.9); /* Fundo escuro semi-transparente */
+  color: white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 900px; /* Evita que a mensagem fique muito grande */
+  height: 60px;
+  line-height: 1.4; /** Ajuste para garantir que o texto se ajuste**/
+  border-radius: 10px;
+  z-index: 990; /* Garante que fique acima de outros elementos */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  /* animation: fadeInOut 5s ease-in-out infinite; */
 }
-/* Logotipo do consultório */
-.floating-message2 {
-    position: fixed;
-    top: 65%; /* Ajusta a posição para o topo da tela */
-    left: 78%;
-    transform: translateX(-50%); /* Centraliza a mensagem horizontalmente */
-    background-color: rgba(27, 29, 150, 0.9); /* Fundo escuro semi-transparente */
-    color: white;
-    padding: 15px;
-    font-size: 18px;
-    border-radius: 10px;
-    z-index: 1000; /* Garante que fique acima de outros elementos */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 2.5rem;
-    text-align: center;
-    width: 90%;
-    max-width: 600px; /* Evita que a mensagem fique muito grande */
-    height: 90px;
-    line-height: 1.4;   /** Ajuste para garantir que o texto se ajuste**/
-    overflow: hidden;
-    animation: fadeInOut 5s ease-in-out infinite;
+.floating-message h1 {
+  font-size: 2rem;
 }
-.floating-message2 img{
-    max-height: 50px;
-    padding-left: 20px;
-    margin: 20px 0 0 0;
+.carrocel_V {
+  position: fixed;
+  top: 10%; /* Ajusta a posição para o topo da tela */
+  left: 60%;
+  background-color: rgba(235, 235, 236, 0.9); /* Fundo escuro semi-transparente */
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  width: 100%;
+  height: 63%;
+  max-width: 750px; /* Evita que a mensagem fique muito grande */
+  line-height: 1.4; /** Ajuste para garantir que o texto se ajuste**/
+  border-radius: 10px;
+  z-index: 900; /* Garante que fique acima de outros elementos */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
-
+/* MOBILE */
 @keyframes fadeInOut {
-    0%, 100% {
-        opacity: 0;
-    }
-    25%, 75% {
-        opacity: 1;
-    }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
 }
 
 /* Media Queries para adaptação */
 @media (max-width: 768px) {
-    header {
-        font-size: 14px;
-        padding: 15px;
-    }
+  header {
+    font-size: 14px;
+    padding: 15px;
+  }
 
-    footer {
-        font-size: 14px;
-        padding: 15px;
-    }
+  footer {
+    font-size: 14px;
+    padding: 15px;
+  }
 
-    .video-container {
-        height: 50vh; /* O vídeo ocupa 40% da altura da tela em telas menores */
-    }
+  .video-container {
+    height: 50vh; /* O vídeo ocupa 40% da altura da tela em telas menores */
+  }
 
-    .api-section {
-        padding: 10px;
-    }
+  .api-section {
+    padding: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-    header {
-        font-size: 12px;
-        padding: 10px;
-    }
+  header {
+    font-size: 12px;
+    padding: 10px;
+  }
 
-    footer {
-        font-size: 12px;
-        padding: 10px;
-    }
+  footer {
+    font-size: 12px;
+    padding: 10px;
+  }
 
-    .video-container {
-        height: 35vh; /* O vídeo ocupa 35% da altura da tela em telas pequenas */
-    }
+  .video-container {
+    height: 35vh; /* O vídeo ocupa 35% da altura da tela em telas pequenas */
+  }
 
-    .api-section {
-        font-size: 12px;
-        padding: 10px;
-    }
+  .api-section {
+    font-size: 12px;
+    padding: 10px;
+  }
 }
 
 /* Media Queries para adaptação */
 @media (max-width: 768px) {
-    .video-container {
-        height: 40vh; /* O vídeo ocupa 40% da altura da tela em telas menores */
-    }
-    #floating-message {
-        font-size: 16px; /* Tamanho menor em dispositivos menores */
-        padding: 10px 20px;
-    }
+  .video-container {
+    height: 40vh; /* O vídeo ocupa 40% da altura da tela em telas menores */
+  }
+  #floating-message {
+    font-size: 16px; /* Tamanho menor em dispositivos menores */
+    padding: 10px 20px;
+  }
 }
 @media (max-width: 480px) {
-    #floating-message {
-        font-size: 14px; /* Tamanho ainda menor em dispositivos muito pequenos */
-        padding: 10px;
-    }
+  #floating-message {
+    font-size: 14px; /* Tamanho ainda menor em dispositivos muito pequenos */
+    padding: 10px;
+  }
 }

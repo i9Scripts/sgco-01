@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/espera.css" />
+  <link rel="stylesheet" href="/css/weather-icons-wind.css" />
+  <!-- weather icons (completo) para as classes .wi-day-* -->
+  <link rel="stylesheet" href="/css/weather-icons.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <title>Área de Espera - Consultório</title>
+  </head>
+
+  <body>
+    <!-- Header com nome da clínica -->
+    <header>
+      <img class="logotipo" src="/img/LogotipoAC.png" alt="Logo do Consultório" />
+      <h1>Ana Cristina Optometrista</h1>
+    </header>
+
+    <!-- Corpo da página com vídeo do YouTube -->
+    <div class="video-container">
+      <div id="player"></div>
+    </div>
+    <!-- Mensagens Pacientes na fila-->
+  <div class="floating-message">
+      <div id="patient-name" class="container">
+          <% if (pacientes && pacientes.length) { %>
+            <% pacientes.forEach(paciente => { %>
+              <p>Chamando Paciente: <span><%= paciente.nome %></span></p>
+                  <% }) %>
+              <% } else { %>
+                  <li>Nenhum paciente cadastrado.</li>
+              <% } %>
+      </div>
+    </div>
+    <!-- Carrocel Vertical -->
+    <div class="carrocel_V">
+        <div><%- include('../espera/carrocel-vertical.ejs') %></div>
+    </div>
+    <!-- Sessão CLima e notícias -->
+    <div class="api-section">
+      <div class="api-noticias">
+        <h3>Últimas Notícias</h3>
+      </div>
+      <div id="api-content">
+        <h3>O Clima</h3>
+        <img src="/fonts/weathericons-regular-webfont.svg" alt="Paciente" width="50" height="50" />
+        <p><strong>Temperatura:</strong></p>
+        <p><strong>Descrição:</strong></p>
+        <p><strong>Umidade:</strong></p>
+        <p><strong>Indice UV</strong></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div id="message">Mensagem aleatória: Aguarde, você será atendido em breve!</div>
+    </footer>
+
+    <!-- SCRIPTS -->
+     <!-- Mensagens Aleatórias -->
+    <script>
+      const messages = [
+        'Aguarde, você será atendido em breve!',
+        'O atendimento será realizado por ordem de chegada, porém quem agendou tem prioridade.',
+        'Por favor, mantenha o celular no modo silencioso.',
+        'Em breve, será chamado pelo seu nome.',
+      ];
+
+      const messageElement = document.getElementById('message');
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      messageElement.textContent = randomMessage;
+
+      // Muda a mensagem a cada 8 segundos
+      setInterval(() => {
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        messageElement.textContent = randomMessage;
+      }, 8000);
+    </script>
+    <!-- Scripts para a integração com o YouTube -->
+    <script>
+      // Carrega a API do IFrame do YouTube
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // Lista de ID dos vídeos que serão reproduzidos em sequência
+      var playlist = ['pFznByHYWvs', 'cBfTTFhHNxw', '7gFYxURb9lk', 'wbO0_0fLCOY'];
+      var currentVideoIndex = 0;
+      var player;
+
+      // Função chamada automaticamente pela API quando ela estiver pronta
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '360',
+          width: '640',
+          videoId: playlist[currentVideoIndex],
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+          },
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+            rel: 0,
+          },
+        });
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // Quando o vídeo terminar, passa para o próximo vídeo da lista
+      function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) {
+          currentVideoIndex = (currentVideoIndex + 1) % playlist.length;
+          player.loadVideoById(playlist[currentVideoIndex]);
+        }
+      }
+    </script>
+    <!-- SOCKET IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Atualizar lista de pacientes
+      socket.on('atualizarPacientes', (pacientes) => {
+        const container = document.querySelector('.container');
+        container.innerHTML = '<h1>Área de Espera</h1>';
+        if (pacientes.length > 0) {
+          pacientes.forEach((paciente) => {
+            const div = document.createElement('div');
+            div.classList.add('paciente');
+            div.textContent = paciente.nome;
+            container.appendChild(div);
+          });
+        } else {
+          container.innerHTML += '<p>Nenhum paciente na sala de espera.</p>';
+        }
+      });
+    </script>
+
+    <!-- API do Clima (cliente separado) -->
+    <script src="/js/weatherClient.js"></script>
+  </body>
+</html>

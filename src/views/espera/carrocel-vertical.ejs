@@ -1,0 +1,126 @@
+<div class="carousel" id="carousel"></div>
+<style>
+  .carousel {
+    position: relative;
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    color: #0f0285;
+    font-size: 1.15rem;
+
+    opacity: 0;
+    filter: drop-shadow(0 2px 2px #555);
+    will-change: transform, opacity;
+  }
+  .item-body {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .title {
+    text-transform: uppercase;
+    color: #0f0285;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding-bottom: 12px;
+  }
+  @keyframes carousel-animate-vertical {
+    0% {
+      translate: 0 100%;
+      scale: 0.5;
+      opacity: 0;
+      visibility: hidden;
+    }
+    3%,
+    11% {
+      translate: 0 100%;
+      scale: 0.7;
+      opacity: 0.4;
+      visibility: visible;
+    }
+    14%,
+    22% {
+      translate: 0 0;
+      scale: 1;
+      opacity: 1;
+      visibility: visible;
+    }
+    25%,
+    33% {
+      translate: 0 -100%;
+      scale: 0.7;
+      opacity: 0.4;
+      visibility: visible;
+    }
+    36% {
+      translate: 0 -100%;
+      scale: 0.5;
+      opacity: 0;
+      visibility: visible;
+    }
+    100% {
+      translate: 0 -100%;
+      scale: 0.5;
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  .item {
+    --animation-delay-fraction: 5.2s;
+    animation: carousel-animate-vertical 35s linear infinite;
+    animation-delay: calc(var(--animation-delay-fraction) * (var(--index) - 2));
+  }
+</style>
+<script>
+  const items = [
+    // suporta 7 questões sem encavalar
+    {
+      title: 'Por que os olhos piscam 🤔?',
+      resposta: 'Piscar ajuda a lubrificar e limpar a superfície dos olhos, evitando ressecamento.😲',
+    },
+    {
+      title: 'Qual é a cor mais rara dos olhos 🤔?',
+      resposta: 'Verde, presente em apenas 2% da população mundial. 😲',
+    },
+    {
+      title: 'Qual animal tem os olhos maiores que o cérebro 🤔?',
+      resposta: 'O avestruz, com olhos de 5 cm de diâmetro. 😲',
+    },
+    {
+      title: 'Qual é o músculo mais ativo do corpo humano 🤔?',
+      resposta: 'O músculo ocular, que se move mais de 100 mil vezes por dia. 😲',
+    },
+    {
+      title: 'Qual é a única parte do corpo que não precisa de sangue 🤔?',
+      resposta: 'A córnea, pois recebe oxigênio diretamente do ar. 😲',
+    },
+    {
+      title: 'Qual é o animal com os olhos mais sensíveis à luz 🤔?',
+      resposta: 'A coruja, que pode ver em condições de luz extremamente baixas. 😲',
+    },
+    {
+      title: 'Você sabia que a visão não é com os olhos 🤔?',
+      resposta: 'Visão é o que interpreta, então é com o cérebro. 😲',
+    },
+  ];
+  const carousel = document.getElementById('carousel');
+  items.forEach((item, index) => {
+    const carouselItem = document.createElement('div');
+    carouselItem.classList.add('item');
+    carouselItem.style.setProperty('--index', index + 1);
+    carouselItem.innerHTML = `
+<div class="item-body">
+<p class="title">${item.title}</p>
+<p>Resposta: ${item.resposta}</p>
+</div>`;
+    carousel.appendChild(carouselItem);
+  });
+</script>

@@ -5,6 +5,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Data</th>
         <th>Paciente</th>
         <th>Último Exame</th>
         <th>Motivo</th>
@@ -14,6 +15,7 @@
       <% anamneses.forEach(anamnese => { %>
       <tr>
         <td><%= anamnese.idAnam %></td>
+        <td><%= anamnese.dataCreatedAt %></td>
         <td><%= anamnese.paciente.nome %></td>
         <td><%= anamnese.ultimoExame || 'Não informado' %></td>
         <td><%= anamnese.motivo %></td>

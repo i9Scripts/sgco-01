@@ -2,7 +2,7 @@
   "workbench.colorTheme": "Dracula Theme",
   "symbols.hidesExplorerArrows": false,
   "workbench.iconTheme": "symbols",
-  "editor.fontFamily": "'JetBrains', monospace",
+  "editor.fontFamily": "'Quicksand', monospace",
 
   "editor.fontLigatures": true,
   "editor.letterSpacing": 0.3,
@@ -53,7 +53,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

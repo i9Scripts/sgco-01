@@ -23,6 +23,7 @@ model Consultorio {
   responsavel   String?        @db.VarChar(60)
   numeroSerie   String         @unique @db.VarChar(36)
   complemento   String?        @db.VarChar(30)
+  numeroFicha   String?        @unique @db.VarChar(20) //retirar o "?" quando em produção
   anamneses     Anamnese[]
   consultas     Consulta[]
   diagnosticos  Diagnostico[]
