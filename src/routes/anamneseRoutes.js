@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { anamneseController } from '../controllers/anamneseController.js';
+import { verificarProfissionalAutenticado } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -12,8 +13,8 @@ router.post('/', anamneseController.createAnamnese);
 // Outras rotas como editar, listar, deletar, etc.
 router.get('/', anamneseController.getAllAnamneses);
 router.get('/:idAnam', anamneseController.getAnamneseById);
-router.get('/:idAnam/edit', anamneseController.editAnamneseForm);
-router.put('/:idAnam', anamneseController.updateAnamnese);
-router.delete('/:idAnam', anamneseController.deleteAnamnese);
+router.get('/:idAnam/edit', verificarProfissionalAutenticado, anamneseController.editAnamneseForm);
+router.put('/:idAnam', verificarProfissionalAutenticado, anamneseController.updateAnamnese);
+router.delete('/:idAnam', verificarProfissionalAutenticado, anamneseController.deleteAnamnese);
 
 export default router;

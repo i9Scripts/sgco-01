@@ -77,8 +77,115 @@ header h1 {
   padding: 10px;
   color: #0f52ba; /* azul safira */
 }
+.api-noticias .news-rotator {
+  gap: 12px;
+  /* garante que o wrapper da notícia alinhe os conteúdos em linha */
+  display: flex;
+  align-items: center;
+}
+/* garante que o link interno organize thumbnail + body lado a lado */
+.api-noticias .news-rotator a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.news-thumb {
+  width: 180px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+/* O corpo da notícia */
+.news-body {
+  /* título e meta lado a lado (horizontal) */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  /* permite que o corpo cresça e ocupe o espaço restante */
+  flex: 1 1 auto;
+}
+/* Título da notícia */
+.news-title {
+  font-size: 1.1rem;
+  color: #0f52ba;
+  margin: 0; /* remover margem para alinhamento horizontal */
+  line-height: 1.1;
+}
+.news-meta {
+  font-size: 0.9rem;
+  color: #0f52ba;
+  opacity: 0.85;
+}
+
+/* Truncamento e comportamento de flex para evitar overflow */
+.news-title {
+  flex: 1 1 auto;
+  min-width: 0; /* permite truncamento dentro do flex container */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.news-meta {
+  flex: 0 0 auto;
+  margin-left: 6px;
+}
+.news-item a {
+  text-decoration: none;
+  color: inherit;
+  /* já definimos o layout no .news-rotator > a, mas mantemos como fallback */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Responsivo: em telas menores empilha a imagem sobre o texto */
+@media (max-width: 480px) {
+  .api-noticias .news-rotator {
+    align-items: flex-start;
+  }
+  .api-noticias .news-rotator a {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .news-thumb {
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+  }
+  .news-body {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+/* animação simples */
+.fade-in {
+  animation: fadeIn 480ms ease both;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* API Clima */
 #api-content {
+  position: fixed;
+  top: 75%; /* Ajusta a posição para o topo da tela */
+  margin-left: 90%;
+  transform: translateX(-50%); /* Centraliza a mensagem horizontalmente */
   display: flex;
   flex-direction: column; /* empilha ícone + informações */
   align-items: center; /* centraliza horizontalmente */

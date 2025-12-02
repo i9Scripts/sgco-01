@@ -1,8 +1,9 @@
 // src/controllers/userController.js
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
+// prisma centralizado
 
 async function findUserDoConsultorio(idUser, consultorioId) {
   return await prisma.user.findFirst({
@@ -31,7 +32,7 @@ export const userController = {
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de usuário:', error);
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');

@@ -1,14 +1,15 @@
 // src/controllers/pacienteController.js
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import utc from 'dayjs/plugin/utc.js';
+import prisma from '../lib/prisma.js';
 import { calcularIdadeFromDate } from '../utils/dateUtils.js';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
-const prisma = new PrismaClient();
+// prisma centralizado
 // para garantir que os dados estão vinculados com a tabela Consultorio
 async function findPacienteDoConsultorio(idPaciente, consultorioId) {
   const paciente = await prisma.paciente.findFirst({
@@ -41,7 +42,7 @@ export const pacienteController = {
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de paciente:', error);
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
@@ -54,8 +55,21 @@ export const pacienteController = {
 
   async createPaciente(req, res) {
     try {
-      const { nome, responsavel, dataNasc, idade, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } =
-        req.body;
+      const {
+        nome,
+        responsavel,
+        dataNasc,
+        idade,
+        celular,
+        cep,
+        endereco,
+        numero,
+        bairro,
+        cidade,
+        cpf,
+        profissao,
+        nFicha,
+      } = req.body;
       const idConsultorio = req.session.idConsultorio;
 
       if (!idConsultorio) {
@@ -83,6 +97,7 @@ export const pacienteController = {
           bairro,
           cidade,
           cpf: cpf || null,
+          nFicha: nFicha ? parseInt(nFicha) : null,
           profissao,
           consultorioId: idConsultorio,
         },
@@ -192,10 +207,17 @@ export const pacienteController = {
       }
 
       // Realiza a busca no banco de dados
+      const q = query.trim();
+      const orClauses = [{ nome: { contains: q } }, { cpf: { contains: q } }];
+      // Se o termo for numérico, busque por nFicha como número
+      if (/^\d+$/.test(q)) {
+        orClauses.push({ nFicha: parseInt(q) });
+      }
+
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
-          OR: [{ nome: { contains: query.trim() } }, { cpf: { contains: query.trim() } }],
+          OR: orClauses,
         },
       });
 
@@ -204,13 +226,12 @@ export const pacienteController = {
         req.flash('warning', 'Nenhum paciente encontrado.');
         return res.redirect('/pacientes');
       }
-      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
       // Renderiza a página com os resultados
       res.render('pacientes/index', {
         pageTitle: `Resultados para "${query}"`,
         pageIcon: 'ri-search-line',
         pacientes,
-        idadePaciente,
+
         messages: req.flash(''),
       });
     } catch (error) {
@@ -237,7 +258,8 @@ export const pacienteController = {
         return res.redirect('/pacientes');
       }
 
-      const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+      const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao, nFicha } =
+        req.body;
       // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
       const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
@@ -255,6 +277,7 @@ export const pacienteController = {
           bairro,
           cidade,
           cpf: cpf || null,
+          nFicha: nFicha ? parseInt(nFicha) : null,
           profissao,
         },
       });

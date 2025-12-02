@@ -22,6 +22,7 @@ import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import diagnosticoRoutes from './routes/diagnosticoRoutes.js';
 import filaRoutes from './routes/filaRoutes.js';
 import indexRoutes from './routes/index.js';
+import registerNews from './routes/news.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
 import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
@@ -156,6 +157,8 @@ app.get('/espera', async (req, res) => {
 });
 // Registrar rota de clima
 registerWeather(app);
+// Registrar rota de notícias
+registerNews(app);
 app.get('/_fila-espera', indexController.filaParcial);
 app.get('/espera/index', indexController.filaParcial);
 // Rota 404 - Página não encontrada

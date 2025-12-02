@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
+// prisma centralizado
 
 // Função auxiliar para garantir que o profissional pertence ao consultório
 async function findProfissionalDoConsultorio(idProfissional, idConsultorio) {
@@ -51,7 +52,7 @@ export const profissionalController = {
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de profissional:', error);
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');

@@ -1,7 +1,19 @@
 <div>
   <form action="/pacientes" method="post">
     <input type="hidden" name="idConsultorio" value="<%= consultorio && consultorio.idConsultorio %>" />
-
+    <div class="row form-group">
+      <div class="col-md-3 mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="nFicha"
+          name="nFicha"
+          value="<%= formData && formData.nFicha %>"
+          maxlength="20"
+        />
+        <label for="nFicha">Nº Ficha</label>
+      </div>
+    </div>
     <div class="row form-group">
       <div class="col-md-3 mb-3">
         <input
@@ -40,7 +52,6 @@
         <label for="profissao">Profissão</label>
       </div>
     </div>
-
     <div class="row form-group">
       <div class="col-md-3 mb-3">
         <input

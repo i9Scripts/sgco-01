@@ -1,59 +1,41 @@
-<div>
-  <form action="/consultorios/<%= consultorio.idConsultorio %>?_method=PUT" method="post">
-    <div class="row form-group pt-5">
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="nome" name="nome" value="<%= consultorio.nome %>" required />
-        <label for="nome">Nome:</label>
-      </div>
-      <div class="col-md-5 mb-3">
-        <input type="text" class="form-control" id="responsavel" name="responsavel" value="<%= consultorio.responsavel %>" />
-        <label for="responsavel">Responsável:</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="celular" name="celular" value="<%= consultorio.celular %>" required />
-        <label for="celular">Celular:</label>
-      </div>
+<div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
+  <p>
+    <strong>ID:</strong> <%= consultorio.idConsultorio %> | <strong>Nome:</strong> <%= consultorio?.nome || 'N/D' %> |
+    <strong>Telefone:</strong> <%= consultorio?.celular || 'N/D' %>
+  </p>
+  <hr />
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Responsável:</strong> <%= consultorio.responsavel || 'Não informado' %></p>
+      <p>
+        <strong>CPF:</strong> <%= consultorio.cpf || 'Não informado' %> | <strong>Profissão:</strong> <%=
+        consultorio.profissao || 'Não informado' %>
+      </p>
     </div>
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="cep" name="cep" value="<%= consultorio.cep %>" />
-        <label for="cep">CEP:</label>
-      </div>
 
-      <div class="col-md-7 mb-3">
-        <input type="text" class="form-control" id="endereco" name="endereco" value="<%= consultorio.endereco %>" required />
-        <label for="endereco">Endereço:</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="number" class="form-control" id="numero" name="numero" value="<%= consultorio.numero %>" required />
-        <label for="numero">Número:</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="bairro" name="bairro" value="<%= consultorio.bairro %>" required />
-        <label for="bairro">Bairro:</label>
-      </div>
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="cidade" name="cidade" value="<%= consultorio.cidade %>" required />
-        <label for="cidade">Cidade:</label>
-      </div>
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="cpf" name="cpf" value="<%= consultorio.cpf %>" />
-        <label for="cpf">CPF:</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <input type="text" class="form-control" id="profissao" name="profissao" value="<%= consultorio.profissao %>" required />
-      <label for="profissao">Profissão:</label>
-    </div>
-    <div class="form-group mb-2">
-      <button class="btn btn-primary btn-hover-outline" type="submit" title="Salvar alterações">
-        <span class="material-symbols-outlined icon-btn">save</span> Salvar
-      </button>
-      <a class="btn btn-secondary btn-hover-outline" href="/consultorios" title="Voltar">
-        <span class="material-symbols-outlined icon-btn">chevron_left</span> Voltar
-      </a>
-    </div>
-  </form>
+      <p>
+        <strong>Endereço:</strong>
+        <%= consultorio.endereco || 'Não informado' %>,
+        <strong></strong>
+        <%= typeof consultorio.numero !== 'undefined' ? consultorio.numero : 'N/D' %> |
+        <strong>Complemento:</strong> <%= consultorio.complemento || 'Não informado' %>
+      </p>
+      <p>
+        <strong>CEP:</strong> <%= consultorio?.cep || 'N/D' %> | <strong>Bairro:</strong> <%= consultorio.bairro || 'Não informado' %> | <strong>Cidade:</strong> <%= consultorio.cidade || 'Não informado' %>
+      </p>
+    <p><strong>Nº Série:</strong> <%= consultorio.numeroSerie || 'N/D' %></p>
+    <hr />
+
+    <p>
+      <span class="material-symbols-outlined me-2 icon-relat">event</span>
+      Criado em: <%= consultorio.createdAt ? consultorio.createdAt.toLocaleDateString() : 'Não informado' %> |
+      Atualizado em: <%= consultorio.updatedAt ? consultorio.updatedAt.toLocaleDateString() : 'Não informado' %>
+    </p>
+  </div>
+
+  <div class="form-group mb-2">
+    <a class="btn btn-secondary btn-hover-outline" href="/consultorios" title="Voltar">
+      <span class="material-symbols-outlined icon-btn">chevron_left</span> Voltar
+    </a>
+  </div>
 </div>

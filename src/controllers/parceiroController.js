@@ -1,6 +1,7 @@
 // src/controllers/parceiroController.js
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Prisma } from '@prisma/client';
+import prisma from '../lib/prisma.js';
+// prisma centralizado
 // para garantir que os dados estão vinculados com a tabela Consultorio
 async function findParceiroDoConsultorio(idParceiro, idConsultorio) {
   return await prisma.parceiro.findFirst({
@@ -28,7 +29,7 @@ export const parceiroController = {
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de parceiro:', error);
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');

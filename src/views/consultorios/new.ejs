@@ -4,52 +4,140 @@
     <div class="row form-group">
       <div class="row">
         <div class="col-md-5 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.nome ? 'is-invalid' : '' %>" id="nome" name="nome" value="<%= formData && formData.nome %>" autofocus required maxlength="60">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.nome ? 'is-invalid' : '' %>"
+            id="nome"
+            name="nome"
+            value="<%= formData && formData.nome %>"
+            autofocus
+            required
+            maxlength="60"
+          />
           <label for="nome">Nome do Consultório</label>
         </div>
         <div class="col-md-4 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.responsavel ? 'is-invalid' : '' %>" id="responsavel" name="responsavel" value="<%= formData && formData.responsavel %>" maxlength="60">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.responsavel ? 'is-invalid' : '' %>"
+            id="responsavel"
+            name="responsavel"
+            value="<%= formData && formData.responsavel %>"
+            maxlength="60"
+          />
           <label for="responsavel">Responsável</label>
         </div>
         <div class="col-md-3 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.celular ? 'is-invalid' : '' %>" oninput="mascaraCelular(this)" id="celular" name="celular" value="<%= formData && formData.celular %>" required maxlength="15">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.celular ? 'is-invalid' : '' %>"
+            oninput="mascaraCelular(this)"
+            id="celular"
+            name="celular"
+            value="<%= formData && formData.celular %>"
+            required
+            maxlength="15"
+          />
           <label for="celular">Celular</label>
         </div>
       </div>
       <div class="row form-group">
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.cep ? 'is-invalid' : '' %>" id="cep" oninput="mascaraCep(this)" onblur="encontraCep(this)" name="cep" value="<%= formData && formData.cep %>" maxlength="9">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.cep ? 'is-invalid' : '' %>"
+            id="cep"
+            oninput="mascaraCep(this)"
+            onblur="encontraCep(this)"
+            name="cep"
+            value="<%= formData && formData.cep %>"
+            maxlength="9"
+          />
           <label for="cep">CEP</label>
         </div>
         <div class="col-md-5 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.endereco ? 'is-invalid' : '' %>" id="endereco" name="endereco" value="<%= formData && formData.endereco %>" required maxlength="60">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.endereco ? 'is-invalid' : '' %>"
+            id="endereco"
+            name="endereco"
+            value="<%= formData && formData.endereco %>"
+            required
+            maxlength="60"
+          />
           <label for="endereco">Endereço</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="number" class="form-control <%= messages.errors && messages.errors.numero ? 'is-invalid' : '' %>" id="numero" name="numero" value="<%= formData && formData.numero %>" required min="1">
+          <input
+            type="number"
+            class="form-control <%= messages.errors && messages.errors.numero ? 'is-invalid' : '' %>"
+            id="numero"
+            name="numero"
+            value="<%= formData && formData.numero %>"
+            required
+            min="1"
+          />
           <label for="numero">Número</label>
         </div>
         <div class="col-md-3 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.complemento ? 'is-invalid' : '' %>" id="complemento" name="complemento" value="<%= formData && formData.complemento %>" required maxlength="30">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.complemento ? 'is-invalid' : '' %>"
+            id="complemento"
+            name="complemento"
+            value="<%= formData && formData.complemento %>"
+            maxlength="30"
+          />
           <label for="complemento">Complemento</label>
         </div>
         <div class="col-md-6 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.bairro ? 'is-invalid' : '' %>" id="bairro" name="bairro" value="<%= formData && formData.bairro %>" required maxlength="60">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.bairro ? 'is-invalid' : '' %>"
+            id="bairro"
+            name="bairro"
+            value="<%= formData && formData.bairro %>"
+            maxlength="60"
+          />
           <label for="bairro">Bairro</label>
         </div>
         <div class="col-md-6 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.cidade ? 'is-invalid' : '' %>" id="cidade" name="cidade" value="<%= formData && formData.cidade %>" required maxlength="30">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.cidade ? 'is-invalid' : '' %>"
+            id="cidade"
+            name="cidade"
+            value="<%= formData && formData.cidade %>"
+            required
+            maxlength="30"
+          />
           <label for="cidade">Cidade</label>
         </div>
       </div>
 
       <div class="row form-group">
         <div class="col-md-3 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.cpf ? 'is-invalid' : '' %>" id="cpf" oninput="mascaraCpf(this)" name="cpf" value="<%= formData && formData.cpf %>" maxlength="14">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.cpf ? 'is-invalid' : '' %>"
+            id="cpf"
+            oninput="mascaraCpf(this)"
+            name="cpf"
+            value="<%= formData && formData.cpf %>"
+            maxlength="14"
+          />
           <label for="cpf">CPF</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control <%= messages.errors && messages.errors.profissao ? 'is-invalid' : '' %>" id="profissao" name="profissao" value="<%= formData && formData.profissao %>" required maxlength="30">
+          <input
+            type="text"
+            class="form-control <%= messages.errors && messages.errors.profissao ? 'is-invalid' : '' %>"
+            id="profissao"
+            name="profissao"
+            value="<%= formData && formData.profissao %>"
+            required
+            maxlength="30"
+          />
           <label for="profissao">Profissão</label>
         </div>
       </div>

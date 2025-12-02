@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
+// prisma centralizado
 
 // Função auxiliar para garantir que o diagnóstico pertence ao consultório
 async function findDiagnosticoDoConsultorio(idDiagnostico, idConsultorio) {

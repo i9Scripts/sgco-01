@@ -2,8 +2,9 @@
   <p>
     <strong>ID:</strong> <%= paciente.idPaciente %> |
     <strong> Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-        <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
-        <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
+    <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
+    <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
+    <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
   </p>
   <hr>
   <div class="row">

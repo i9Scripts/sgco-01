@@ -1,14 +1,15 @@
 // src/controllers/anamneseController.js
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import utc from 'dayjs/plugin/utc.js';
+import prisma from '../lib/prisma.js';
 import { calcularIdadeFromDate, formatarData } from '../utils/dateUtils.js';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
-const prisma = new PrismaClient();
+// prisma centralizado
 // para garantir que os dados estão vinculados com a tabela Consultorio
 async function findAnamneseDoConsultorio(idAnam, idConsultorio) {
   return await prisma.anamnese.findFirst({
@@ -52,7 +53,7 @@ export const anamneseController = {
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de anamnese:', error);
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
@@ -243,6 +244,11 @@ export const anamneseController = {
   // Atualizar anamnese
   async updateAnamnese(req, res) {
     try {
+      const idProfissional = req.session.idProfissional;
+      if (!idProfissional) {
+        req.flash('error', 'Acesso negado. Faça login como profissional para editar anamneses.');
+        return res.redirect('/login');
+      }
       const idConsultorio = req.session.idConsultorio;
       const { idAnam } = req.params;
 
@@ -336,6 +342,11 @@ export const anamneseController = {
   // Formulário para editar anamnese
   async editAnamneseForm(req, res) {
     try {
+      const idProfissional = req.session.idProfissional;
+      if (!idProfissional) {
+        req.flash('error', 'Acesso negado. Faça login como profissional para editar anamneses.');
+        return res.redirect('/login');
+      }
       const idConsultorio = req.session.idConsultorio;
       const { idAnam } = req.params; // Certifique-se de usar idAnam
 

@@ -23,7 +23,6 @@ model Consultorio {
   responsavel   String?        @db.VarChar(60)
   numeroSerie   String         @unique @db.VarChar(36)
   complemento   String?        @db.VarChar(30)
-  numeroFicha   String?        @unique @db.VarChar(20) //retirar o "?" quando em produção
   anamneses     Anamnese[]
   consultas     Consulta[]
   diagnosticos  Diagnostico[]
@@ -41,22 +40,25 @@ model Consultorio {
 }
 
 model User {
-  nome          String      @db.VarChar(60)
-  email         String      @unique @db.VarChar(30)
-  celular       String      @db.VarChar(15)
-  password      String      @db.VarChar(255)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  isActive      Boolean     @default(true)
-  consultorioId Int
-  idUser        Int         @id @default(autoincrement())
-  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  nome              String      @db.VarChar(60)
+  email             String      @unique @db.VarChar(30)
+  celular           String      @db.VarChar(15)
+  password          String      @db.VarChar(255)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  isActive          Boolean     @default(true)
+  consultorioId     Int
+  idUser            Int         @id @default(autoincrement())
+  email_verified_at DateTime?   @db.Timestamp(0)
+  remember_token    String?     @db.VarChar(100)
+  consultorio       Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
 
   @@index([consultorioId], map: "User_consultorioId_fkey")
 }
 
 model Paciente {
   idPaciente    Int           @id @default(autoincrement())
+  nFicha        Int?    
   nome          String        @db.VarChar(60)
   responsavel   String?       @db.VarChar(60)
   dataNasc      DateTime      @db.Date
@@ -69,11 +71,11 @@ model Paciente {
   cidade        String        @db.VarChar(30)
   cpf           String?       @unique @db.VarChar(15)
   profissao     String        @db.VarChar(30)
-  naFila        Boolean       @default(true) 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   consultorioId Int
   complemento   String?       @db.VarChar(30)
+  naFila        Boolean       @default(true)
   anamneses     Anamnese[]
   consultas     Consulta[]
   diagnosticos  Diagnostico[]
@@ -266,18 +268,6 @@ model migrations {
   id        Int    @id @default(autoincrement()) @db.UnsignedInt
   migration String @db.VarChar(255)
   batch     Int
-}
-
-model users {
-  id                BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  consultorio_id    BigInt    @db.UnsignedBigInt
-  name              String    @db.VarChar(255)
-  email             String    @db.VarChar(255)
-  email_verified_at DateTime? @db.Timestamp(0)
-  password          String    @db.VarChar(255)
-  remember_token    String?   @db.VarChar(100)
-  created_at        DateTime? @db.Timestamp(0)
-  updated_at        DateTime? @db.Timestamp(0)
 }
 
 enum StatusConsulta {

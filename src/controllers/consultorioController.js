@@ -1,10 +1,11 @@
 //controllers/consultorioController.js
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid'; // Importa a função para gerar UUID
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
+// usando prisma centralizado (importado acima)
 const configPath = path.join(process.cwd(), 'src/config', 'numeroSerie.json');
 
 export const consultorioController = {
@@ -19,7 +20,7 @@ export const consultorioController = {
     } catch (error) {
       console.error('Erro ao exibir o formulário de consultório:', error);
 
-      if (error instanceof prisma.PrismaClientInitializationError) {
+      if (error instanceof Prisma.PrismaClientInitializationError) {
         req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
       } else {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
@@ -30,7 +31,8 @@ export const consultorioController = {
   // Criar novo consultorio
   async createConsultorio(req, res) {
     try {
-      const { nome, responsavel, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+      const { nome, responsavel, celular, cep, endereco, numero, complemento, bairro, cidade, cpf, profissao } =
+        req.body;
 
       console.log('Dados recebidos:', req.body); // Log dos dados recebidos
 
@@ -62,6 +64,7 @@ export const consultorioController = {
           cep: cep || null,
           endereco,
           numero: parseInt(numero),
+          complemento,
           bairro,
           cidade,
           cpf: cpf || null,
@@ -199,7 +202,8 @@ export const consultorioController = {
   async updateConsultorio(req, res) {
     try {
       const { idConsultorio } = req.params;
-      const { nome, responsavel, celular, cep, endereco, numero, bairro, cidade, cpf, profissao } = req.body;
+      const { nome, responsavel, celular, cep, endereco, numero, complemento, bairro, cidade, cpf, profissao } =
+        req.body;
 
       if (!idConsultorio || isNaN(idConsultorio)) {
         req.flash('error', 'ID do consultório inválido.');
@@ -215,6 +219,7 @@ export const consultorioController = {
           cep,
           endereco,
           numero: parseInt(numero),
+          complemento,
           bairro,
           cidade,
           cpf,

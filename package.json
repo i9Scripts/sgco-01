@@ -1,6 +1,6 @@
 {
   "name": "sgco-v2",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "main": "./src/server.js",
   "type": "module",
   "private": true,
@@ -20,6 +20,7 @@
   "license": "ISC",
   "description": "Sistema de Gerenciamento do Consultório de Optometria",
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.0.1",
     "@prisma/client": "^6.6.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",

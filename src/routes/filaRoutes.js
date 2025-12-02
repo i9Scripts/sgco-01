@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Router } from 'express';
+import prisma from '../lib/prisma.js';
 
 const router = Router();
-const prisma = new PrismaClient();
+// prisma centralizado
 // Rota para exibir a fila de espera
 router.get('/fila-espera', async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.get('/fila-espera', async (req, res) => {
     console.error('Erro ao carregar a fila de espera:', error);
     res.status(500).send('Erro ao carregar a fila de espera');
     // verifica o BD
-    if (error instanceof prisma.PrismaClientInitializationError) {
+    if (error instanceof Prisma.PrismaClientInitializationError) {
       req.flash('error', 'Erro ao conectar ao banco de dados. Verifique a conexão.');
     } else {
       req.flash('error', 'Erro ao exibir formulário. Tente novamente.');

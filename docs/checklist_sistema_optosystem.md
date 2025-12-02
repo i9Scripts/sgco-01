@@ -25,6 +25,9 @@ Baseado no roteiro detalhado fornecido. Marque cada item conforme for concluído
 ### 🟡 Próximos Passos:
 
 #### 🗃 Banco de Dados:
+**PARA FAZER BACKUPS DO DB**
+# Exemplo: substitua <db_user>(admin) por seu usuário MySQL. Será pedido password.
+mysqldump -h localhost -P 3306 -u admin -p optosystem > ~/optosystem-backup-$(date +%Y%m%d_%H%M).sql
 
 * [ ] Revisar `schema.prisma` ou migrations para garantir todos os relacionamentos necessários (Paciente, Profissional, Diagnóstico, Consulta, Fila)
 * [ ] Criar migrations/tabelas para controle financeiro (receitas, despesas)

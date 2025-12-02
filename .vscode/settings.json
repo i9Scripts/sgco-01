@@ -13,8 +13,9 @@
   "editor.rulers": [80, 140],
   "editor.tabSize": 2,
   "extensions.ignoreRecommendations": true,
-  "[prisma]": { "editor.formatOnSave": true },
-
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
   "editor.renderLineHighlight": "gutter",
   "editor.cursorStyle": "line",
   "editor.cursorBlinking": "expand",
