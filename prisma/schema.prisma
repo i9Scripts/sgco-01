@@ -40,25 +40,26 @@ model Consultorio {
 }
 
 model User {
-  nome              String      @db.VarChar(60)
-  email             String      @unique @db.VarChar(30)
-  celular           String      @db.VarChar(15)
-  password          String      @db.VarChar(255)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  isActive          Boolean     @default(true)
+  nome              String        @db.VarChar(60)
+  email             String        @unique @db.VarChar(30)
+  celular           String        @db.VarChar(15)
+  password          String        @db.VarChar(255)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  isActive          Boolean       @default(true)
   consultorioId     Int
-  idUser            Int         @id @default(autoincrement())
-  email_verified_at DateTime?   @db.Timestamp(0)
-  remember_token    String?     @db.VarChar(100)
-  consultorio       Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  idUser            Int           @id @default(autoincrement())
+  email_verified_at DateTime?     @db.Timestamp(0)
+  remember_token    String?       @db.VarChar(100)
+  consultorio       Consultorio   @relation(fields: [consultorioId], references: [idConsultorio])
+  profissional      Profissional?
 
   @@index([consultorioId], map: "User_consultorioId_fkey")
 }
 
 model Paciente {
   idPaciente    Int           @id @default(autoincrement())
-  nFicha        Int?    
+  nFicha        Int?
   nome          String        @db.VarChar(60)
   responsavel   String?       @db.VarChar(60)
   dataNasc      DateTime      @db.Date
@@ -90,10 +91,12 @@ model Paciente {
 
 model Profissional {
   idProfissional Int           @id @default(autoincrement())
-  nome           String        @db.VarChar(60)
+  nome           String?       @db.VarChar(60)
   especialidade  String        @db.VarChar(30)
-  celular        String        @db.VarChar(15)
+  celular        String?       @db.VarChar(15)
   consultorioId  Int
+  userId         Int?          @unique
+  user           User?         @relation(fields: [userId], references: [idUser])
   cboo           String        @db.VarChar(10)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -103,6 +106,7 @@ model Profissional {
 
   @@index([nome])
   @@index([celular])
+  @@index([userId])
   @@index([cboo])
   @@index([consultorioId], map: "Profissional_consultorioId_fkey")
 }

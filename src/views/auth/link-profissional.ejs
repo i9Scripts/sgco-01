@@ -1,0 +1,18 @@
+<div class="container">
+  <h3>Confirme seu vínculo profissional</h3>
+  <p>Encontramos várias contas que podem corresponder ao seu usuário. Selecione a que é você:</p>
+  <form action="/auth/link-profissional" method="post">
+    <ul>
+      <% candidatos.forEach(function(c) { %>
+        <li>
+          <label>
+            <input type="radio" name="selectedId" value="<%= c.id %>" required /> <%= c.nome %> (ID: <%= c.id %>)
+          </label>
+        </li>
+      <% }) %>
+    </ul>
+    <div class="fixed-buttons">
+      <button class="btn btn-primary" type="submit">Confirmar vínculo</button>
+    </div>
+  </form>
+</div>
