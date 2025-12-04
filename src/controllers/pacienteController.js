@@ -166,7 +166,9 @@ export const pacienteController = {
       }
 
       const pacientes = await prisma.paciente.findMany({
-        where: { consultorioId: idConsultorio },
+        where: {
+          consultorioId: idConsultorio,
+        },
         include: {
           anamneses: {
             orderBy: {
@@ -317,6 +319,72 @@ export const pacienteController = {
     } catch (error) {
       console.error('Erro ao deletar paciente:', error);
       req.flash('error', 'Erro ao deletar paciente. Tente novamente.');
+      return res.redirect('/pacientes');
+    }
+  },
+
+  // Marcar paciente como atendido (retirar da fila)
+  async marcarAtendido(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idPaciente } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
+      if (!paciente) {
+        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/');
+      }
+
+      await prisma.paciente.update({
+        where: { idPaciente: parseInt(idPaciente) },
+        data: {
+          naFila: false,
+        },
+      });
+
+      req.flash('success', 'Paciente marcado como atendido.');
+      return res.redirect('/');
+    } catch (error) {
+      console.error('Erro ao marcar paciente como atendido:', error);
+      req.flash('error', 'Erro ao marcar paciente como atendido. Tente novamente.');
+      return res.redirect('/');
+    }
+  },
+
+  // Adicionar paciente à fila de espera
+  async adicionarFila(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idPaciente } = req.params;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
+      if (!paciente) {
+        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/pacientes');
+      }
+
+      await prisma.paciente.update({
+        where: { idPaciente: parseInt(idPaciente) },
+        data: {
+          naFila: true,
+        },
+      });
+
+      req.flash('success', 'Paciente adicionado à fila de espera.');
+      return res.redirect('/pacientes');
+    } catch (error) {
+      console.error('Erro ao adicionar paciente à fila:', error);
+      req.flash('error', 'Erro ao adicionar paciente à fila. Tente novamente.');
       return res.redirect('/pacientes');
     }
   },

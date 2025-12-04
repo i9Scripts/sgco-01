@@ -7,10 +7,16 @@ document.addEventListener('submit', async (e) => {
     const action = form.action;
     const method = (form.getAttribute('method') || 'POST').toUpperCase();
 
-    const body = new FormData(form);
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const body = JSON.stringify(data);
+
     const resp = await fetch(action, {
       method,
-      headers: { Accept: 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body,
     });
 

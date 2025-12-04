@@ -1,8 +1,7 @@
 <div>
-  <form class="ajax-remote" action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
+  <form class="ajax-remote" action="/anamneses/<%= anamnese.idAnam/edit %>?_method=PUT" method="post">
     <input type="hidden" name="idPaciente" value="<%= anamnese.pacienteId %>" />
     <input type="hidden" name="idConsultorio" value="<%= anamnese.consultorioId %>" />
-
     <!-- Resumo do paciente -->
     <div class="form-group mb-2 alert alert-secondary mb-4">
       <h5 class="mb-1">

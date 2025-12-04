@@ -12,8 +12,8 @@ import { join } from 'path';
 dotenv.config();
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
-import { indexController } from './controllers/indexController.js';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
+import { carregarFilaDeEspera } from './middlewares/carregarFilaDeEspera.js';
 import { clearFlashMessages } from './middlewares/clearFlashMiddleware.js';
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
 import anamneseRoutes from './routes/anamneseRoutes.js';
@@ -39,6 +39,7 @@ app.use(cors());
 // Configuração dos middlewares e outras dependências
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(join(process.cwd(), 'src/public')));
 app.use(cookieParser());
 app.use(
@@ -60,6 +61,7 @@ app.set('layout', './layouts/main.ejs');
 
 // Middleware para definir mensagens globais
 app.use(clearFlashMessages);
+app.use(carregarFilaDeEspera);
 app.use((req, res, next) => {
   res.locals.messages = {
     success: req.query.success || null,
@@ -140,18 +142,12 @@ app.get('/buscar-endereco/:cep', async (req, res) => {
 // Rota para a página de espera na TV
 app.get('/espera', async (req, res) => {
   try {
-    // Remova essa parte, pois a conexão com o Prisma deve ser feita corretamente
-    //const pacientesDB = await db.paciente.findMany({
-    //  select: {
-    //    nome: true,
-    //  },
-    //});
     res.render('espera/index', {
       layout: false, // Não utiliza o layout principal
-      pacientes: [], // Ou uma lista vazia, até que você configure o Prisma corretamente
+      pacientes: res.locals.pacientesNaFila || [], // Usa a variável global da fila
     });
   } catch (error) {
-    console.error('Erro ao buscar pacientes:', error);
+    console.error('Erro ao carregar a página de espera:', error);
     res.status(500).send('Erro ao carregar a página de espera.');
   }
 });
@@ -159,8 +155,6 @@ app.get('/espera', async (req, res) => {
 registerWeather(app);
 // Registrar rota de notícias
 registerNews(app);
-app.get('/_fila-espera', indexController.filaParcial);
-app.get('/espera/index', indexController.filaParcial);
 // Rota 404 - Página não encontrada
 app.use((req, res) => {
   res.status(404).render('404', {

@@ -1,5 +1,6 @@
+<% const pacientesNaFila = pacientes.filter(p => p.naFila); %>
 <div class="container">
-  <% if (pacientes.length > 0) { %>
+  <% if (pacientesNaFila.length > 0) { %>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -10,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <% pacientes.forEach(paciente => { %>
+      <% pacientesNaFila.forEach(paciente => { %>
       <tr>
         <td><%= paciente.nome %></td>
         <td><%= new Date(paciente.createdAt).toLocaleString() %></td>
@@ -26,8 +27,8 @@
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
 
-          <!-- Botão para marcar como atendido -->
-          <form action="/paciente/<%= paciente.idPaciente %>/atendido?_method=PUT" method="post" class="d-inline">
+          <!-- Botão para marcar como atendido (aparece somente se estiver na fila) -->
+          <form action="/pacientes/<%= paciente.idPaciente %>/atendido?_method=PUT" method="post" class="d-inline">
             <button type="submit" class="btn btn-success btn-sm" title="Marcar como Atendido">
               <span class="material-symbols-outlined icon-btn">check_circle</span>
             </button>

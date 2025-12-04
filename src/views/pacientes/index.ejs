@@ -35,6 +35,12 @@
           <button class="btn btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
+          <!-- Botão para adicionar à fila -->
+          <form action="/pacientes/<%= paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="d-inline" title="Adicionar à Fila">
+            <button type="submit" class="btn btn-sm btn-success">
+              <span class="material-symbols-outlined icon-btn">playlist_add</span>
+            </button>
+          </form>
           <!-- Botão para excluir paciente -->
           <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir Paciente">
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">

@@ -34,10 +34,10 @@
       <div id="patient-name" class="container">
           <% if (pacientes && pacientes.length) { %>
             <% pacientes.forEach(paciente => { %>
-              <p>Chamando Paciente: <span><%= paciente.nome %></span></p>
+              <p><i class="fa-solid fa-hourglass-half"></i> <span><%= paciente.nome %></span></p>
                   <% }) %>
               <% } else { %>
-                  <li>Nenhum paciente cadastrado.</li>
+                  <li>Nenhum paciente na fila de espera.</li>
               <% } %>
       </div>
     </div>
@@ -46,10 +46,6 @@
         <div><%- include('../espera/carrocel-vertical.ejs') %></div>
     </div>
     <!-- Sessão CLima e notícias -->
-    <div class="api-section">
-      <div class="api-noticias">
-        <h3>Últimas Notícias</h3>
-      </div>
       <div id="api-content">
         <h3>O Clima</h3>
         <img src="/fonts/weathericons-regular-webfont.svg" alt="Paciente" width="50" height="50" />
@@ -57,6 +53,10 @@
         <p><strong>Descrição:</strong></p>
         <p><strong>Umidade:</strong></p>
         <p><strong>Indice UV</strong></p>
+      </div>
+    <div class="api-section">
+      <div class="api-noticias">
+        <h3>Últimas Notícias</h3>
       </div>
     </div>
 

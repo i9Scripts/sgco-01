@@ -7,16 +7,11 @@ const router = Router();
 // Rota para exibir a fila de espera
 router.get('/fila-espera', async (req, res) => {
   try {
-    const pacientesNaFila = await prisma.paciente.findMany({
-      where: { naFila: true }, // Apenas pacientes na fila
-      include: { anamneses: true }, // Inclua as anamneses, se necessário
-      orderBy: { createdAt: 'asc' }, // Ordene por data de criação
-    });
-    // Renderize a view e passe os pacientes
+    // A variável pacientesNaFila já está disponível globalmente graças ao middleware
     res.render('fila-espera', {
       pageTitle: 'Fila de Espera',
       pageIcon: 'ri-list-check', // Ícone dinâmico para a página
-      pacientes: pacientesNaFila,
+      pacientes: res.locals.pacientesNaFila || [], // Usa a variável local
       messages: req.flash(''),
     });
   } catch (error) {

@@ -76,7 +76,7 @@ model Paciente {
   updatedAt     DateTime      @updatedAt
   consultorioId Int
   complemento   String?       @db.VarChar(30)
-  naFila        Boolean       @default(true)
+  naFila        Boolean       @default(false)
   anamneses     Anamnese[]
   consultas     Consulta[]
   diagnosticos  Diagnostico[]

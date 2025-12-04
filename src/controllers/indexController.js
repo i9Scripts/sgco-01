@@ -31,26 +31,4 @@ export const indexController = {
       });
     }
   },
-
-  // rota que renderiza apenas o partial da fila (usada pelo cliente via fetch)
-  async filaParcial(req, res) {
-    try {
-      const idConsultorio = req.session.idConsultorio;
-      const pacientes = idConsultorio
-        ? await prisma.paciente.findMany({
-            where: { consultorioId: idConsultorio },
-            orderBy: { nome: 'asc' },
-            include: {
-              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },
-            },
-          })
-        : [];
-
-      // renderiza apenas o partial (sem layout)
-      return res.render('fila-espera', { pacientes, layout: false });
-    } catch (error) {
-      console.error('Erro ao renderizar partial da fila:', error);
-      return res.status(500).send('Erro ao atualizar fila');
-    }
-  },
 };

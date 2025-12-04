@@ -130,7 +130,7 @@ export const anamneseController = {
       }
 
       req.flash('success', 'Anamnese salva com sucesso!');
-      return res.redirect('/');
+      return res.redirect('/index.js');
     } catch (error) {
       console.error('Erro ao salvar anamnese:', error);
       if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
