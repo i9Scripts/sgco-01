@@ -27,8 +27,10 @@
                     <div class="small text-muted">Ficha: <%= p.nFicha || 'N/D' %> — <%= new Date(p.createdAt).toLocaleString() %></div>
                   </div>
                   <div class="btn-group">
-                    <a href="/pacientes/<%= p.idPaciente %>" class="btn btn-sm btn-info">Ver</a>
-                    <a href="/anamneses/new?idPaciente=<%= p.idPaciente %>" class="btn btn-sm btn-primary">Nova Anamnese</a>
+
+                    <button class="btn btn-sm btn-primary" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= p.idPaciente %>', 'Nova Anamnese')">
+                      <span class="material-symbols-outlined icon-btn">add</span>
+                    </button>
                     <% if (p.anamneses && p.anamneses.length > 0) { %>
                       <% const a = p.anamneses[0]; %>
                       <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>', 'Dados da Anamnese')">
@@ -59,7 +61,7 @@
                     <strong><%= p.nome %></strong>
                     <div class="small text-muted">Ficha: <%= p.nFicha || 'N/D' %></div>
                   </div>
-                  <a href="/pacientes/<%= p.idPaciente %>/edit" class="btn btn-sm btn-secondary">Editar</a>
+                  <button class="btn btn-sm btn-secondary" onclick="abrirModalGenerico('/pacientes/<%= p.idPaciente %>/edit', 'Editar Paciente')">Editar</button>
                 </li>
               <% }) %>
             </ul>
@@ -72,9 +74,9 @@
       <div class="card mb-3">
         <div class="card-header">Ações Rápidas</div>
         <div class="card-body">
-          <a href="/pacientes" class="btn btn-outline-primary mb-2 w-100">Gerenciar Pacientes</a>
-          <a href="/anamneses" class="btn btn-outline-primary mb-2 w-100">Gerenciar Anamneses</a>
-          <a href="/diagnosticos" class="btn btn-outline-primary mb-2 w-100">Gerenciar Diagnósticos</a>
+          <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/pacientes', 'Gerenciar Pacientes')">Gerenciar Pacientes</button>
+          <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/anamneses', 'Gerenciar Anamneses')">Gerenciar Anamneses</button>
+          <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/diagnosticos', 'Gerenciar Diagnósticos')">Gerenciar Diagnósticos</button>
           <a href="/profissionais" class="btn btn-outline-secondary w-100">Meus Dados</a>
         </div>
       </div>
@@ -82,3 +84,4 @@
   </div>
 </div>
 </div>
+<%- include('../partials/_modal') %>
