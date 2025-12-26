@@ -24,26 +24,26 @@
         <td><%= paciente.responsavel %></td>
         <td>
           <!-- Botão para adicionar novo paciente -->
-          <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
+          <button class="btn btn-round btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
             <span class="material-symbols-outlined icon-btn">person_add</span>
           </button>
           <!-- Botão para visualizar paciente -->
-          <button class="btn btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
+          <button class="btn btn-round btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar paciente -->
-          <button class="btn btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
+          <button class="btn btn-round btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <!-- Botão para adicionar à fila -->
           <form action="/pacientes/<%= paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="d-inline" title="Adicionar à Fila">
-            <button type="submit" class="btn btn-sm btn-success">
+            <button type="submit" class="btn btn-round btn-sm btn-success">
               <span class="material-symbols-outlined icon-btn">playlist_add</span>
             </button>
           </form>
           <!-- Botão para excluir paciente -->
           <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir Paciente">
-            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+            <button type="submit" class="btn btn-round btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
               <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
           </form>
@@ -55,21 +55,21 @@
     const anamnese = paciente.anamneses[0]; %>
           <span class="badge bg-success">Registrada</span>
           <!-- Botão para criar nova anamnese (caso queira permitir múltiplas) -->
-          <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
+          <button class="btn btn-round btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">check</span>
           </button>
           <!-- Botão para visualizar anamnese -->
-          <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
+          <button class="btn btn-round btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar anamnese -->
-          <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
+          <button class="btn btn-round btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <% } else { %>
           <span class="badge bg-secondary">Não registrada</span>
           <!-- Botão para criar nova anamnese -->
-          <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
+          <button class="btn btn-round btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
             <span class="material-symbols-outlined icon-btn">add</span>
           </button>
           <% } %>

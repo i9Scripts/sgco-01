@@ -19,6 +19,7 @@
   --secondary-color: #ffffff;
   --back-color: #0f52ba;
   --header-title: #7d7e80cf;
+  --sapphire: #0f52ba; /* azul safira */
 }
 /* ==== Estilo do Formulário === */
 a {
@@ -236,4 +237,84 @@ select.form-control {
 select.form-control:focus {
   color: var(--back-color);
   background-color: transparent;
+}
+/* tabelas */
+.table {
+  border-collapse: collapse;
+  margin-bottom: 0.6rem;
+  font-size: 13px;
+  color: var(--sapphire);
+}
+
+.table th,
+.table td {
+  padding: 6px 8px; /* menos espaço por linha */
+  vertical-align: middle;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+}
+
+/* Cabeçalho da tabela */
+.table thead th {
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: rgba(183, 184, 185, 0.04);
+}
+
+/* Linhas e badges */
+.list-group-item,
+.list-group-item .small,
+.table td .small {
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--sapphire);
+}
+
+/* Cards e headers com destaque em safira */
+.card .card-header {
+  color: var(--sapphire);
+  font-weight: 700;
+  font-size: 14px;
+  background: transparent;
+}
+
+/* Botões redondos ficam levemente menores para combinar */
+.btn-round {
+  width: 28px;
+  height: 28px;
+  padding: 4px 6px !important;
+  font-size: 16px;
+}
+
+.btn-round-sm {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+/* Ajustes responsivos: manter compactação em telas pequenas */
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 6px 6px;
+    font-size: 12px;
+  }
+  .list-group-item {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  .card .card-header {
+    font-size: 13px;
+  }
+}
+
+/* pequenas correções visuais */
+.table .badge {
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.btn .material-symbols-outlined.icon-btn {
+  font-size: 16px !important;
 }

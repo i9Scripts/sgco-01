@@ -18,20 +18,20 @@
         <td><%= profissional.celular %></td>
         <td>
           <!-- Botão para adicionar novo profissional -->
-          <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/profissionais/new', 'Novo Profissional')" title="Adicionar Novo Profissional">
+          <button class="btn btn-round btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/profissionais/new', 'Novo Profissional')" title="Adicionar Novo Profissional">
             <span class="material-symbols-outlined icon-btn">person_add</span>
           </button>
           <!-- Botão para visualizar profissional -->
-          <button class="btn btn-sm btn-info" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>', 'Dados do Profissional')" title="Ver Profissional">
+          <button class="btn btn-round btn-sm btn-info" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>', 'Dados do Profissional')" title="Ver Profissional">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar profissional -->
-          <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>/edit', 'Editar Dados')" title="Editar Profissional">
+          <button class="btn btn-round btn-sm btn-warning" onclick="abrirModalGenerico('/profissionais/<%= profissional.idProfissional %>/edit', 'Editar Dados')" title="Editar Profissional">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <!-- Botão para excluir profissional -->
           <form action="/profissionais/<%= profissional.idProfissional %>?_method=DELETE" method="post" class="d-inline" title="Excluir Profissional">
-            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+            <button type="submit" class="btn btn-round btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
               <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
           </form>

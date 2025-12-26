@@ -28,15 +28,15 @@
                   </div>
                   <div class="btn-group">
 
-                    <button class="btn btn-sm btn-primary" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= p.idPaciente %>', 'Nova Anamnese')">
+                    <button class="btn btn-round btn-sm btn-primary" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= p.idPaciente %>', 'Nova Anamnese')">
                       <span class="material-symbols-outlined icon-btn">add</span>
                     </button>
                     <% if (p.anamneses && p.anamneses.length > 0) { %>
                       <% const a = p.anamneses[0]; %>
-                      <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>', 'Dados da Anamnese')">
+                      <button class="btn btn-round btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>', 'Dados da Anamnese')">
                         <span class="material-symbols-outlined">visibility</span>
                       </button>
-                      <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>/edit', 'Editar Dados')">
+                      <button class="btn btn-round btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>/edit', 'Editar Dados')">
                         <span class="material-symbols-outlined">edit</span>
                       </button>
                     <% } %>
@@ -61,7 +61,9 @@
                     <strong><%= p.nome %></strong>
                     <div class="small text-muted">Ficha: <%= p.nFicha || 'N/D' %></div>
                   </div>
-                  <button class="btn btn-sm btn-secondary" onclick="abrirModalGenerico('/pacientes/<%= p.idPaciente %>/edit', 'Editar Paciente')">Editar</button>
+                  <button class="btn btn-round btn-sm btn-secondary" onclick="abrirModalGenerico('/pacientes/<%= p.idPaciente %>/edit', 'Editar Paciente')">
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
                 </li>
               <% }) %>
             </ul>
@@ -74,7 +76,7 @@
       <div class="card mb-3">
         <div class="card-header">Ações Rápidas</div>
         <div class="card-body">
-          <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/pacientes', 'Gerenciar Pacientes')">Gerenciar Pacientes</button>
+          <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/pacientes', 'Gerenciar Pacientes')"><span class="material-symbols-outlined">edit</span> Gerenciar Pacientes </button>
           <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/anamneses', 'Gerenciar Anamneses')">Gerenciar Anamneses</button>
           <button class="btn btn-outline-primary mb-2 w-100" onclick="abrirModalGenerico('/diagnosticos', 'Gerenciar Diagnósticos')">Gerenciar Diagnósticos</button>
           <a href="/profissionais" class="btn btn-outline-secondary w-100">Meus Dados</a>

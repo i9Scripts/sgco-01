@@ -18,15 +18,15 @@
         <td><%= parceiro.telefone %></td>
         <td>
           <!-- Botão para adicionar novo parceiro -->
-          <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
+          <button class="btn btn-round btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
             <span class="material-symbols-outlined icon-btn">person_add</span>
           </button>
           <!-- Botão para visualizar parceiro -->
-          <button class="btn btn-sm btn-info" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>', 'Dados do Parceiro')" title="Ver Parceiro">
+          <button class="btn btn-round btn-sm btn-info" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>', 'Dados do Parceiro')" title="Ver Parceiro">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar parceiro -->
-          <button class="btn btn-sm btn-warning" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>/edit', 'Editar os Dados')" title="Editar Parceiro">
+          <button class="btn btn-round btn-sm btn-warning" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>/edit', 'Editar os Dados')" title="Editar Parceiro">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <!-- Botão para excluir parceiro -->
@@ -42,7 +42,7 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhum Parceiro encontrado.</p>
-  <button class="btn btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
+  <button class="btn  btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
     <span class="material-symbols-outlined icon-btn">person_add</span> Novo
   </button>
   <% } %>
