@@ -3,6 +3,7 @@
     <p>
       <strong>ID:</strong> <%= anamnese.idAnam %> |
       <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
+      <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
       <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
         <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
 
