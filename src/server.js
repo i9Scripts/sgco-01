@@ -17,6 +17,7 @@ import { carregarFilaDeEspera } from './middlewares/carregarFilaDeEspera.js';
 import { clearFlashMessages } from './middlewares/clearFlashMiddleware.js';
 import { loadConsultorioToSession } from './middlewares/loadConsultorio.js';
 import anamneseRoutes from './routes/anamneseRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import consultorioProtectedRoutes from './routes/consultorioProtectedRoutes.js';
 import consultorioPublicRoutes from './routes/consultorioPublicRoutes.js';
 import diagnosticoRoutes from './routes/diagnosticoRoutes.js';
@@ -82,6 +83,8 @@ app.use('/consultorios', consultorioPublicRoutes); // Rotas públicas para consu
 app.use('/consultorios', verificarConsultorioRegistrado, consultorioProtectedRoutes); // Rotas protegidas
 
 app.use('/', indexRoutes);
+// rotas de autenticação (login/logout/register)
+app.use('/', authRoutes);
 app.use('/parceiros', parceiroRoutes); // Rotas para parceiros
 app.use('/pacientes', pacienteRoutes); // Rotas para Pacientes
 app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
@@ -110,6 +113,12 @@ app.get('/', (req, res) => {
     pageTitle: 'Página Inicial',
     pageIcon: 'bi bi-house-door',
   }); // Passa o pageTitle para o render
+});
+// rota curta para dashboard — redireciona conforme sessão
+app.get('/dashboard', (req, res) => {
+  if (req.session?.idProfissional) return res.redirect('/profissionais/dashboard');
+  if (req.session?.idUser) return res.redirect('/');
+  return res.redirect('/login');
 });
 // Rota para exibir a mensagem de boas-vindas
 app.get('/display-message', (req, res) => {

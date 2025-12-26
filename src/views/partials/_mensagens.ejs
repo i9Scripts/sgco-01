@@ -1,14 +1,19 @@
 <!-- PARTIAL: Mensagens Globais -->
 <div>
-  <% if (messages.welcome && messages.welcome.length > 0) { %>
-    <div class="text-white"><%= messages.welcome %></div>
-  <% } %>
+  <% const normalize = (v) => { if (!v) return []; return Array.isArray(v) ? v : [v]; }; %>
 
-  <% if (messages.error && messages.error.length > 0) { %>
-    <div class="bg-danger text-white"><%= messages.error %></div>
-  <% } %>
+  <% const welcomeMsgs = normalize(messages?.welcome); %>
+  <% welcomeMsgs.forEach(msg => { %>
+    <div class="alert alert-info mb-2"><%= msg %></div>
+  <% }); %>
 
-  <% if (messages.success && messages.success.length > 0) { %>
-    <div class="bg-success text-white"><%= messages.success %></div>
-  <% } %>
+  <% const errorMsgs = normalize(messages?.error); %>
+  <% errorMsgs.forEach(msg => { %>
+    <div class="alert alert-danger mb-2"><%= msg %></div>
+  <% }); %>
+
+  <% const successMsgs = normalize(messages?.success); %>
+  <% successMsgs.forEach(msg => { %>
+    <div class="alert alert-success mb-2"><%= msg %></div>
+  <% }); %>
 </div>

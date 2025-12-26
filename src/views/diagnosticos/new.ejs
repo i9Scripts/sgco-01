@@ -5,8 +5,8 @@
     <div>
       <label for="pacienteId">Paciente</label>
       <select id="pacienteId" name="pacienteId" required>
-        <% pacientes.forEach(paciente => { %>
-        <option value="<%= paciente.idPaciente %>" <%= diagnostico && diagnostico.pacienteId === paciente.idPaciente ? 'selected' : '' %>>
+        <% (pacientes || []).forEach(paciente => { %>
+        <option value="<%= paciente.idPaciente %>" <%= (typeof diagnostico !== 'undefined' && diagnostico && diagnostico.pacienteId === paciente.idPaciente) ? 'selected' : '' %>>
           <%= paciente.nome %>
         </option>
         <% }) %>

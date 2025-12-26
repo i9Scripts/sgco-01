@@ -1,4 +1,4 @@
-<% const pacientesNaFila = pacientes.filter(p => p.naFila); %>
+<% const pacientesNaFila = (pacientes || []).filter(p => p.naFila === false || typeof p.naFila === 'undefined'); %>
 <div class="container">
   <% if (pacientesNaFila.length > 0) { %>
   <table class="table table-striped">
@@ -48,9 +48,9 @@
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar anamnese -->
-          <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
+          <!-- <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </button>
+          </button> -->
           <% } else { %>
           <span class="badge bg-secondary">Não registrada</span>
           <!-- Botão para criar nova anamnese -->

@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import prisma from '../lib/prisma.js';
 import { userController } from './userController.js';
 
@@ -15,66 +15,61 @@ export const authController = {
   async loginUser(req, res) {
     try {
       const { email, password } = req.body;
-      if (!email || !password) {
-        req.flash('error', 'Email e senha são obrigatórios.');
-        return res.redirect('/login');
-      }
-
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
-        req.flash('error', 'Credenciais inválidas.');
+        req.flash('error', 'Credenciais inválidas');
         return res.redirect('/login');
       }
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        req.flash('error', 'Credenciais inválidas.');
+        req.flash('error', 'Credenciais inválidas');
         return res.redirect('/login');
       }
 
-      // Sessão: armazene idUser, consultorio e role
+      // Sessão base
       req.session.idUser = user.idUser;
       req.session.idConsultorio = user.consultorioId;
       req.session.userRole = 'user';
 
-      // Tentar mapear para Profissional: 1) relação explícita (userId), 2) heurísticas (celular/nome)
-      try {
-        const consultorioId = user.consultorioId;
-        // 1) procura por vínculo explícito
-        let profissional = await prisma.profissional.findFirst({ where: { userId: user.idUser } });
+      // 1) Tenta vínculo explícito via userId
+      let profissional = await prisma.profissional.findFirst({
+        where: { userId: user.idUser },
+      });
 
-        if (!profissional) {
-          // 2) heurística: procura por possíveis matches (por celular e nome)
-          const orClauses = [];
-          if (user.celular) orClauses.push({ celular: user.celular });
-          if (user.nome) orClauses.push({ nome: user.nome });
+      // 2) Se não houver vínculo explícito, tenta heurística (celular/nome) no mesmo consultório
+      if (!profissional) {
+        const candidates = await prisma.profissional.findMany({
+          where: {
+            consultorioId: user.consultorioId,
+            OR: [...(user.celular ? [{ celular: user.celular }] : []), ...(user.nome ? [{ nome: user.nome }] : [])],
+          },
+        });
 
-          if (orClauses.length > 0) {
-            const matches = await prisma.profissional.findMany({ where: { consultorioId, OR: orClauses } });
-            if (matches.length === 1) {
-              profissional = matches[0];
-            } else if (matches.length > 1) {
-              // múltiplas correspondências: armazenar candidatos na sessão e redirecionar para confirmação
-              req.session.profissionalCandidates = matches.map((m) => ({ id: m.idProfissional, nome: m.nome }));
-              req.flash('info', 'Várias correspondências encontradas. Confirme qual profissional é você.');
-              return res.redirect('/auth/link-profissional');
-            }
-          }
+        if (candidates.length === 1) {
+          profissional = candidates[0];
+        } else if (candidates.length > 1) {
+          // salvar candidatos na sessão e pedir confirmação do usuário
+          req.session.profissionalCandidates = candidates.map((p) => p.idProfissional);
+          req.flash('info', 'Escolha qual profissional vincular à sua conta.');
+          return res.redirect('/auth/link-profissional');
         }
-
-        if (profissional) {
-          req.session.idProfissional = profissional.idProfissional;
-          req.session.userRole = 'profissional';
-        }
-      } catch (err) {
-        console.warn('Falha ao mapear User para Profissional:', err?.message || err);
       }
 
-      req.flash('success', 'Login efetuado com sucesso.');
-      return res.redirect('/');
+      // Se encontrou profissional (explícito ou heurístico), marca sessão como profissional
+      if (profissional) {
+        req.session.idProfissional = profissional.idProfissional;
+        req.session.userRole = 'profissional';
+      }
+
+      req.flash('success', 'Bem vindo');
+
+      // Redireciona para dashboard do profissional se for profissional
+      const redirectTo = profissional ? '/profissionais/dashboard' : '/';
+      return res.redirect(redirectTo);
     } catch (err) {
-      console.error('Erro no login:', err);
-      req.flash('error', 'Erro ao efetuar login. Tente novamente.');
+      console.error(err);
+      req.flash('error', 'Erro no login');
       return res.redirect('/login');
     }
   },

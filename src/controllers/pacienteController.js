@@ -342,12 +342,10 @@ export const pacienteController = {
 
       await prisma.paciente.update({
         where: { idPaciente: parseInt(idPaciente) },
-        data: {
-          naFila: false,
-        },
+        data: { naFila: true },
       });
 
-      req.flash('success', 'Paciente marcado como atendido.');
+      req.flash('success', 'Paciente marcado como atendido e removido da fila.');
       return res.redirect('/');
     } catch (error) {
       console.error('Erro ao marcar paciente como atendido:', error);

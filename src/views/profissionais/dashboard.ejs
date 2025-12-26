@@ -1,0 +1,84 @@
+<div>
+  <div class="container mt-4">
+
+  <% if ((messages && messages.error) || (messages && messages.success)) { %>
+    <% const normalize = v => (!v ? [] : Array.isArray(v) ? v : [v]); %>
+    <% normalize(messages.error).forEach(m => { %>
+      <div class="alert alert-danger"><%= m %></div>
+    <% }) %>
+    <% normalize(messages.success).forEach(m => { %>
+      <div class="alert alert-success"><%= m %></div>
+    <% }) %>
+  <% } %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-header">Pacientes na Fila</div>
+        <div class="card-body">
+          <% if ((pacientesNaFila || []).length === 0) { %>
+            <p class="text-muted">Nenhum paciente na fila.</p>
+          <% } else { %>
+            <ul class="list-group">
+              <% pacientesNaFila.forEach(p => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong><%= p.nome %></strong>
+                    <div class="small text-muted">Ficha: <%= p.nFicha || 'N/D' %> — <%= new Date(p.createdAt).toLocaleString() %></div>
+                  </div>
+                  <div class="btn-group">
+                    <a href="/pacientes/<%= p.idPaciente %>" class="btn btn-sm btn-info">Ver</a>
+                    <a href="/anamneses/new?idPaciente=<%= p.idPaciente %>" class="btn btn-sm btn-primary">Nova Anamnese</a>
+                    <% if (p.anamneses && p.anamneses.length > 0) { %>
+                      <% const a = p.anamneses[0]; %>
+                      <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>', 'Dados da Anamnese')">
+                        <span class="material-symbols-outlined">visibility</span>
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= a.idAnam %>/edit', 'Editar Dados')">
+                        <span class="material-symbols-outlined">edit</span>
+                      </button>
+                    <% } %>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Pacientes Reservados</div>
+        <div class="card-body">
+          <% if ((pacientesReservados || []).length === 0) { %>
+            <p class="text-muted">Nenhum paciente reservado.</p>
+          <% } else { %>
+            <ul class="list-group">
+              <% pacientesReservados.forEach(p => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong><%= p.nome %></strong>
+                    <div class="small text-muted">Ficha: <%= p.nFicha || 'N/D' %></div>
+                  </div>
+                  <a href="/pacientes/<%= p.idPaciente %>/edit" class="btn btn-sm btn-secondary">Editar</a>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-header">Ações Rápidas</div>
+        <div class="card-body">
+          <a href="/pacientes" class="btn btn-outline-primary mb-2 w-100">Gerenciar Pacientes</a>
+          <a href="/anamneses" class="btn btn-outline-primary mb-2 w-100">Gerenciar Anamneses</a>
+          <a href="/diagnosticos" class="btn btn-outline-primary mb-2 w-100">Gerenciar Diagnósticos</a>
+          <a href="/profissionais" class="btn btn-outline-secondary w-100">Meus Dados</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

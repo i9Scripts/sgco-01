@@ -225,4 +225,31 @@ export const profissionalController = {
       return res.redirect('/profissionais');
     }
   },
+
+  // Dashboard do profissional: acessa CRUD e visualiza fila
+  async dashboard(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      // pacientesNaFila e pacientesReservados são carregados pelo middleware `carregarFilaDeEspera`
+      const pacientesNaFila = res.locals.pacientesNaFila || [];
+      const pacientesReservados = res.locals.pacientesReservados || [];
+
+      return res.render('profissionais/dashboard', {
+        pageTitle: 'Dashboard do Profissional',
+        pageIcon: 'ri-dashboard-line',
+        pacientesNaFila,
+        pacientesReservados,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao abrir dashboard do profissional:', error);
+      req.flash('error', 'Erro ao abrir dashboard.');
+      return res.redirect('/');
+    }
+  },
 };

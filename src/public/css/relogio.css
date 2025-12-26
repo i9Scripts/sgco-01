@@ -3,18 +3,20 @@
   padding: 0;
 }
 .container {
-  height: 50vh;
+  height: 30vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 0.8rem Poppins, sans-serif;
+  font:
+    0.7rem Poppins,
+    sans-serif;
 }
 .clock {
   display: inline-block;
   color: white;
 }
 #Date {
-  font-size: 0.8rem !important;
+  font-size: 0.7rem !important;
   text-align: center;
 }
 .clock ul {
@@ -22,6 +24,6 @@
   padding: 0;
   margin: 0;
   display: flex;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   gap: 5px;
 }

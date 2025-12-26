@@ -1,9 +1,16 @@
 import { Router } from 'express';
 import { profissionalController } from '../controllers/profissionalController.js';
+import { requireRole, verificarProfissionalAutenticado } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
 // Rotas para Profissional
+router.get(
+  '/dashboard',
+  verificarProfissionalAutenticado,
+  requireRole('profissional'),
+  profissionalController.dashboard
+); // Dashboard para profissionais
 router.get('/', profissionalController.getAllProfissionais); // Listar todos os profissionais
 router.get('/new', profissionalController.newProfissionalForm); // Formulário para criar novo profissional
 router.post('/', profissionalController.createProfissional); // Criar novo profissional
