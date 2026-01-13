@@ -6,9 +6,8 @@ Aqui está o trecho atualizado do checklist com os novos passos adicionados:
 
 ### ✔️ Etapas concluídas:
 
-* [x] Instalação do PHP 8.3 e Laravel
+* [x] Instalação do Banco de Dados
 * [x] Configuração do ambiente (MariaDB, Composer, etc.)
-* [x] Criação do projeto Laravel
 * [x] Criação das migrations base (consultórios, usuários, pacientes)
 * [x] Configuração do relacionamento entre tabelas (vinculadas ao consultório)
 * [x] Implementação da autenticação com guard e middleware
@@ -52,8 +51,8 @@ Aqui está o trecho atualizado do checklist com os novos passos adicionados:
 
 #### 🛠 Tecnologias:
 
-* [ ] Confirmar uso de Node.js + Express + Prisma **(ou adaptar para Laravel)**
-* [ ] Usar EJS/HTML/CSS/JS para o frontend (ou Blade, se for Laravel)
+* [ ] Confirmar uso de Node.js + Express + Prisma 
+* [ ] Usar EJS/HTML/CSS/JS para o frontend
 * [ ] Garantir autenticação diferenciada para recepcionista e profissional
 
 ---

@@ -1,9 +1,8 @@
 {
-  "workbench.colorTheme": "Dracula Theme",
+  "workbench.colorTheme": "Copilot Theme",
   "symbols.hidesExplorerArrows": false,
   "workbench.iconTheme": "symbols",
-  "editor.fontFamily": "'Quicksand', monospace",
-
+  "editor.fontFamily": "'MesloLGS NF Regular', monospace",
   "editor.fontLigatures": true,
   "editor.letterSpacing": 0.3,
   "editor.fontSize": 14,
@@ -20,13 +19,13 @@
   "editor.cursorStyle": "line",
   "editor.cursorBlinking": "expand",
   "editor.wordWrap": "on",
+  "editor.minimap.autohide": "none",
+  "editor.minimap.enabled": false,
+  "editor.semanticHighlighting.enabled": true,
   "workbench.editor.labelFormat": "short",
   "explorer.compactFolders": false,
-  "editor.minimap.enabled": false,
-  "editor.semanticHighlighting.enabled": false,
   "breadcrumbs.enabled": false,
   "workbench.activityBar.location": "bottom",
-  "editor.minimap.autohide": "none",
   "window.commandCenter": false,
   "window.title": " ", // sem barra de título
   "workbench.layoutControl.enabled": true,
@@ -47,9 +46,14 @@
   "[svg]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "terminal.integrated.fontFamily": "JetBrainsMono NerdFont, monospace",
+  "terminal.integrated.fontFamily": "'Ubuntu Sans Mono Medium', monospace",
   "terminal.integrated.fontSize": 14,
-  "terminal.integrated.fontLigatures": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.fontLigatures.enabled": true,
+  "terminal.integrated.developer.devMode": true ,
+  
   //Format Settings
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
