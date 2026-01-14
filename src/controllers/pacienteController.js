@@ -84,6 +84,17 @@ export const pacienteController = {
       // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
       const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
+      // Verifica se o consultório existe (evita violação de FK quando o DB foi recriado)
+      const consultorioExists = await prisma.consultorio.findUnique({ where: { idConsultorio: idConsultorio } });
+      if (!consultorioExists) {
+        console.error(`Consultório com id ${idConsultorio} não encontrado no banco.`);
+        req.flash(
+          'error',
+          'Consultório selecionado não existe no banco. Se necessário, recrie ou selecione outro consultório.'
+        );
+        return res.redirect('/consultorios');
+      }
+
       const novoPaciente = await prisma.paciente.create({
         data: {
           nome,

@@ -13,7 +13,7 @@
 }
 .clock {
   display: inline-block;
-  color: white;
+  color: var(--sapphire);
 }
 #Date {
   font-size: 0.7rem !important;

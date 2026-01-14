@@ -23,11 +23,14 @@ export const userController = {
         return res.redirect('/consultorios/new');
       }
 
+      const profissionalId = req.query.profissionalId || null;
+
       res.render('users/new', {
         pageTitle: 'Novo Usuário',
         pageIcon: 'ri-user-add-line',
         formData: {},
-        layout: false,
+        profissionalId,
+        // layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -70,6 +73,20 @@ export const userController = {
         },
       });
 
+      // Vincula ao profissional, se informado
+      const { profissionalId } = req.body;
+      if (profissionalId) {
+        try {
+          await prisma.profissional.update({
+            where: { idProfissional: parseInt(profissionalId) },
+            data: { userId: novoUsuario.idUser },
+          });
+        } catch (err) {
+          console.error('Erro ao vincular usuário ao profissional:', err);
+          // não falhar a rota principal por conta disso; apenas logamos
+        }
+      }
+
       req.flash('success', 'Usuário registrado com sucesso!');
       return res.redirect('/users');
     } catch (error) {
@@ -107,7 +124,6 @@ export const userController = {
         pageTitle: 'Detalhes do Usuário',
         pageIcon: 'ri-user-line',
         user, // Passa os dados do usuário para a view
-        layout: false,
         messages: req.flash(),
       });
     } catch (error) {
@@ -166,7 +182,7 @@ export const userController = {
         pageTitle: 'Editar Usuário',
         pageIcon: 'ri-user-edit-line',
         user, // Passa os dados do usuário para a view
-        layout: false,
+        // layout: false,
         messages: req.flash(),
       });
     } catch (error) {

@@ -73,7 +73,7 @@ export const profissionalController = {
         return res.redirect('/consultorios/new');
       }
 
-      await prisma.profissional.create({
+      const novoProfissional = await prisma.profissional.create({
         data: {
           nome,
           especialidade,
@@ -83,8 +83,9 @@ export const profissionalController = {
         },
       });
 
-      req.flash('success', 'Profissional criado com sucesso!');
-      return res.redirect('/profissionais');
+      req.flash('success', 'Profissional criado com sucesso! Cadastre o login para habilitar o profissional.');
+      // Redireciona para o formulário de criação de usuário passando o profissionalId
+      return res.redirect(`/users/new?profissionalId=${novoProfissional.idProfissional}`);
     } catch (error) {
       console.error('Erro ao criar profissional:', error);
       req.flash('error', 'Erro ao criar profissional. Tente novamente.');

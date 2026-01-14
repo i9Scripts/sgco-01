@@ -7,7 +7,6 @@ export const authController = {
     res.render('auth/login', {
       pageTitle: 'Login',
       pageIcon: 'ri-login-box-line',
-      layout: false,
       messages: req.flash(),
     });
   },
@@ -93,7 +92,7 @@ export const authController = {
       req.flash('info', 'Nenhum candidato para vinculação.');
       return res.redirect('/');
     }
-    return res.render('auth/link-profissional', { layout: false, candidatos, messages: req.flash() });
+    return res.render('auth/link-profissional', { candidatos, messages: req.flash() });
   },
 
   // Recebe seleção do usuário e vincula o profissional ao user

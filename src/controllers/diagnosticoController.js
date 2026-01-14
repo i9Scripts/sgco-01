@@ -55,36 +55,41 @@ export const diagnosticoController = {
       const idConsultorio = req.session.idConsultorio;
       const idProfissional = req.session.idProfissional; // ID do profissional autenticado
 
-      // Verificar se o consultório está selecionado
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      // Verificar se o profissional está autenticado
       if (!idProfissional) {
         req.flash('error', 'Acesso negado. Apenas profissionais autenticados podem acessar esta página.');
         return res.redirect('/login');
       }
 
-      // Buscar pacientes vinculados ao consultório
       const pacientes = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio },
       });
 
-      // Verificar se há pacientes cadastrados no consultório
       if (pacientes.length === 0) {
         req.flash('error', 'Nenhum paciente cadastrado neste consultório.');
         return res.redirect('/pacientes/new');
       }
 
-      // Renderizar o formulário de criação de diagnóstico
+      const profissionais = await prisma.profissional.findMany({
+        where: { consultorioId: idConsultorio },
+      });
+
+      if (profissionais.length === 0) {
+        req.flash('error', 'Nenhum profissional cadastrado neste consultório.');
+        return res.redirect('/profissionais/new');
+      }
+
       res.render('diagnosticos/new', {
         pageTitle: 'Novo Diagnóstico',
         pageIcon: 'ri-file-add-line',
         pacientes,
+        profissionais,
         idConsultorio,
-        messages: req.flash(''),
+        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de diagnóstico:', error);
