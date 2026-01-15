@@ -13,17 +13,17 @@
   font-family: 'Poppins', sans-serif;
 }
 
-body {
+.corpo {
   font-family: Poppins;
   margin: 0;
   padding: 10mm; /* Adjust padding as needed */
   box-sizing: border-box;
   color: var(--sapphire);
-  background-image: url('/img/296466.jpg');
+  /* background-image: url('/img/296466.jpg');
   background-position: center;
   background-size: 100%;
   background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
 }
 
 .pagina {
@@ -42,7 +42,7 @@ body {
   padding: 10mm; /* Inner padding */
 }
 
-header {
+.cabeca {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -154,7 +154,7 @@ footer p {
 
 /* Styling for printing */
 @media print {
-  body {
+  .corpo {
     width: 148mm;
     height: 210mm;
     margin: 5;

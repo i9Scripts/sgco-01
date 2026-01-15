@@ -89,6 +89,7 @@ export const diagnosticoController = {
         pacientes,
         profissionais,
         idConsultorio,
+        diagnostico: null,
         messages: req.flash(),
       });
     } catch (error) {
@@ -117,6 +118,7 @@ export const diagnosticoController = {
         include: {
           paciente: true,
           profissional: true,
+          consultorio: true,
         },
       });
 
@@ -129,7 +131,15 @@ export const diagnosticoController = {
         pageTitle: 'Detalhes do Diagnóstico',
         pageIcon: 'ri-file-list-line',
         diagnostico,
+        layout: false,
         messages: req.flash(),
+        formatarSoma: (v1, v2) => {
+          const n1 = parseFloat(String(v1 || '0').replace(',', '.'));
+          const n2 = parseFloat(String(v2 || '0').replace(',', '.'));
+          const soma = n1 + n2;
+          if (Number.isNaN(soma)) return '';
+          return (soma > 0 ? '+' : '') + soma.toFixed(2).replace('.', ',');
+        },
       });
     } catch (error) {
       console.error('Erro ao buscar diagnóstico:', error);
@@ -192,6 +202,7 @@ export const diagnosticoController = {
         diagnostico,
         pacientes,
         profissionais,
+        idConsultorio,
         messages: req.flash(),
       });
     } catch (error) {

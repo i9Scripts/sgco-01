@@ -172,7 +172,9 @@ model Diagnostico {
   cilOE          String       @db.VarChar(6)
   eixoOE         String       @db.VarChar(3)
   adicao         String       @db.VarChar(6)
-  descricao      String       @db.VarChar(200)
+  descricao      String       @db.VarChar(255)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   pacienteId     Int
   profissionalId Int
   consultorioId  Int

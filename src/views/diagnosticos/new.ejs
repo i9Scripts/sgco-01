@@ -1,32 +1,65 @@
 <div>
-
   <form action="/diagnosticos" method="post">
     <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
-    <div>
-      <label for="pacienteId">Paciente</label>
-      <select id="pacienteId" name="pacienteId" required>
-        <% (pacientes || []).forEach(paciente => { %>
-        <option value="<%= paciente.idPaciente %>" <%= (typeof diagnostico !== 'undefined' && diagnostico && diagnostico.pacienteId === paciente.idPaciente) ? 'selected' : '' %>>
-          <%= paciente.nome %>
-        </option>
-        <% }) %>
-      </select>
+    <div class="row form-group">
+      <div class="col-md-3 mb-3">
+        <select id="pacienteId" name="pacienteId" class="form-control" required>
+          <% pacientes.forEach(paciente => { %>
+            <option value="<%= paciente.idPaciente %>" <%= diagnostico && diagnostico.pacienteId === paciente.idPaciente ? 'selected' : '' %>><%= paciente.nome %></option>
+          <% }) %>
+        </select>
+        <label for="pacienteId">Paciente</label>
+      </div>
+      <div class="col-md-3 mb-3">
+        <select id="profissionalId" name="profissionalId" class="form-control" required>
+          <% profissionais.forEach(profissional => { %>
+            <option value="<%= profissional.idProfissional %>" <%= diagnostico && diagnostico.profissionalId === profissional.idProfissional ? 'selected' : '' %>><%= profissional.nome %></option>
+          <% }) %>
+        </select>
+        <label for="profissionalId">Profissional</label>
+      </div>
     </div>
-    <div>
-      <label for="profissionalId">Profissional</label>
-      <select id="profissionalId" name="profissionalId" required>
-        <% profissionais.forEach(profissional => { %>
-        <option value="<%= profissional.idProfissional %>" <%= diagnostico && diagnostico.profissionalId === profissional.idProfissional ? 'selected' : '' %>>
-          <%= profissional.nome %>
-        </option>
-        <% }) %>
-      </select>
+    <div class="row form-group">
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="esfOD" name="esfOD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6" required />
+        <label for="esfOD">ESF OD</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="cilOD" name="cilOD" value="<%= diagnostico ? diagnostico.cilOD : '' %>" maxlength="6" required />
+        <label for="cilOD">CIL OD</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="3" required />
+        <label for="eixoOD">EIXO OD</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6" required />
+        <label for="esfOE">ESF OE</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="cilOE" name="cilOE" value="<%= diagnostico ? diagnostico.cilOE : '' %>" maxlength="6" required />
+        <label for="cilOE">CIL OE</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="3" required />
+        <label for="eixoOE">EIXO OE</label>
+      </div>
     </div>
-    <div>
-      <label for="descricao">Descrição</label>
-      <textarea id="descricao" name="descricao" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+    <div class="row form-group">
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="adicao" name="adicao" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" required />
+        <label for="adicao">Adição</label>
+      </div>
+      <div class="col-md-10 mb-3">
+        <textarea class="form-control" id="descricao" name="descricao" maxlength="200" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+        <label for="descricao">Descrição</label>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
+    <div class="fixed-buttons">
+      <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar diagnóstico">
+        <span class="material-symbols-outlined icon-btn">save</span> Salvar
+      </button>
+      <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
+    </div>
   </form>
 </div>
