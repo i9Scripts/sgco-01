@@ -9,22 +9,23 @@
             <img src="/img/LogotipoAC.png" alt="Logotipo Consultório" class="logo-consultorio" />
           </div>
           <div class="header-info">
-            <h1>Cuidados Primários da Visão</h1>
+            <p>Cuidados Primários da Visão</p>
           </div>
         </div>
 
         <div class="main">
           <div class="patient-details">
             <div class="dados">
-              <strong>Paciente:</strong> <%= diagnostico.paciente?.nome || 'N/D' %> 
-            </div>
-            <div class="nodia">
-              <p><strong>Data:</strong> <%= diagnostico.createdAt ? new Date(diagnostico.createdAt).toLocaleDateString() : new Date().toLocaleDateString() %></p>
-              <p><strong>Idade:</strong> <%= diagnostico.paciente?.idade || 'N/D' %></p>
+              <div class="nome"><strong>Paciente:</strong> <span class="nome-val"><%= diagnostico.paciente?.nome || 'N/D' %></span></div>
+              <div class="dados-row">
+                <div class="idade"><strong>Idade:</strong> <%= diagnostico.paciente?.idade || 'N/D' %></div>
+                <div class="data"><strong>Data:</strong> <%= diagnostico.createdAt ? new Date(diagnostico.createdAt).toLocaleDateString() : new Date().toLocaleDateString() %></div>
+              </div>
             </div>
           </div>
 
           <div class="prescription">
+            <img src="/img/receita_eixo.jpg">
             <h3>Prescrição de Lentes</h3>
             <table>
               <thead>
@@ -66,18 +67,18 @@
                   <td><%= diagnostico.eixoOE %></td>
                   <td></td>
                 </tr>
-                <p>
-                  <strong>Adição: <%= diagnostico ? diagnostico.adicao : '' %> </strong>
-                </p>
               </tbody>
             </table>
+            <p>
+              <strong>Adição: <%= diagnostico ? diagnostico.adicao : '' %> </strong>
+            </p>
           </div>
           <div class="assinatura">
             <hr />
             <p></strong> <%= diagnostico.profissional?.nome || 'N/D' %> </p>
           </div>
         </div>
-        <footer>
+        <div class="rodape">
           <div>
             <img src="/img/optometria_simbolo-420x420.png" alt="Logotipo Optometria" class="logo-optometria" />
           </div>
@@ -86,10 +87,10 @@
             <p>facebook.com/anacristinaoptometrista</p>
             <p>Whatsapp </strong> <%= diagnostico.consultorio?.celular || 'N/D' %></p>
           </div>
-        </footer>
+        </div>
       </div>
     </div>
-    </div>
+  </div>
   <div class="mt-3">
     <a href="/diagnosticos" class="btn btn-secondary">Voltar</a>
     <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-warning">Editar</a>

@@ -13,22 +13,23 @@
   font-family: 'Poppins', sans-serif;
 }
 
+:root {
+  --receita-bg: url('/img/2964668.jpg');
+  --receita-bg-pos: 20% 60%; /* change to '20% 30%' etc. */
+  --receita-bg-size: 100%; /* change to 'cover', 'contain' or percentage */
+}
+
 .corpo {
   font-family: Poppins;
   margin: 0;
-  padding: 10mm; /* Adjust padding as needed */
+  padding: 0;
   box-sizing: border-box;
   color: var(--sapphire);
-  /* background-image: url('/img/296466.jpg');
-  background-position: center;
-  background-size: 100%;
-  background-attachment: fixed;
-  background-repeat: no-repeat; */
 }
 
 .pagina {
-  width: 148mm; /* A5 width */
-  height: 210mm; /* A5 height */
+  width: 140mm; /* A5 width */
+  height: 200mm; /* A5 height */
   margin: 5mm;
   box-sizing: border-box;
   display: flex;
@@ -40,6 +41,14 @@
   border-top-left-radius: 40px !important; /* Rounded top-left corner */
   border-bottom-right-radius: 40px !important; /* Rounded bottom-right corner */
   padding: 10mm; /* Inner padding */
+  /* Background moved here so the image is shown inside the container
+     Use CSS variables to control which part of the image is visible. */
+  background-image: var(--receita-bg);
+  background-position: var(--receita-bg-pos);
+  background-size: var(--receita-bg-size);
+  background-repeat: no-repeat;
+  background-clip: padding-box; /* keeps image inside border/padding */
+  overflow: hidden; /* clip overflowing parts and respect border-radius */
 }
 
 .cabeca {
@@ -51,19 +60,26 @@
 }
 .patient-details {
   font-size: 13px;
-}
-.dados {
   display: flex;
-  align-items: start;
-  text-align: center;
+  flex-direction: column; /* coloca os elementos em coluna */
+  gap: 4mm;
 }
-.nodia {
+.patient-details .dados {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  gap: 2mm;
+}
+.patient-details .dados .nome {
+  font-weight: 600;
+}
+.patient-details .dados .dados-row {
+  display: flex;
+  justify-content: space-between; /* data à esquerda, idade à direita */
+  align-items: center;
 }
 .header-info {
-  font-size: 13px;
+  font-size: 18px;
+  font-weight: 600;
 }
 .logos img {
   max-height: 100px; /* Adjust logo size as needed */
@@ -73,38 +89,30 @@
 .header-info {
   text-align: right;
 }
-.nodia {
-  display: block; /* Garante que o elemento ocupe uma linha inteira */
-  text-align: right; /* Alinha o texto à direita */
-  margin-bottom: 10mm; /* Adiciona espaçamento inferior */
-}
-
-.nodia p {
-  margin: 0; /* Remove margens padrão do parágrafo */
-}
 
 .dados {
-  display: flex; /* Define um layout flexível */
-  justify-content: space-between; /* Espaça os componentes igualmente */
-  align-items: center; /* Alinha os componentes verticalmente */
-  gap: 5mm; /* Adiciona espaçamento entre os componentes */
-  margin-bottom: 10mm; /* Adiciona espaçamento inferior */
+  /* fallback generic styling for other contexts */
+  display: block;
 }
-
 .prescription {
-  max-width: 120mm; /* Ensures it does not exceed the container's width */
   overflow-wrap: break-word; /* Breaks long words to fit within the container */
-  margin-bottom: 20mm; /* Adds spacing below the prescription section */
 }
-.prescription h3 {
+.prescription p,
+h3 {
   text-align: center;
   margin-bottom: 5mm;
+  font-size: 13px;
+}
+.prescription img {
+  width: auto;
+  height: 40mm;
+  margin-left: 20px;
 }
 table {
   width: 100%; /* Faz a tabela ocupar toda a largura do contêiner */
   table-layout: fixed; /* Garante que as colunas tenham larguras fixas */
   border-collapse: collapse; /* Remove espaços entre as células */
-  margin-bottom: 30mm; /* Espaçamento inferior */
+  margin-bottom: 5mm; /* Espaçamento inferior */
 }
 
 th,
@@ -132,20 +140,19 @@ th {
 .assinatura {
   text-align: end;
 }
-footer {
-  width: 148mm;
+.rodape {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin-top: 2mm;
 }
-footer img {
+.rodape img {
   max-height: 50px; /* Adjust logo size as needed */
   margin-right: 5mm;
   margin-left: 0;
 }
-footer p {
+.rodape p {
   text-align: right;
   font-size: 13px;
   font-weight: 600;
@@ -165,6 +172,10 @@ footer p {
     width: 100%;
     height: 100%;
     padding: 5mm;
+    /* print: keep background on container if the browser allows printing backgrounds */
+    background-image: var(--receita-bg);
+    background-position: var(--receita-bg-pos);
+    background-size: var(--receita-bg-size);
   }
   th,
   td {
