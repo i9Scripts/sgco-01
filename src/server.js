@@ -29,6 +29,7 @@ import parceiroRoutes from './routes/parceiroRoutes.js';
 import profissionalRoutes from './routes/profissionalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import registerWeather from './routes/weather.js';
+import financeiroRoutes from './routes/financeiroRoutes.js'; // New import
 
 // Configuração da aplicação
 const app = express();
@@ -93,6 +94,7 @@ app.use('/anamneses', anamneseRoutes); //Rotas para Anamneses
 app.use('/users', userRoutes); // Rotas para usuários
 app.use('/profissionais', profissionalRoutes);
 app.use('/diagnosticos', diagnosticoRoutes);
+app.use('/financeiro', financeiroRoutes); // New route usage
 // Registro das rotas da fila de espera
 app.use('/', filaRoutes);
 

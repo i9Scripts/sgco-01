@@ -1,0 +1,53 @@
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Nome do Paciente</th>
+                <th>Ficha Nº</th>
+                <th>Entrada na Fila</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (pacientes && pacientes.length > 0) { %>
+                <% pacientes.forEach(paciente => { %>
+                    <tr>
+                        <td><%= paciente.nome %></td>
+                        <td><%= paciente.nFicha || 'N/D' %></td>
+                        <td><%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></td>
+                        <td>
+                            <!-- Botão para visualizar paciente -->
+                            <button class="btn btn-round btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
+                                <span class="material-symbols-outlined icon-btn">visibility</span>
+                            </button>
+                            <!-- Botão para editar paciente -->
+                            <button class="btn btn-round btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
+                                <span class="material-symbols-outlined icon-btn">edit</span>
+                            </button>
+                            <!-- Ações específicas do profissional ou recepcionista podem ser adicionadas aqui via lógica EJS -->
+                            <!-- Exemplo para o profissional: -->
+                            <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
+                                <form action="/profissionais/atender/<%= paciente.idPaciente %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-success ml-2" title="Atender Paciente">
+                                        <i class="bi bi-person-check-fill"></i> Atender
+                                    </button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4" class="text-center">Nenhum paciente na fila no momento.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* Estilos adicionais para a fila, se necessário */
+    .table th, .table td {
+        vertical-align: middle;
+    }
+</style>

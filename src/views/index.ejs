@@ -1,16 +1,65 @@
-<div>
-  <!-- Título principal da página -->
-  <div class="row pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Dados gerais do sistema</h1>
-  </div>
+<div class="container-fluid py-4">
+    <h1 class="text-center mb-4"><i class="<%= pageIcon %>"></i> <%= pageTitle %></h1>
 
-  <!-- Conteúdo principal da página -->
-  <div class="row">
-    <div class="col">
-      <p>Conteúdo da página principal...</p>
+    <% if (messages.error) { %>
+        <div class="alert alert-danger" role="alert"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="alert alert-success" role="alert"><%= messages.success %></div>
+    <% } %>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-4 mb-3">
+            <a href="/pacientes/new" class="btn btn-primary btn-lg btn-block custom-dashboard-btn">
+                <i class="bi bi-person-plus-fill icon-large"></i><br>
+                <span>Cadastrar Novo Paciente</span>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="/pacientes" class="btn btn-success btn-lg btn-block custom-dashboard-btn">
+                <i class="bi bi-search icon-large"></i><br>
+                <span>Buscar Paciente / Anamnese</span>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="/financeiro/extrato" class="btn btn-info btn-lg btn-block custom-dashboard-btn">
+                <i class="bi bi-cash-coin icon-large"></i><br>
+                <span>Registrar Pagamento / Financeiro</span>
+            </a>
+        </div>
     </div>
 
-    <div id="fila-espera-container"><%- include('./fila-espera.ejs') %></div>
-  </div>
+    <hr>
+
+    <h2 class="text-center mb-4">Fila de Espera</h2>
+    <div id="fila-de-espera-recepcao">
+        <%- include('./partials/_filaEspera.ejs', { pacientes: pacientesNaFila }) %>
+    </div>
 </div>
-<script src="/js/filaEspera.js"></script>
+
+<style>
+    /* Estilos básicos para os botões do dashboard */
+    .custom-dashboard-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 150px; /* Altura fixa para todos os botões */
+        font-size: 1.2rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: white; /* Garante que o texto seja branco para todos os botões */
+    }
+    .custom-dashboard-btn .icon-large {
+        font-size: 3rem; /* Tamanho maior para o ícone */
+        margin-bottom: 10px;
+    }
+    .custom-dashboard-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

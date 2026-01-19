@@ -24,20 +24,20 @@
         <td><%= paciente.responsavel %></td>
         <td>
           <!-- Botão para adicionar novo paciente -->
-          <button class="btn btn-round btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
+          <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
             <span class="material-symbols-outlined icon-btn">person_add</span>
           </button>
           <!-- Botão para visualizar paciente -->
-          <button class="btn btn-round btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
+          <button class="btn btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar paciente -->
-          <button class="btn btn-round btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
+          <button class="btn btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
           <!-- Botão para adicionar à fila -->
           <form action="/pacientes/<%= paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="d-inline" title="Adicionar à Fila">
-            <button type="submit" class="btn btn-round btn-sm btn-success">
+            <button type="submit" class="btn btn-sm btn-success">
               <span class="material-symbols-outlined icon-btn">playlist_add</span>
             </button>
           </form>
@@ -81,7 +81,7 @@
   <% } else { %>
   <p class="text-white">Nenhum Paciente encontrado.</p>
   <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
-    <span class="material-symbols-outlined icon-btn">person_add</span> Novo
+    <span class="material-symbols-outlined icon-btn">person_add</span>
   </button>
   <% } %>
 </div>

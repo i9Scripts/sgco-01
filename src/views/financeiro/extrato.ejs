@@ -1,0 +1,61 @@
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Extrato Financeiro</h6>
+            <a href="/financeiro/cobrar" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Nova Cobrança
+            </a>
+        </div>
+        <div class="card-body">
+            <% if (messages.error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= messages.error %>
+                </div>
+            <% } %>
+            <% if (messages.success) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= messages.success %>
+                </div>
+            <% } %>
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Paciente</th>
+                            <th>Descrição</th>
+                            <th>Parceiro</th>
+                            <th>Valor Bruto (R$)</th>
+                            <th>Desconto (R$)</th>
+                            <th>Valor Final (R$)</th>
+                            <th>Forma Pagamento</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (lancamentos.length > 0) { %>
+                            <% lancamentos.forEach(lancamento => { %>
+                                <tr>
+                                    <td><%= new Date(lancamento.createdAt).toLocaleDateString('pt-BR') %></td>
+                                    <td><%= lancamento.paciente.nome %></td>
+                                    <td><%= lancamento.descricao || 'Atendimento' %></td>
+                                    <td><%= lancamento.parceiro ? lancamento.parceiro.nome : 'Particular' %></td>
+                                    <td><%= lancamento.valorBruto.toFixed(2) %></td>
+                                    <td><%= lancamento.valorDesconto.toFixed(2) %></td>
+                                    <td><%= lancamento.valorFinal.toFixed(2) %></td>
+                                    <td><%= lancamento.formaPagamento %></td>
+                                    <td><%= lancamento.statusPagamento %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="9" class="text-center">Nenhum lançamento financeiro encontrado.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

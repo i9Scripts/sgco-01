@@ -1,0 +1,86 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Registrar Cobrança para Paciente: <%= paciente.nome %></h6>
+                </div>
+                <div class="card-body">
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
+                    <% if (messages.success) { %>
+                        <div class="alert alert-success" role="alert">
+                            <%= messages.success %>
+                        </div>
+                    <% } %>
+
+                    <form action="/financeiro/registrar" method="POST">
+                        <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
+                        <% if (parceiro) { %>
+                            <input type="hidden" name="parceiroId" value="<%= parceiro.idParceiro %>">
+                        <% } %>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">Paciente:</label>
+                            <div class="col-sm-8">
+                                <p class="form-control-plaintext"><%= paciente.nome %></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">Parceiro:</label>
+                            <div class="col-sm-8">
+                                <p class="form-control-plaintext">
+                                    <%= parceiro ? parceiro.nome : 'Particular' %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">Valor Bruto (R$):</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control-plaintext" name="valorBruto" value="<%= valorBruto %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">Desconto (R$):</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control-plaintext" name="valorDesconto" value="<%= valorDesconto %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label font-weight-bold">Valor Final (R$):</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control-plaintext font-weight-bold text-success" name="valorFinal" value="<%= valorFinal %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="formaPagamento">Forma de Pagamento:</label>
+                            <select class="form-control" id="formaPagamento" name="formaPagamento" required>
+                                <% formasPagamento.forEach(forma => { %>
+                                    <option value="<%= forma %>"><%= forma %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="observacao">Observações (opcional):</label>
+                            <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Registrar Pagamento</button>
+                            <a href="/pacientes" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

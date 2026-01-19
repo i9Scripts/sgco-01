@@ -20,4 +20,6 @@ router.get('/:idProfissional/edit', profissionalController.editProfissionalForm)
 router.put('/:idProfissional', profissionalController.updateProfissional); // Atualizar profissional
 router.delete('/:idProfissional', profissionalController.deleteProfissional); // Deletar profissional
 
+router.post('/atender/:idPaciente', verificarProfissionalAutenticado, profissionalController.atenderPaciente); // Atender paciente (remover da fila)
+
 export default router;

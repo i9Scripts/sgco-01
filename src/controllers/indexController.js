@@ -4,27 +4,27 @@ import prisma from '../lib/prisma.js';
 export const indexController = {
   async index(req, res) {
     try {
-      let pacientes = [];
+      let pacientesNaFila = []; // Changed variable name
       if (req.session.idConsultorio) {
-        pacientes = await prisma.paciente.findMany({
-          where: { consultorioId: req.session.idConsultorio, naFila: false },
-          orderBy: { nome: 'asc' },
-          include: {
-            anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },
-          },
+        pacientesNaFila = await prisma.paciente.findMany({ // Fetches patients in queue
+          where: { consultorioId: req.session.idConsultorio, naFila: true }, // Filter for 'naFila: true'
+          orderBy: { createdAt: 'asc' }, // Order by entry time into queue
         });
       }
 
       res.render('index', {
-        pageTitle: 'OptoSystem',
-        pageIcon: 'ri-information-line',
-        pacientes,
+        pageTitle: 'Dashboard da Recepção', // More appropriate title
+        pageIcon: 'bi bi-reception-4', // New icon
+        pacientesNaFila, // Pass this to the view
+        messages: req.flash(),
       });
     } catch (error) {
-      console.error('Erro ao carregar a central:', error);
+      console.error('Erro ao carregar o dashboard da recepção:', error);
       res.status(500).render('index', {
-        pacientes: [],
-        error: 'Erro ao carregar dados da central.',
+        pacientesNaFila: [],
+        error: 'Erro ao carregar dados do dashboard da recepção.',
+        pageTitle: 'Erro',
+        pageIcon: 'bi bi-x-circle',
       });
     }
   },

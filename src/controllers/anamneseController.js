@@ -47,7 +47,6 @@ export const anamneseController = {
         idPaciente,
         idConsultorio,
         paciente,
-        layout: false,
         formData: {},
         messages: req.flash(''),
       });
@@ -129,8 +128,8 @@ export const anamneseController = {
         return res.json({ success: true, anamnese: nova, pacienteId: idPaciente });
       }
 
-      req.flash('success', 'Anamnese salva com sucesso!');
-      return res.redirect('/');
+      req.flash('success', 'Anamnese salva com sucesso! Prossiga para a cobrança.');
+      return res.redirect(`/financeiro/cobrar/${idPaciente}`);
     } catch (error) {
       console.error('Erro ao salvar anamnese:', error);
       if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
@@ -193,7 +192,6 @@ export const anamneseController = {
         paciente, // Passa os dados do paciente para a view
         dataCreatedAt,
         idadePaciente,
-        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -392,7 +390,6 @@ export const anamneseController = {
         anamnese,
         paciente, // Passa os dados do paciente para a view
         idadePaciente, // passa para a view
-        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {

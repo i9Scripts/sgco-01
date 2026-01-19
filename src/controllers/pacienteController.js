@@ -37,7 +37,6 @@ export const pacienteController = {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
         formData: {},
-        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -157,7 +156,6 @@ export const pacienteController = {
         pageIcon: 'ri-folder-user-line',
         paciente,
         idadePaciente,
-        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
@@ -309,27 +307,55 @@ export const pacienteController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const { idPaciente } = req.params;
+      const idPacienteInt = parseInt(idPaciente);
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
+      const paciente = await findPacienteDoConsultorio(idPacienteInt, idConsultorio);
       if (!paciente) {
         req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
         return res.redirect('/pacientes');
       }
 
-      await prisma.paciente.delete({
-        where: { idPaciente: parseInt(idPaciente) },
+      // Usar uma transação para garantir que todas as exclusões ocorram ou nenhuma delas.
+      await prisma.$transaction(async (tx) => {
+        // Encontrar todas as consultas do paciente para lidar com dependências aninhadas
+        const consultas = await tx.consulta.findMany({
+            where: { pacienteId: idPacienteInt },
+            select: { idConsulta: true },
+        });
+        const consultaIds = consultas.map(c => c.idConsulta);
+
+        if (consultaIds.length > 0) {
+            // Deletar pagamentos e itens de venda associados às consultas
+            await tx.pagamento.deleteMany({
+                where: { consultaId: { in: consultaIds } },
+            });
+            await tx.itensVenda.deleteMany({
+                where: { consultaId: { in: consultaIds } },
+            });
+        }
+        
+        // Deletar registros que dependem diretamente do paciente
+        await tx.consulta.deleteMany({ where: { pacienteId: idPacienteInt } });
+        await tx.lancamentoFinanceiro.deleteMany({ where: { pacienteId: idPacienteInt } });
+        await tx.anamnese.deleteMany({ where: { pacienteId: idPacienteInt } });
+        await tx.diagnostico.deleteMany({ where: { pacienteId: idPacienteInt } });
+
+        // Finalmente, deletar o paciente
+        await tx.paciente.delete({
+            where: { idPaciente: idPacienteInt },
+        });
       });
 
-      req.flash('success', 'Paciente deletado com sucesso!');
+      req.flash('success', 'Paciente e todos os seus registros foram deletados com sucesso!');
       return res.redirect('/pacientes');
     } catch (error) {
       console.error('Erro ao deletar paciente:', error);
-      req.flash('error', 'Erro ao deletar paciente. Tente novamente.');
+      req.flash('error', 'Erro ao deletar paciente. O paciente pode ter registros associados que não puderam ser removidos.');
       return res.redirect('/pacientes');
     }
   },
@@ -424,7 +450,6 @@ export const pacienteController = {
         pageIcon: 'ri-edit-line',
         paciente,
         idadePaciente,
-        layout: false,
         messages: req.flash(''),
       });
     } catch (error) {
