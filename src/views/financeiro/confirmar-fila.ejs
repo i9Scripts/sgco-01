@@ -1,0 +1,71 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="container mt-5">
+    <% if (messages.success && messages.success.length > 0) { %>
+        <div class="alert alert-success" role="alert">
+            <%= messages.success %>
+        </div>
+    <% } %>
+    
+    <div class="text-center">
+        <h1 class="mb-4"><%= pageTitle %></h1>
+        <p class="lead">Deseja adicionar o paciente <strong><%= paciente.nome %></strong> à fila de espera?</p>
+        
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <button id="btn-sim" class="btn btn-primary btn-lg">Sim</button>
+            <button id="btn-nao" class="btn btn-secondary btn-lg">Não</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnSim = document.getElementById('btn-sim');
+        const btnNao = document.getElementById('btn-nao');
+        const pacienteId = '<%= paciente.idPaciente %>';
+
+        btnSim.addEventListener('click', () => {
+            // Disable buttons to prevent multiple clicks
+            btnSim.disabled = true;
+            btnNao.disabled = true;
+            
+            fetch(`/pacientes/${pacienteId}/adicionar-fila`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('A resposta do servidor não foi OK');
+                }
+                // Check if the response is JSON, otherwise treat as empty
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json();
+                } else {
+                    return {}; 
+                }
+            })
+            .then(data => {
+                // The flash message should be set by the server on the PUT request
+                // and will be displayed on the redirected page.
+                window.location.href = '/';
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar paciente à fila:', error);
+                // Re-enable buttons if there was an error
+                btnSim.disabled = false;
+                btnNao.disabled = false;
+                // You can use a more sophisticated way to show errors, like a toast notification
+                alert('Ocorreu um erro ao adicionar o paciente à fila. Tente novamente.');
+            });
+        });
+
+        btnNao.addEventListener('click', () => {
+            window.location.href = '/';
+        });
+    });
+</script>
+
+<%- include('../partials/footer') %>

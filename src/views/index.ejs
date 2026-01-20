@@ -1,5 +1,5 @@
 <div class="container-fluid py-4">
-    <h1 class="text-center mb-4"><i class="<%= pageIcon %>"></i> <%= pageTitle %></h1>
+
 
     <% if (messages.error) { %>
         <div class="alert alert-danger" role="alert"><%= messages.error %></div>
@@ -10,23 +10,22 @@
 
     <div class="row text-center mb-5">
         <div class="col-md-4 mb-3">
-            <a href="/pacientes/new" class="btn btn-primary btn-lg btn-block custom-dashboard-btn">
-                <i class="bi bi-person-plus-fill icon-large"></i><br>
-                <span>Cadastrar Novo Paciente</span>
-            </a>
+            <!-- Botão para adicionar novo paciente -->
+          <button class="btn btn-primary btn-lg btn-block custom-dashboard-btn" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
+            <span class="bi bi-person-plus-fill icon-large"></span>
+          </button>
         </div>
         <div class="col-md-4 mb-3">
-            <a href="/pacientes" class="btn btn-success btn-lg btn-block custom-dashboard-btn">
-                <i class="bi bi-search icon-large"></i><br>
-                <span>Buscar Paciente / Anamnese</span>
-            </a>
+            <button class="btn btn-success btn-lg btn-block custom-dashboard-btn" title="Buscar Paciente / Anamnese" onclick="abrirModalGenerico('/pacientes','Novo Paciente')">
+            <span class="bi bi-search icon-large"></span>
+          </button>
         </div>
         <div class="col-md-4 mb-3">
-            <a href="/financeiro/extrato" class="btn btn-info btn-lg btn-block custom-dashboard-btn">
-                <i class="bi bi-cash-coin icon-large"></i><br>
-                <span>Registrar Pagamento / Financeiro</span>
-            </a>
+            <button class="btn btn-info btn-lg btn-block custom-dashboard-btn" title="Registrar Pagamento" onclick="abrirModalGenerico('/financeiro/cobrar','Novo Paciente')">
+            <span class="bi bi-cash-coin icon-large"></span>
+          </button>
         </div>
+        
     </div>
 
     <hr>
@@ -36,7 +35,7 @@
         <%- include('./partials/_filaEspera.ejs', { pacientes: pacientesNaFila }) %>
     </div>
 </div>
-
+<div><%- include('./partials/_modal') %></div>
 <style>
     /* Estilos básicos para os botões do dashboard */
     .custom-dashboard-btn {
@@ -45,8 +44,8 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 150px; /* Altura fixa para todos os botões */
-        font-size: 1.2rem;
+        height: 100px; /* Altura fixa para todos os botões */
+        font-size: 1.1rem;
         border-radius: 10px;
         transition: all 0.3s ease;
         text-decoration: none;
@@ -61,5 +60,6 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 </style>
+
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

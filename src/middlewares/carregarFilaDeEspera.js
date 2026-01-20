@@ -4,18 +4,18 @@ import prisma from '../lib/prisma.js';
 export async function carregarFilaDeEspera(req, res, next) {
   try {
     if (req.session.idConsultorio) {
-      // Pacientes que devem aparecer na fila: naFila === false
+      // Padroniza: pacientes na fila => naFila === true
       res.locals.pacientesNaFila = await prisma.paciente.findMany({
-        where: { consultorioId: req.session.idConsultorio, naFila: false },
+        where: { consultorioId: req.session.idConsultorio, naFila: true },
         orderBy: { createdAt: 'asc' },
         include: {
           anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },
         },
       });
 
-      // Pacientes reservados/fora da fila: naFila === true (para uso em outras páginas)
+      // Pacientes reservados/fora da fila: naFila === false
       res.locals.pacientesReservados = await prisma.paciente.findMany({
-        where: { consultorioId: req.session.idConsultorio, naFila: true },
+        where: { consultorioId: req.session.idConsultorio, naFila: false },
         orderBy: { updatedAt: 'desc' },
         include: {
           anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },

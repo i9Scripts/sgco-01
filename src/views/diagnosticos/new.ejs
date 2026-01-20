@@ -32,6 +32,8 @@
         <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="3" required />
         <label for="eixoOD">EIXO OD</label>
       </div>
+    </div>
+    <div class="row form-group">
       <div class="col-md-2 mb-3">
         <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6" required />
         <label for="esfOE">ESF OE</label>
@@ -50,9 +52,11 @@
         <input type="text" class="form-control" id="adicao" name="adicao" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" required />
         <label for="adicao">Adição</label>
       </div>
-      <div class="col-md-10 mb-3">
-        <textarea class="form-control" id="descricao" name="descricao" maxlength="200" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
-        <label for="descricao">Descrição</label>
+      <div class="row form-group">
+        <div class="col-md-6 mb-3">
+          <textarea class="form-control" id="descricao" name="descricao" rows="6" style="min-height:150px;" maxlength="200" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+          <label for="descricao">Descrição</label>
+        </div>
       </div>
     </div>
     <div class="fixed-buttons">

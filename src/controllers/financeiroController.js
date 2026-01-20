@@ -84,19 +84,39 @@ export const processarCobranca = async (req, res) => {
             },
         });
 
-        await prisma.paciente.update({
-            where: { idPaciente: parseInt(pacienteId) },
-            data: {
-                naFila: true, // Adiciona o paciente à fila
-            },
-        });
-
-        req.flash('success', 'Cobrança registrada e paciente adicionado à fila com sucesso!');
-        res.redirect(`/`); // Redireciona para o dashboard da recepção
+        req.flash('success', 'Cobrança registrada com sucesso!');
+        // Instead of adding to the queue, redirect to a confirmation page
+        res.redirect(`/financeiro/confirmar-fila/${pacienteId}`);
     } catch (error) {
         console.error('Erro ao processar cobrança:', error);
         req.flash('error', 'Erro ao registrar cobrança.');
         res.redirect(`/financeiro/cobrar/${pacienteId}`); // Mantém na página de cobrança com erro
+    }
+};
+
+// GET para renderizar a página de confirmação para adicionar à fila
+export const renderizarConfirmacaoFila = async (req, res) => {
+    const { pacienteId } = req.params;
+    try {
+        const paciente = await prisma.paciente.findUnique({
+            where: { idPaciente: parseInt(pacienteId) },
+        });
+
+        if (!paciente) {
+            req.flash('error', 'Paciente não encontrado.');
+            return res.redirect('/');
+        }
+
+        res.render('financeiro/confirmar-fila', {
+            pageTitle: 'Confirmar Fila de Espera',
+            pageIcon: 'bi-question-circle',
+            paciente,
+            messages: req.flash(),
+        });
+    } catch (error) {
+        console.error('Erro ao renderizar página de confirmação:', error);
+        req.flash('error', 'Ocorreu um erro.');
+        res.redirect('/');
     }
 };
 

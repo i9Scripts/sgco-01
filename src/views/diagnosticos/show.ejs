@@ -34,7 +34,7 @@
                   <th>ESF</th>
                   <th>CIL</th>
                   <th>EIXO</th>
-                  <th>DNP</th>
+                  <th>ADIÇÃO</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,7 +43,7 @@
                   <td><%= diagnostico.esfOD %></td>
                   <td><%= diagnostico.cilOD %></td>
                   <td><%= diagnostico.eixoOD %></td>
-                  <td></td>
+                  <td><strong><%= diagnostico ? diagnostico.adicao : '' %> </strong></td>
                   <!-- espaço para dnp -->
                 </tr>
                 <tr>
@@ -55,23 +55,21 @@
                 </tr>
                 <tr>
                   <td><strong>Perto OD</strong></td>
-                  <td><%= formatarSoma(diagnostico.esfOD, diagnostico.adicao) %></td>
-                  <td><%= diagnostico.cilOD %></td>
-                  <td><%= diagnostico.eixoOD %></td>
+                  <td>|______|</td>
+                  <td>|______|</td>
+                  <td>|______|</td>
                   <td></td>
                 </tr>
                 <tr>
                   <td><strong>Perto OE</strong></td>
-                    <td><%= formatarSoma(diagnostico.esfOE, diagnostico.adicao) %></td>
-                  <td><%= diagnostico.cilOE %></td>
-                  <td><%= diagnostico.eixoOE %></td>
+                  <td>|______|</td>
+                  <td>|______|</td>
+                  <td>|______|</td>
                   <td></td>
                 </tr>
               </tbody>
             </table>
-            <p>
-              <strong>Adição: <%= diagnostico ? diagnostico.adicao : '' %> </strong>
-            </p>
+            <p style="min-height:140px;"><strong><%= diagnostico ? diagnostico.descricao : '' %> </strong></p>
           </div>
           <div class="assinatura">
             <hr />
@@ -83,9 +81,7 @@
             <img src="/img/optometria_simbolo-420x420.png" alt="Logotipo Optometria" class="logo-optometria" />
           </div>
           <div>
-            <p></strong> <%= diagnostico.consultorio?.nome || 'N/D' %></p>
-            <p>facebook.com/anacristinaoptometrista</p>
-            <p>Whatsapp </strong> <%= diagnostico.consultorio?.celular || 'N/D' %></p>
+            <p><strong><%= diagnostico.consultorio?.nome || 'N/D' %> | Whatsapp </strong> <%= diagnostico.consultorio?.celular || 'N/D' %></p>
           </div>
         </div>
       </div>

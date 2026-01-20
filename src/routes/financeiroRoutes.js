@@ -18,4 +18,7 @@ router.post('/registrar', financeiroController.processarCobranca);
 // GET para exibir o extrato de lançamentos financeiros
 router.get('/extrato', financeiroController.listarLancamentos);
 
+// GET para exibir a página de confirmação para adicionar à fila
+router.get('/confirmar-fila/:pacienteId', financeiroController.renderizarConfirmacaoFila);
+
 export default router;

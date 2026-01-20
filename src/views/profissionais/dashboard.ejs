@@ -1,6 +1,4 @@
 <div class="container-fluid py-4">
-    <h1 class="text-center mb-4"><i class="<%= pageIcon %>"></i> <%= pageTitle %></h1>
-
     <% if (messages.error) { %>
         <div class="alert alert-danger" role="alert"><%= messages.error %></div>
     <% } %>
@@ -9,7 +7,7 @@
     <% } %>
 
     <div class="row">
-        <div class="col-lg-10 offset-lg-1">
+        <div >
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Fila de Espera dos Pacientes</h6>

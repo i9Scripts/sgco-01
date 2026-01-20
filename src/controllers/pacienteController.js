@@ -115,8 +115,8 @@ export const pacienteController = {
       // >>>> Guardar o idPaciente na sessão <<<<
       req.session.idPaciente = novoPaciente.idPaciente;
 
-      req.flash('success', 'Paciente registrado com sucesso!');
-      return res.redirect('/pacientes');
+      req.flash('success', 'Paciente registrado com sucesso! Preencha a anamnese.');
+      return res.redirect('/anamneses/new');
     } catch (error) {
       console.error('Erro ao registrar paciente:', error);
       req.flash('error', 'Erro ao registrar paciente. Verifique os dados e tente novamente.');
@@ -394,18 +394,24 @@ export const pacienteController = {
   // Adicionar paciente à fila de espera
   async adicionarFila(req, res) {
     try {
-      const idConsultorio = req.session.idConsultorio;
+      const idConsultorio = req.session.idConsultorio || req.session.consultorio.idConsultorio;
       const { idPaciente } = req.params;
 
       if (!idConsultorio) {
-        req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios/new');
+          if (req.xhr || req.headers.accept.includes('json')) {
+              return res.status(400).json({ success: false, message: 'Nenhum consultório selecionado.' });
+          }
+          req.flash('error', 'Nenhum consultório selecionado.');
+          return res.redirect('/consultorios/new');
       }
 
       const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
       if (!paciente) {
-        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
-        return res.redirect('/pacientes');
+          if (req.xhr || req.headers.accept.includes('json')) {
+              return res.status(404).json({ success: false, message: 'Paciente não encontrado ou não pertence ao seu consultório.' });
+          }
+          req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+          return res.redirect('/pacientes');
       }
 
       await prisma.paciente.update({
@@ -416,9 +422,17 @@ export const pacienteController = {
       });
 
       req.flash('success', 'Paciente adicionado à fila de espera.');
-      return res.redirect('/pacientes');
+      
+      if (req.xhr || req.headers.accept.includes('json')) {
+          return res.status(200).json({ success: true, message: 'Paciente adicionado à fila de espera.' });
+      }
+      
+      return res.redirect('/');
     } catch (error) {
       console.error('Erro ao adicionar paciente à fila:', error);
+      if (req.xhr || req.headers.accept.includes('json')) {
+          return res.status(500).json({ success: false, message: 'Erro ao adicionar paciente à fila. Tente novamente.' });
+      }
       req.flash('error', 'Erro ao adicionar paciente à fila. Tente novamente.');
       return res.redirect('/pacientes');
     }

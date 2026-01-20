@@ -15,23 +15,48 @@
                         <td><%= paciente.nome %></td>
                         <td><%= paciente.nFicha || 'N/D' %></td>
                         <td><%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></td>
-                        <td>
-                            <!-- Botão para visualizar paciente -->
-                            <button class="btn btn-round btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
+                        <td class="d-flex gap-2">
+                            <!-- Botão para abrir o modal de visualização com a ficha do paciente -->
+                            <button class="btn btn-info btn-sm" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
                                 <span class="material-symbols-outlined icon-btn">visibility</span>
                             </button>
-                            <!-- Botão para editar paciente -->
-                            <button class="btn btn-round btn-sm btn-warning" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
+
+                            <!-- Botão para abrir o modal de edição do Paciente -->
+                            <button class="btn btn-warning btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
                                 <span class="material-symbols-outlined icon-btn">edit</span>
                             </button>
+                            </td>
+                            <td>
                             <!-- Ações específicas do profissional ou recepcionista podem ser adicionadas aqui via lógica EJS -->
                             <!-- Exemplo para o profissional: -->
                             <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
                                 <form action="/profissionais/atender/<%= paciente.idPaciente %>" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-sm btn-success ml-2" title="Atender Paciente">
-                                        <i class="bi bi-person-check-fill"></i> Atender
+                                        <i class="bi bi-person-check-fill"></i> 
                                     </button>
                                 </form>
+                                <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
+                                    <% const anamnese = paciente.anamneses[0]; %>
+                                    <span class="badge bg-success">Registrada</span>
+                                    <!-- Botão para criar nova anamnese (permitir múltiplas) -->
+                                    <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
+                                        <span class="material-symbols-outlined icon-btn">check</span>
+                                    </button>
+                                    <!-- Botão para visualizar anamnese -->
+                                    <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
+                                        <span class="material-symbols-outlined icon-btn">visibility</span>
+                                    </button>
+                                    <!-- Botão para editar anamnese -->
+                                    <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
+                                        <span class="material-symbols-outlined icon-btn">edit</span>
+                                    </button>
+                                <% } else { %>
+                                    <span class="badge bg-secondary">Não registrada</span>
+                                    <!-- Botão para criar nova anamnese -->
+                                    <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
+                                        <span class="material-symbols-outlined icon-btn">add</span>
+                                    </button>
+                                <% } %>
                             <% } %>
                         </td>
                     </tr>
@@ -51,3 +76,5 @@
         vertical-align: middle;
     }
 </style>
+<!-- Modal genérico -->
+<div><%- include('./_modal') %></div>

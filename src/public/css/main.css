@@ -272,7 +272,7 @@ select.form-control:focus {
   word-wrap: break-word; /* Força a quebra de palavras muito longas */
   word-break: break-word;
   min-width: 200px; /* Define uma largura mínima para a coluna */
-  max-width: 400px; /* Define uma largura máxima opcional */
+  max-width: 600px; /* Define uma largura máxima opcional */
 }
 
 /* Linhas e badges */

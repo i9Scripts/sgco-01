@@ -15,7 +15,7 @@
 
 :root {
   --receita-bg: url('/img/2964668.jpg');
-  --receita-bg-pos: 20% 60%; /* change to '20% 30%' etc. */
+  --receita-bg-pos: 30% 80%; /* change to '20% 30%' etc. */
   --receita-bg-size: 100%; /* change to 'cover', 'contain' or percentage */
 }
 
@@ -78,11 +78,11 @@
   align-items: center;
 }
 .header-info {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 .logos img {
-  max-height: 100px; /* Adjust logo size as needed */
+  max-height: 70px; /* Adjust logo size as needed */
   margin-right: 5mm;
 }
 
@@ -105,14 +105,14 @@ h3 {
 }
 .prescription img {
   width: auto;
-  height: 40mm;
-  margin-left: 20px;
+  height: 35mm;
+  margin-left: 40px;
 }
 table {
   width: 100%; /* Faz a tabela ocupar toda a largura do contêiner */
   table-layout: fixed; /* Garante que as colunas tenham larguras fixas */
   border-collapse: collapse; /* Remove espaços entre as células */
-  margin-bottom: 5mm; /* Espaçamento inferior */
+  margin-bottom: 3mm; /* Espaçamento inferior */
 }
 
 th,
@@ -123,7 +123,7 @@ td {
 th,
 td {
   width: 28%; /* Define uma largura fixa para cada célula (ajuste conforme necessário) */
-  height: 10mm; /* Define uma altura fixa para as células */
+  height: 8mm; /* Define uma altura fixa para as células */
   padding: 1mm; /* Espaçamento interno */
   text-align: center; /* Centraliza o texto */
 
@@ -179,7 +179,7 @@ th {
   }
   th,
   td {
-    height: 10mm; /* Altura fixa para impressão */
+    height: 8mm; /* Altura fixa para impressão */
     font-size: 0.8rem; /* Ajusta o tamanho da fonte para caber melhor */
     padding: 1mm; /* Reduz o espaçamento interno */
   }
