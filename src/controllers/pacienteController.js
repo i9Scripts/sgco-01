@@ -28,16 +28,21 @@ export const pacienteController = {
   // Formulário para adicionar um novo paciente
   async newPacienteForm(req, res) {
     try {
-      if (!req.session.idConsultorio) {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
+      const parceiros = await prisma.parceiro.findMany({
+        where: { consultorioId: idConsultorio },
+      });
 
       res.render('pacientes/new', {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
         formData: {},
         messages: req.flash(''),
+        parceiros,
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de paciente:', error);
