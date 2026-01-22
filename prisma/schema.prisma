@@ -87,6 +87,7 @@ model Paciente {
   parceiroId    Int?
 
   @@index([nome])
+  @@index([cpf])
   @@index([responsavel])
   @@index([celular])
   @@index([createdAt])
