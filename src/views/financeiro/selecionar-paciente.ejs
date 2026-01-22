@@ -1,0 +1,42 @@
+<div class="container-fluid py-4">
+    <% if (messages.error) { %>
+        <div class="alert alert-danger" role="alert"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="alert alert-success" role="alert"><%= messages.success %></div>
+    <% } %>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Selecionar Paciente para Cobrança</h6>
+        </div>
+        <div class="card-body">
+            <% if (pacientes.length === 0) { %>
+                <p>Nenhum paciente encontrado.</p>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Na Fila</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% pacientes.forEach(function(p) { %>
+                                <tr>
+                                    <td><%= p.nome %></td>
+                                    <td><%= p.naFila ? 'Sim' : 'Não' %></td>
+                                    <td class="text-end">
+                                        <a href="/financeiro/cobrar/<%= p.idPaciente %>?parceiroId=" class="btn btn-primary btn-sm"><span class="bi bi-cash-coin"></span></a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

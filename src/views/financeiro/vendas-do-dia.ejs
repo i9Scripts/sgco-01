@@ -1,0 +1,48 @@
+<div class="container-fluid py-4">
+    <% if (messages.error) { %>
+        <div class="alert alert-danger" role="alert"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="alert alert-success" role="alert"><%= messages.success %></div>
+    <% } %>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Vendas do Dia</h6>
+            <div>Total: R$ <%= total %></div>
+        </div>
+        <div class="card-body">
+            <% if (vendas.length === 0) { %>
+                <p>Nenhuma venda registrada hoje.</p>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Parceiro</th>
+                                <th>Descrição</th>
+                                <th>Valor Final (R$)</th>
+                                <th>Forma Pagamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% vendas.forEach(function(v){ %>
+                                <tr>
+                                    <td><%= new Date(v.createdAt).toLocaleTimeString() %></td>
+                                    <td><%= v.paciente ? v.paciente.nome : '—' %></td>
+                                    <td><%= v.parceiro ? v.parceiro.nome : '—' %></td>
+                                    <td><%= v.descricao %></td>
+                                    <td><%= parseFloat(v.valorFinal).toFixed(2) %></td>
+                                    <td><%= v.formaPagamento %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
+</div>

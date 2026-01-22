@@ -3,7 +3,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Registrar Cobrança para Paciente: <%= paciente.nome %></h6>
+                    <h6 class="m-0 font-weight-bold text-primary">PDV para Paciente: <%= paciente.nome %></h6>
                 </div>
                 <div class="card-body">
                     <% if (messages.error) { %>
@@ -19,9 +19,7 @@
 
                     <form action="/financeiro/registrar" method="POST">
                         <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
-                        <% if (parceiro) { %>
-                            <input type="hidden" name="parceiroId" value="<%= parceiro.idParceiro %>">
-                        <% } %>
+                        <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= parceiro ? parceiro.idParceiro : '' %>">
 
                         <div class="form-group row mb-3">
                             <label class="col-sm-4 col-form-label">Paciente:</label>
@@ -31,32 +29,37 @@
                         </div>
 
                         <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label">Parceiro:</label>
+                            <label for="parceiroSelect" class="col-sm-4 col-form-label">Parceiro:</label>
                             <div class="col-sm-8">
-                                <p class="form-control-plaintext">
-                                    <%= parceiro ? parceiro.nome : 'Particular' %>
-                                </p>
+                                <select class="form-control" id="parceiroSelect" name="parceiroSelect">
+                                    <option value="">Particular</option>
+                                    <% parceiros.forEach(p => { %>
+                                        <option value="<%= p.idParceiro %>" data-desconto="<%= p.desconto %>" <%= (parceiro && parceiro.idParceiro === p.idParceiro) ? 'selected' : '' %>>
+                                            <%= p.nome %>
+                                        </option>
+                                    <% }); %>
+                                </select>
                             </div>
                         </div>
 
                         <div class="form-group row mb-3">
                             <label class="col-sm-4 col-form-label">Valor Bruto (R$):</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control-plaintext" name="valorBruto" value="<%= valorBruto %>" readonly>
+                                <input type="text" class="form-control-plaintext" id="valorBruto" name="valorBruto" value="<%= valorBruto %>" readonly>
                             </div>
                         </div>
 
                         <div class="form-group row mb-3">
                             <label class="col-sm-4 col-form-label">Desconto (R$):</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control-plaintext" name="valorDesconto" value="<%= valorDesconto %>" readonly>
+                                <input type="text" class="form-control" id="valorDesconto" name="valorDesconto" value="<%= valorDesconto %>">
                             </div>
                         </div>
 
                         <div class="form-group row mb-3">
                             <label class="col-sm-4 col-form-label font-weight-bold">Valor Final (R$):</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control-plaintext font-weight-bold text-success" name="valorFinal" value="<%= valorFinal %>" readonly>
+                                <input type="text" class="form-control-plaintext font-weight-bold text-success" id="valorFinal" name="valorFinal" value="<%= valorFinal %>" readonly>
                             </div>
                         </div>
 
@@ -76,7 +79,7 @@
 
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg">Registrar Pagamento</button>
-                            <a href="/pacientes" class="btn btn-secondary">Cancelar</a>
+                            <a href="/" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </form>
                 </div>
@@ -84,3 +87,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const parceiroSelect = document.getElementById('parceiroSelect');
+        const parceiroIdField = document.getElementById('parceiroIdField');
+        const valorBrutoInput = document.getElementById('valorBruto');
+        const valorDescontoInput = document.getElementById('valorDesconto');
+        const valorFinalInput = document.getElementById('valorFinal');
+
+        function calcularValorFinal() {
+            const valorBruto = parseFloat(valorBrutoInput.value) || 0;
+            const valorDesconto = parseFloat(valorDescontoInput.value) || 0;
+            const valorFinal = valorBruto - valorDesconto;
+            valorFinalInput.value = valorFinal.toFixed(2);
+        }
+
+        parceiroSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const desconto = selectedOption.dataset.desconto || 0;
+            const parceiroId = selectedOption.value;
+
+            parceiroIdField.value = parceiroId;
+            valorDescontoInput.value = parseFloat(desconto).toFixed(2);
+            calcularValorFinal();
+        });
+
+        valorDescontoInput.addEventListener('input', function() {
+            calcularValorFinal();
+        });
+
+        // Initial calculation on page load
+        calcularValorFinal();
+    });
+</script>
