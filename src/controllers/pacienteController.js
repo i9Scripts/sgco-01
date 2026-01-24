@@ -73,6 +73,7 @@ export const pacienteController = {
         cpf,
         profissao,
         nFicha,
+        dataAtend,
       } = req.body;
       const idConsultorio = req.session.idConsultorio;
 
@@ -113,6 +114,7 @@ export const pacienteController = {
           cidade,
           cpf: cpf || null,
           nFicha: nFicha ? parseInt(nFicha) : null,
+          dataAtend,
           profissao,
           consultorioId: idConsultorio,
         },
@@ -128,7 +130,6 @@ export const pacienteController = {
       return res.redirect('/pacientes');
     }
   },
-
   // Buscar paciente pelo ID
   async getPacienteById(req, res) {
     try {
@@ -206,10 +207,9 @@ export const pacienteController = {
     }
   },
 
-  // Buscar pacientes por nome ou CPF
   async searchPacientes(req, res) {
     try {
-      const { query } = req.query; // Obtém o termo de busca da query string
+      const { query } = req.query;
       const idConsultorio = req.session.idConsultorio;
 
       if (!idConsultorio) {
@@ -217,46 +217,52 @@ export const pacienteController = {
         return res.redirect('/consultorios/new');
       }
 
-      if (!query || query.trim() === '') {
-        req.flash('error', 'Digite um termo para buscar.');
-        return res.redirect('/pacientes');
+      const q = query.trim();
+      // 1. Criamos uma versão apenas com números para CPF e Ficha
+      const cleanQ = q.replace(/\D/g, '');
+
+      // 2. Iniciamos as condições de busca com o Nome
+      const orConditions = [{ nome: { contains: q } }];
+
+      // 3. Adicionamos busca por CPF se houver números na query
+      if (cleanQ !== '') {
+        //(cleanQ.length > 4) alternativa
+        orConditions.push({ cpf: { contains: cleanQ } });
       }
 
-      // Realiza a busca no banco de dados
-      const q = query.trim();
-      const orClauses = [{ nome: { contains: q } }, { cpf: { contains: q } }];
-      // Se o termo for numérico, busque por nFicha como número
-      if (/^\d+$/.test(q)) {
-        orClauses.push({ nFicha: parseInt(q) });
+      // 4. Busca por nFicha (Campo Inteiro)
+      // Só tentamos converter para número se a string não for vazia
+      // E verificamos se o número não ultrapassa o limite do INT do MariaDB (2.147.483.647)
+      const nFichaNum = parseInt(cleanQ);
+      if (!isNaN(nFichaNum) && nFichaNum <= 2147483647) {
+        // Para campos numéricos, usamos 'equals' para busca exata
+        orConditions.push({ nFicha: { equals: nFichaNum } });
       }
 
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
-          OR: orClauses,
+          OR: orConditions,
         },
       });
 
-      // Verifica se encontrou pacientes
       if (pacientes.length === 0) {
         req.flash('warning', 'Nenhum paciente encontrado.');
         return res.redirect('/pacientes');
       }
-      // Renderiza a página com os resultados
+
       res.render('pacientes/index', {
         pageTitle: `Resultados para "${query}"`,
         pageIcon: 'ri-search-line',
         pacientes,
-
         messages: req.flash(''),
       });
     } catch (error) {
-      console.error('Erro ao buscar pacientes:', error); // Log detalhado do erro
+      console.error('Erro ao buscar pacientes:', error);
       req.flash('error', 'Erro ao buscar pacientes. Tente novamente.');
       return res.redirect('/pacientes');
     }
   },
-
   // Atualizar paciente
   async updatePaciente(req, res) {
     try {
@@ -274,8 +280,21 @@ export const pacienteController = {
         return res.redirect('/pacientes');
       }
 
-      const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao, nFicha } =
-        req.body;
+      const {
+        nome,
+        responsavel,
+        dataNasc,
+        celular,
+        cep,
+        endereco,
+        numero,
+        bairro,
+        cidade,
+        cpf,
+        profissao,
+        nFicha,
+        dataAtend,
+      } = req.body;
       // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
       const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
@@ -294,6 +313,7 @@ export const pacienteController = {
           cidade,
           cpf: cpf || null,
           nFicha: nFicha ? parseInt(nFicha) : null,
+          dataAtend,
           profissao,
         },
       });
@@ -329,21 +349,21 @@ export const pacienteController = {
       await prisma.$transaction(async (tx) => {
         // Encontrar todas as consultas do paciente para lidar com dependências aninhadas
         const consultas = await tx.consulta.findMany({
-            where: { pacienteId: idPacienteInt },
-            select: { idConsulta: true },
+          where: { pacienteId: idPacienteInt },
+          select: { idConsulta: true },
         });
-        const consultaIds = consultas.map(c => c.idConsulta);
+        const consultaIds = consultas.map((c) => c.idConsulta);
 
         if (consultaIds.length > 0) {
-            // Deletar pagamentos e itens de venda associados às consultas
-            await tx.pagamento.deleteMany({
-                where: { consultaId: { in: consultaIds } },
-            });
-            await tx.itensVenda.deleteMany({
-                where: { consultaId: { in: consultaIds } },
-            });
+          // Deletar pagamentos e itens de venda associados às consultas
+          await tx.pagamento.deleteMany({
+            where: { consultaId: { in: consultaIds } },
+          });
+          await tx.itensVenda.deleteMany({
+            where: { consultaId: { in: consultaIds } },
+          });
         }
-        
+
         // Deletar registros que dependem diretamente do paciente
         await tx.consulta.deleteMany({ where: { pacienteId: idPacienteInt } });
         await tx.lancamentoFinanceiro.deleteMany({ where: { pacienteId: idPacienteInt } });
@@ -352,7 +372,7 @@ export const pacienteController = {
 
         // Finalmente, deletar o paciente
         await tx.paciente.delete({
-            where: { idPaciente: idPacienteInt },
+          where: { idPaciente: idPacienteInt },
         });
       });
 
@@ -360,7 +380,10 @@ export const pacienteController = {
       return res.redirect('/pacientes');
     } catch (error) {
       console.error('Erro ao deletar paciente:', error);
-      req.flash('error', 'Erro ao deletar paciente. O paciente pode ter registros associados que não puderam ser removidos.');
+      req.flash(
+        'error',
+        'Erro ao deletar paciente. O paciente pode ter registros associados que não puderam ser removidos.'
+      );
       return res.redirect('/pacientes');
     }
   },
@@ -403,20 +426,22 @@ export const pacienteController = {
       const { idPaciente } = req.params;
 
       if (!idConsultorio) {
-          if (req.xhr || req.headers.accept.includes('json')) {
-              return res.status(400).json({ success: false, message: 'Nenhum consultório selecionado.' });
-          }
-          req.flash('error', 'Nenhum consultório selecionado.');
-          return res.redirect('/consultorios/new');
+        if (req.xhr || req.headers.accept.includes('json')) {
+          return res.status(400).json({ success: false, message: 'Nenhum consultório selecionado.' });
+        }
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
       }
 
       const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
       if (!paciente) {
-          if (req.xhr || req.headers.accept.includes('json')) {
-              return res.status(404).json({ success: false, message: 'Paciente não encontrado ou não pertence ao seu consultório.' });
-          }
-          req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
-          return res.redirect('/pacientes');
+        if (req.xhr || req.headers.accept.includes('json')) {
+          return res
+            .status(404)
+            .json({ success: false, message: 'Paciente não encontrado ou não pertence ao seu consultório.' });
+        }
+        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/pacientes');
       }
 
       await prisma.paciente.update({
@@ -427,16 +452,16 @@ export const pacienteController = {
       });
 
       req.flash('success', 'Paciente adicionado à fila de espera.');
-      
+
       if (req.xhr || req.headers.accept.includes('json')) {
-          return res.status(200).json({ success: true, message: 'Paciente adicionado à fila de espera.' });
+        return res.status(200).json({ success: true, message: 'Paciente adicionado à fila de espera.' });
       }
-      
+
       return res.redirect('/');
     } catch (error) {
       console.error('Erro ao adicionar paciente à fila:', error);
       if (req.xhr || req.headers.accept.includes('json')) {
-          return res.status(500).json({ success: false, message: 'Erro ao adicionar paciente à fila. Tente novamente.' });
+        return res.status(500).json({ success: false, message: 'Erro ao adicionar paciente à fila. Tente novamente.' });
       }
       req.flash('error', 'Erro ao adicionar paciente à fila. Tente novamente.');
       return res.redirect('/pacientes');
@@ -475,24 +500,6 @@ export const pacienteController = {
       console.error('Erro ao exibir formulário de edição:', error);
       req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
       return res.redirect('/pacientes');
-    }
-  },
-  async searchPacienteByCpf(req, res) {
-    try {
-      const { cpf } = req.query;
-      const idConsultorio = req.session.idConsultorio;
-
-      const paciente = await prisma.paciente.findFirst({
-        where: {
-          consultorioId: idConsultorio,
-          cpf: cpf.replace(/\D/g, ''), // Remove formatação
-        },
-      });
-
-      return res.json(paciente || null);
-    } catch (error) {
-      console.error('Erro na busca por CPF:', error);
-      return res.status(500).json({ error: 'Erro na busca' });
     }
   },
   // Selecionar paciente para anamnese

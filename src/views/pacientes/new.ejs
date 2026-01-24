@@ -12,7 +12,19 @@
           maxlength="20"
           autofocus
         />
-        <label for="nFicha">Nº Ficha</label>
+        <label for="nFicha">Nº da Ficha</label>
+      </div>
+      <div class="col-md-3 mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="dataAtend"
+          name="dataAtend"
+          value="<%= formData && formData.dataAtend %>"
+          maxlength="20"
+          autofocus
+        />
+        <label for="dataAtend">Data Atendimento</label>
       </div>
     </div>
     <div class="row form-group">
@@ -192,3 +204,57 @@
   </form>
 <!-- Cadastrar novo parceiro ou procurar na lista para vincular o parceiro ao paciente -->
 </div>
+
+<script>
+  document.getElementById('cpf').addEventListener('blur', function() {
+    console.log('CPF field lost focus.');
+    const cpf = this.value.replace(/\D/g, '');
+    console.log('CPF to search:', cpf);
+    if (cpf.length === 12) {
+      fetch(`/pacientes/cpf/${cpf}`)
+        .then(response => {
+          console.log('Server response:', response);
+          if (!response.ok) {
+            console.log('Response not OK, status:', response.status);
+            return null; // Don't try to parse json on 404
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Parsed data:', data);
+          if (data) {
+            console.log('Data found, populating fields.');
+            document.getElementById('nFicha').value = data.nFicha || '';
+            document.getElementById('dataAtend').value = data.dataAtend || '';
+            document.getElementById('nome').value = data.nome;
+            document.getElementById('profissao').value = data.profissao || '';
+            
+            if (data.dataNasc) {
+              const dataNasc = new Date(data.dataNasc);
+              const dia = String(dataNasc.getDate()).padStart(2, '0');
+              const mes = String(dataNasc.getMonth() + 1).padStart(2, '0');
+              const ano = dataNasc.getFullYear();
+              document.getElementById('dataNasc').value = `${dia}/${mes}/${ano}`;
+              // Force age calculation
+              document.getElementById('dataNasc').dispatchEvent(new Event('blur'));
+            } else {
+                document.getElementById('dataNasc').value = '';
+            }
+
+            document.getElementById('responsavel').value = data.responsavel || '';
+            document.getElementById('cep').value = data.cep || '';
+            document.getElementById('endereco').value = data.endereco || '';
+            document.getElementById('numero').value = data.numero || '';
+            document.getElementById('complemento').value = data.complemento || '';
+            document.getElementById('bairro').value = data.bairro || '';
+            document.getElementById('cidade').value = data.cidade || '';
+            document.getElementById('celular').value = data.celular || '';
+
+          } else {
+            console.log('No data returned from server.');
+          }
+        })
+        .catch(error => console.error('Error during fetch:', error));
+    }
+  });
+</script>

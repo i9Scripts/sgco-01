@@ -1,6 +1,16 @@
 <div>
   <form action="/pacientes/<%= paciente.idPaciente %>?_method=PUT" method="post">
     <div class="row form-group">
+          <div class="row form-group">
+      <div class="col-md-3 mb-3">
+        <input type="text" class="form-control" id="nFicha" name="nFicha" value="<%= paciente.nFicha %>" maxlength="20" />
+        <label for="nFicha">Nº Ficha</label>
+      </div>
+      <div class="col-md-3 mb-3">
+        <input type="text" class="form-control" id="dataAtend" name="dataAtend" value="<%= paciente.dataAtend %>" maxlength="20" />
+        <label for="dataAtend">Data de Atendimento</label>
+      </div>
+    </div>
       <div class="col-md-3 mb-3">
         <input type="text" class="form-control <%= messages.errors && messages.errors.cpf ? 'is-invalid' : '' %>" id="cpf" oninput="mascaraCpf(this)" name="cpf" value="<%= paciente.cpf %>" autofocus maxlength="14" />
         <label for="cpf">CPF</label>
@@ -14,14 +24,6 @@
         <label for="profissao">Profissão</label>
       </div>
     </div>
-
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="nFicha" name="nFicha" value="<%= paciente.nFicha %>" maxlength="20" />
-        <label for="nFicha">Nº Ficha</label>
-      </div>
-    </div>
-
     <div class="row form-group">
       <div class="col-md-3 mb-3">
         <input type="text" class="form-control <%= messages.errors && messages.errors.dataNasc ? 'is-invalid' : '' %>" id="dataNasc" name="dataNasc" value="<%= paciente.dataNascFormatada %>" readonly onkeyup="mascaraData(this, event)" onblur="calcularIdadeFrontend()" maxlength="10" />
