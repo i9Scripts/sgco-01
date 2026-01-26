@@ -16,7 +16,20 @@ export const diagnosticoController = {
   // Criar novo diagnóstico
   async createDiagnostico(req, res) {
     try {
-      const { esfOD, cilOD, eixoOD, esfOE, cilOE, eixoOE, adicao, descricao, pacienteId, profissionalId } = req.body;
+      const {
+        esfOD,
+        cilOD,
+        eixoOD,
+        avFinalOD,
+        esfOE,
+        cilOE,
+        eixoOE,
+        avFinalOE,
+        adicao,
+        descricao,
+        pacienteId,
+        profissionalId,
+      } = req.body;
       const idConsultorio = req.session.idConsultorio;
 
       if (!idConsultorio) {
@@ -29,9 +42,11 @@ export const diagnosticoController = {
           esfOD,
           cilOD,
           eixoOD,
+          avFinalOD,
           esfOE,
           cilOE,
           eixoOE,
+          avFinalOE,
           adicao,
           descricao,
           pacienteId: parseInt(pacienteId),
@@ -217,7 +232,20 @@ export const diagnosticoController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const { idDiagnostico } = req.params;
-      const { esfOD, cilOD, eixoOD, esfOE, cilOE, eixoOE, adicao, descricao, pacienteId, profissionalId } = req.body;
+      const {
+        esfOD,
+        cilOD,
+        eixoOD,
+        avFinalOD,
+        esfOE,
+        cilOE,
+        eixoOE,
+        avFinalOE,
+        adicao,
+        descricao,
+        pacienteId,
+        profissionalId,
+      } = req.body;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -236,9 +264,11 @@ export const diagnosticoController = {
           esfOD,
           cilOD,
           eixoOD,
+          avFinalOD,
           esfOE,
           cilOE,
           eixoOE,
+          avFinalOE,
           adicao,
           descricao,
           pacienteId: parseInt(pacienteId),

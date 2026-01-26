@@ -82,9 +82,11 @@ export const anamneseController = {
         cilOD,
         esfOD,
         eixoOD,
+        avSCOD,
         cilOE,
         esfOE,
         eixoOE,
+        avSCOE,
       } = req.body;
 
       if (!idPaciente || !idConsultorio) {
@@ -117,9 +119,11 @@ export const anamneseController = {
           cilOD: cilOD || null,
           esfOD: esfOD || null,
           eixoOD: eixoOD || null,
+          avSCOD: avSCOD || null,
           cilOE: cilOE || null,
           esfOE: esfOE || null,
           eixoOE: eixoOE || null,
+          avSCOE: avSCOE || null,
         },
       });
 
@@ -271,18 +275,28 @@ export const anamneseController = {
         has,
         glauc,
         dmFam,
-        hasFam,
         glaucFam,
         sintomas,
         remedio,
         obsGerais,
+        adicao,
+        cilOD,
+        esfOD,
+        eixoOD,
+        avSCOD,
+        cilOE,
+        esfOE,
+        eixoOE,
+        avSCOE,
       } = req.body;
 
       await prisma.anamnese.update({
         where: { idAnam: parseInt(idAnam) },
         data: {
+          pacienteId: anamnese.pacienteId,
+          consultorioId: parseInt(idConsultorio),
           motivo,
-          ultimoExame: ultimoExame || null,
+          ultimoExame,
           usuarioOculos: usuarioOculos === 'true',
           usuarioLC: usuarioLC === 'true',
           trauma: trauma || null,
@@ -290,11 +304,19 @@ export const anamneseController = {
           has: has === 'true',
           glauc: glauc === 'true',
           dmFam: dmFam || null,
-          hasFam: hasFam || null,
           glaucFam: glaucFam || null,
           sintomas: sintomas || null,
           remedio: remedio || null,
           obsGerais: obsGerais || null,
+          adicao: adicao || null,
+          cilOD: cilOD || null,
+          esfOD: esfOD || null,
+          eixoOD: eixoOD || null,
+          avSCOD: avSCOD || null,
+          cilOE: cilOE || null,
+          esfOE: esfOE || null,
+          eixoOE: eixoOE || null,
+          avSCOE: avSCOE || null,
         },
       });
 
@@ -312,13 +334,14 @@ export const anamneseController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const { idAnam } = req.params;
+      const idAnamInt = parseInt(idAnam);
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
-      const anamnese = await findAnamneseDoConsultorio(idAnam, idConsultorio);
+      const anamnese = await findAnamneseDoConsultorio(idAnamInt, idConsultorio);
       if (!anamnese) {
         req.flash('error', 'Anamnese não encontrada ou não pertence ao seu consultório.');
         return res.redirect('/anamneses');
@@ -346,7 +369,7 @@ export const anamneseController = {
         return res.redirect('/login');
       }
       const idConsultorio = req.session.idConsultorio;
-      const { idAnam } = req.params; // Certifique-se de usar idAnam
+      const { idAnam } = req.params;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');

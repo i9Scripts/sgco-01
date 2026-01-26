@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Anamnese` ADD COLUMN `avSCOD` VARCHAR(6) NULL,
+    ADD COLUMN `avSCOE` VARCHAR(6) NULL;

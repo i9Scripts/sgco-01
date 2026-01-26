@@ -326,7 +326,40 @@ export const pacienteController = {
       return res.redirect(`/pacientes/${req.params.idPaciente}/edit`);
     }
   },
+  // Formulário para editar paciente
+  async editPacienteForm(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const { idPaciente } = req.params;
 
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
+      if (!paciente) {
+        req.flash('error', 'Paciente não encontrado.');
+        return res.redirect('/pacientes');
+      }
+      // calcula idade no servidor
+      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
+
+      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
+
+      res.render('pacientes/edit', {
+        pageTitle: 'Editar Paciente',
+        pageIcon: 'ri-edit-line',
+        paciente,
+        idadePaciente,
+        messages: req.flash(''),
+      });
+    } catch (error) {
+      console.error('Erro ao exibir formulário de edição:', error);
+      req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
+      return res.redirect('/pacientes');
+    }
+  },
   // Deletar paciente
   async deletePaciente(req, res) {
     try {
@@ -464,41 +497,6 @@ export const pacienteController = {
         return res.status(500).json({ success: false, message: 'Erro ao adicionar paciente à fila. Tente novamente.' });
       }
       req.flash('error', 'Erro ao adicionar paciente à fila. Tente novamente.');
-      return res.redirect('/pacientes');
-    }
-  },
-
-  // Formulário para editar paciente
-  async editPacienteForm(req, res) {
-    try {
-      const idConsultorio = req.session.idConsultorio;
-      const { idPaciente } = req.params;
-
-      if (!idConsultorio) {
-        req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios/new');
-      }
-
-      const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
-      if (!paciente) {
-        req.flash('error', 'Paciente não encontrado.');
-        return res.redirect('/pacientes');
-      }
-      // calcula idade no servidor
-      const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
-
-      paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
-
-      res.render('pacientes/edit', {
-        pageTitle: 'Editar Paciente',
-        pageIcon: 'ri-edit-line',
-        paciente,
-        idadePaciente,
-        messages: req.flash(''),
-      });
-    } catch (error) {
-      console.error('Erro ao exibir formulário de edição:', error);
-      req.flash('error', 'Erro ao exibir formulário de edição. Tente novamente.');
       return res.redirect('/pacientes');
     }
   },

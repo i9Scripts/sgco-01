@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE `Diagnostico` ADD COLUMN `avFinalOD` VARCHAR(6) NULL,
+    ADD COLUMN `avFinalOE` VARCHAR(6) NULL,
+    MODIFY `cilOD` VARCHAR(6) NULL,
+    MODIFY `eixoOD` VARCHAR(4) NULL,
+    MODIFY `cilOE` VARCHAR(6) NULL,
+    MODIFY `eixoOE` VARCHAR(4) NULL;

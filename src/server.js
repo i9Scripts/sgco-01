@@ -10,6 +10,10 @@ import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
 import { join } from 'path';
 dotenv.config();
+// para a rede de computadores
+import { Server } from 'socket.io';
+import { createServer } from 'http';
+
 // Rotas e lógica da aplicação podem ser adicionadas aqui
 import methodOverride from 'method-override';
 import { verificarConsultorioRegistrado } from './middlewares/authMiddleware.js';
@@ -33,7 +37,7 @@ import financeiroRoutes from './routes/financeiroRoutes.js'; // New import
 
 // Configuração da aplicação
 const app = express();
-const port = process.env.PORT || 3000;
+const port_in_use = process.env.PORT || 3000;
 
 // Habilita o CORS para todas as rotas (apenas uma vez)
 app.use(cors());
@@ -175,7 +179,31 @@ app.use((req, res) => {
     pageIcon: 'ri-error-warning-line', // Ícone opcional
   });
 });
+
+// Criar o servidor HTTP para o Socket.io trabalhar junto com o Express
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*', // Permite conexões de outros computadores da rede
+    methods: ['GET', 'POST'],
+  },
+});
+
+// Lógica do Socket.io
+io.on('connection', (socket) => {
+  console.log('Um usuário conectou:', socket.id);
+
+  // Exemplo: Quando um paciente for atualizado, avisamos todos
+  socket.on('novo_paciente_fila', (data) => {
+    io.emit('atualizar_lista', data); // Envia para TODOS os conectados
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Usuário desconectado');
+  });
+});
+
 // Iniciar o servidor
-app.listen(port, () => {
-  console.log(`Servidor rodando http://localhost:${port}/`);
+httpServer.listen(port_in_use, '0.0.0.0', () => {
+  console.log(`Servidor rodando em http://0.0.0.0:${port_in_use}`);
 });

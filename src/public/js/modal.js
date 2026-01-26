@@ -5,7 +5,7 @@ function abrirModalPaciente(btn) {
   }
   const modal = document.getElementById('modalPaciente');
   const body = document.getElementById('modal-body');
-  const footer = document.getElementById('modal-footer');
+  // const footer = document.getElementById('modal-footer');
 
   body.innerHTML = `
     Nome: ${dados.nome}

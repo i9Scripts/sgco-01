@@ -11,6 +11,7 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>Nº da Ficha</th>
         <th>Nome</th>
         <th>Responsável</th>
         <th>Pacientes</th>
@@ -20,6 +21,7 @@
     <tbody>
       <% pacientes.forEach(paciente => { %>
       <tr>
+        <td><%= paciente.nFicha %></td>
         <td><%= paciente.nome %></td>
         <td><%= paciente.responsavel %></td>
         <td>

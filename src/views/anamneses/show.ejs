@@ -1,12 +1,15 @@
 <div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
   <div class="card-body">
     <p>
+      <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
+      <strong>Data de Atendimento:</strong> <%= paciente?.dataAtend || 'N/D' %> |
+    </p>
+    <hr>
+    <p>
       <strong>ID:</strong> <%= anamnese.idAnam %> |
       <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
       <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
       <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
-      <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
-      <strong>Data de Atendimento:</strong> <%= paciente?.dataAtend || 'N/D' %> |
     </p>
     <hr>
     <div class="row">
@@ -25,10 +28,11 @@
         <p><strong>DM Familiar:</strong> <%= anamnese.dmFam || 'Não informado' %> | <strong>HAS Familiar:</strong> <%= anamnese.hasFam || 'Não informado' %> | <strong>Glaucoma Familiar:</strong> <%= anamnese.glaucFam || 'Não informado' %></p>
         <div class="row">
           <hr>
-          <p><strong>Esférico OD:</strong> <%= anamnese.esfOD || '00,00' %> | <strong>Cilindro OD:</strong> <%= anamnese.cilOD || '00,00' %> | <strong>Eixo OD:</strong> <%= anamnese.eixoOD || '00,00' %></p>
+          <p>LESOMETRIA</p>
+          <p><strong>OD ESF :</strong> <%= anamnese.esfOD || '00,00' %> | <strong>Cil :</strong> <%= anamnese.cilOD || '00,00' %> | <strong>Eixo :</strong> <%= anamnese.eixoOD || '00,00' %> | <strong>AV SC :</strong> <%= anamnese.avSCOD || '___/___' %></p>
         </div>
         <div class="row">
-          <p><strong>Esférico OE:</strong> <%= anamnese.esfOE || '00,00' %> | <strong>Cilindro OE:</strong> <%= anamnese.cilOE || '00,00' %> | <strong>Eixo OE:</strong> <%= anamnese.eixoOE || '00,00' %></p>
+          <p><strong>OE ESF : </strong> <%= anamnese.esfOE || '00,00' %> | <strong>CIL : </strong> <%= anamnese.cilOE || '00,00' %> | <strong>Eixo : </strong> <%= anamnese.eixoOE || '00,00' %> | <strong>AV SC :</strong> <%= anamnese.avSCOE || '___/___' %></p>
           <p><strong>Adição:</strong> <%= anamnese.adicao || '00,00' %></p>
         </div>
       </div>

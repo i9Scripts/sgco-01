@@ -25,13 +25,17 @@
           <label for="esfOD">ESF OD</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="cilOD" name="cilOD" value="<%= diagnostico ? diagnostico.cilOD : '' %>" maxlength="6" required />
+          <input type="text" class="form-control" id="cilOD" name="cilOD" value="<%= diagnostico ? diagnostico.cilOD : '' %>" maxlength="6" />
           <label for="cilOD">CIL OD</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="3" required />
+          <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="3" />
           <label for="eixoOD">EIXO OD</label>
         </div>
+        <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="avFinalOD" name="avFinalOD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="6"  />
+        <label for="avFinalOD">AV Final OD</label>
+      </div>
       </div>
       <div class="row form-group">
         <div class="col-md-2 mb-3">
@@ -39,23 +43,27 @@
           <label for="esfOE">ESF OE</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="cilOE" name="cilOE" value="<%= diagnostico ? diagnostico.cilOE : '' %>" maxlength="6" required />
+          <input type="text" class="form-control" id="cilOE" name="cilOE" value="<%= diagnostico ? diagnostico.cilOE : '' %>" maxlength="6" />
           <label for="cilOE">CIL OE</label>
         </div>
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="3" required />
+          <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="3" />
           <label for="eixoOE">EIXO OE</label>
         </div>
+        <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="avFinalOE" name="avFinalOE" value="<%= diagnostico ? diagnostico.avFinalOE : '' %>" maxlength="6"  />
+        <label for="avFinalOE">AV Final OE</label>
+      </div>
     </div>
     <div class="row form-group">
       <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="adicao" name="adicao" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" required />
+        <input type="text" class="form-control" id="adicao" name="adicao" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" />
         <label for="adicao">Adição</label>
       </div>
     </div>
     <div class="row form-group">  
       <div class="col-md-6 mb-3">
-        <textarea class="form-control" id="descricao" name="descricao" maxlength="200" required style="height: 120px;"><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+        <textarea class="form-control" id="descricao" name="descricao" maxlength="200" style="height: 120px;"><%= diagnostico ? diagnostico.descricao : '' %></textarea>
         <label for="descricao">Descrição</label>
       </div>
     </div>
@@ -64,6 +72,7 @@
         <span class="material-symbols-outlined icon-btn">save</span> Salvar
       </button>
       <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
+      <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
     </div>
   </form>
 </div>
