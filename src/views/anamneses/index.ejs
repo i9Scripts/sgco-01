@@ -1,4 +1,11 @@
 <div>
+    <!-- Formulário de busca -->
+  <form action="/anamneses/search" method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="query" class="form-control" placeholder="Buscar por nome do paciente" />
+      <button class="btn btn-secondary" type="submit">Buscar</button>
+    </div>
+  </form>
   <!-- Lista de anamneses -->
   <% if (anamneses && anamneses.length > 0) { %>
   <table class="table">
@@ -39,9 +46,6 @@
   </table>
   <% } else { %>
   <p class="text-white">Nenhuma Anamnese encontrada.</p>
-  <a class="btn btn-round btn-secondary btn-hover-outline" href="/pacientes" title="Voltar">
-    <span class="material-symbols-outlined icon-btn">arrow_back</span> Voltar
-  </a>
   <% } %>
 </div>
 <div><%- include('../partials/_modal') %></div>

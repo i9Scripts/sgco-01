@@ -12,6 +12,7 @@ router.post('/', anamneseController.createAnamnese);
 
 // Outras rotas como editar, listar, deletar, etc.
 router.get('/', anamneseController.getAllAnamneses);
+router.get('/search', anamneseController.searchAnamneses); // Rota de busca
 router.get('/:idAnam', anamneseController.getAnamneseById);
 router.get('/:idAnam/edit', verificarProfissionalAutenticado, anamneseController.editAnamneseForm);
 router.put('/:idAnam', verificarProfissionalAutenticado, anamneseController.updateAnamnese);
