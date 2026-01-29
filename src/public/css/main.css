@@ -291,6 +291,7 @@ select.form-control:focus {
 
 /* Cards e headers com destaque em safira */
 .card .card-header {
+  min-width: 800px;
   color: var(--sapphire);
   font-weight: 700;
   font-size: 14px;
