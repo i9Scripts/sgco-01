@@ -41,7 +41,7 @@
     "vite.config*": "vite.config*, vite.config.*.js",
     ".env.local": ".env*",
     ".env": ".env*",
-    ".gitignore": ".eslintrc*, .eslintignore*, .prettierrc*, .prettierignore*"
+    ".gitignore": ".eslintrc*, .eslintignore*, .prettierrc*, .prettierignore*, *.sh, *.bat, *.gz"
   },
   "[svg]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -52,8 +52,8 @@
   "terminal.integrated.cursorStyle": "block",
   "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.fontLigatures.enabled": true,
-  "terminal.integrated.developer.devMode": true ,
-  
+  "terminal.integrated.developer.devMode": true,
+
   //Format Settings
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,

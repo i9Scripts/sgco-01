@@ -220,9 +220,7 @@ export const anamneseController = {
           paciente: true, // <- isso é necessário para incluir o idpaciente
         },
         // 💡 PARA ORDENAR POR DATA MAIS RECENTE
-        orderBy: {
-          createdAt: 'desc', // 'desc' para decrescente (mais recente primeiro)
-        },
+        orderBy: [{ paciente: { nome: 'asc' } }, { createdAt: 'desc' }],
       });
       // Mapeie a lista para formatar a data de criação
       const anamnesesFormatadas = anamneses.map((anamnese) => ({
@@ -356,6 +354,59 @@ export const anamneseController = {
     } catch (error) {
       console.error('Erro ao deletar anamnese:', error);
       req.flash('error', 'Erro ao deletar anamnese. Tente novamente.');
+      return res.redirect('/anamneses');
+    }
+  },
+
+  async searchAnamneses(req, res) {
+    try {
+      const { query } = req.query;
+      const idConsultorio = req.session.idConsultorio;
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      if (!query || query.trim() === '') {
+        return res.redirect('/anamneses');
+      }
+
+      const q = query.trim();
+
+      const anamneses = await prisma.anamnese.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          paciente: {
+            nome: {
+              contains: q,
+            },
+          },
+        },
+        include: {
+          paciente: true,
+        },
+        orderBy: [{ paciente: { nome: 'asc' } }, { createdAt: 'desc' }],
+      });
+
+      const anamnesesFormatadas = anamneses.map((anamnese) => ({
+        ...anamnese,
+        dataCreatedAt: formatarData(new Date(anamnese.createdAt)),
+      }));
+
+      if (anamneses.length === 0) {
+        req.flash('warning', `Nenhuma anamnese encontrada para "${q}".`);
+      }
+
+      res.render('anamneses/index', {
+        pageTitle: `Resultados da busca por "${q}"`,
+        pageIcon: 'ri-search-line',
+        anamneses: anamnesesFormatadas,
+        messages: req.flash(''),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar anamneses:', error);
+      req.flash('error', 'Erro ao buscar anamneses. Tente novamente.');
       return res.redirect('/anamneses');
     }
   },

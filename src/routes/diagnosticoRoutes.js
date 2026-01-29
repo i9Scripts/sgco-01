@@ -5,7 +5,7 @@ const router = Router();
 
 // Rotas para Diagnostico
 router.get('/', diagnosticoController.getAllDiagnosticos); // Listar todos os diagnósticos
-router.get('/diagnosticos/search', diagnosticoController.searchDiagnosticos); // Rota de busca
+router.get('/search', diagnosticoController.searchDiagnosticos); // Rota de busca
 router.get('/new', diagnosticoController.newDiagnosticoForm); // Formulário para criar novo diagnóstico
 router.post('/', diagnosticoController.createDiagnostico); // Criar novo diagnóstico
 router.get('/:idDiagnostico', diagnosticoController.getDiagnosticoById); // Detalhes de um diagnóstico

@@ -82,6 +82,9 @@ export const diagnosticoController = {
 
       const pacientes = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio },
+        orderBy: {
+          nome: 'asc',
+        },
       });
 
       if (pacientes.length === 0) {
@@ -177,6 +180,11 @@ export const diagnosticoController = {
           paciente: true,
           profissional: true,
         },
+        orderBy: {
+          paciente: {
+            nome: 'asc',
+          },
+        },
       });
 
       res.render('diagnosticos/index', {
@@ -210,8 +218,6 @@ export const diagnosticoController = {
 
       // Limpar a string de busca
       const q = query.trim();
-      // 2. Iniciamos as condições de busca com o Nome
-      const orConditions = [{ nome: { contains: q } }];
 
       const diagnosticos = await prisma.diagnostico.findMany({
         where: {
@@ -230,6 +236,11 @@ export const diagnosticoController = {
         include: {
           paciente: true,
           profissional: true,
+        },
+        orderBy: {
+          paciente: {
+            nome: 'asc',
+          },
         },
       });
 

@@ -192,6 +192,9 @@ export const pacienteController = {
             take: 1, // recebe um array, mas só com a anamnese mais recente
           },
         },
+        orderBy: {
+          nome: 'asc',
+        },
       });
 
       res.render('pacientes/index', {
@@ -217,6 +220,11 @@ export const pacienteController = {
         return res.redirect('/consultorios/new');
       }
 
+      // Se a busca estiver vazia, redireciona para a listagem geral
+      if (!query || query.trim() === '') {
+        return res.redirect('/pacientes');
+      }
+
       const q = query.trim();
       // 1. Criamos uma versão apenas com números para CPF e Ficha
       const cleanQ = q.replace(/\D/g, '');
@@ -238,17 +246,14 @@ export const pacienteController = {
         // Para campos numéricos, usamos 'equals' para busca exata
         orConditions.push({ nFicha: { equals: nFichaNum } });
       }
-      // Se a busca estiver vazia, redireciona para a listagem geral
-      if (!query || query.trim() === '') {
-        return res.redirect('/pacientes');
-      }
-
-      query = query.trim();
 
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
           OR: orConditions,
+        },
+        orderBy: {
+          nome: 'asc',
         },
       });
 
@@ -258,7 +263,7 @@ export const pacienteController = {
       }
 
       res.render('pacientes/index', {
-        pageTitle: `Resultados para "${query}"`,
+        pageTitle: `Resultados para "${q}"`,
         pageIcon: 'ri-search-line',
         pacientes,
         messages: req.flash(''),
