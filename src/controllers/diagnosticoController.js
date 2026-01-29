@@ -191,6 +191,65 @@ export const diagnosticoController = {
       return res.redirect('/');
     }
   },
+
+  async searchDiagnosticos(req, res) {
+    try {
+      const { query } = req.query;
+      //ParseInt para garantir que o ID seja um número
+      const idConsultorio = parseInt(req.session.idConsultorio);
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      // Se a busca estiver vazia, redireciona para a listagem
+      if (!query || query.trim() === '') {
+        return res.redirect('/diagnosticos');
+      }
+
+      // Limpar a string de busca
+      const q = query.trim();
+      // 2. Iniciamos as condições de busca com o Nome
+      const orConditions = [{ nome: { contains: q } }];
+
+      const diagnosticos = await prisma.diagnostico.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          // Buscar nome
+          OR: [
+            {
+              paciente: {
+                nome: {
+                  contains: q,
+                },
+              },
+            },
+          ],
+        },
+        include: {
+          paciente: true,
+          profissional: true,
+        },
+      });
+
+      if (diagnosticos.length === 0) {
+        req.flash('warning', `Nenhum resultado para "${q}".`);
+      }
+
+      res.render('diagnosticos/index', {
+        pageTitle: `Resultados para "${q}"`,
+        pageIcon: 'ri-search-line',
+        diagnosticos,
+        messages: req.flash(),
+      });
+    } catch (error) {
+      console.error('Erro ao buscar diagnósticos:', error);
+      req.flash('error', 'Erro ao processar a busca.');
+      return res.redirect('/diagnosticos');
+    }
+  },
+
   // Formulário para editar diagnóstico
   async editDiagnosticoForm(req, res) {
     try {

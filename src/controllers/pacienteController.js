@@ -210,7 +210,7 @@ export const pacienteController = {
   async searchPacientes(req, res) {
     try {
       const { query } = req.query;
-      const idConsultorio = req.session.idConsultorio;
+      const idConsultorio = parseInt(req.session.idConsultorio);
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -238,6 +238,12 @@ export const pacienteController = {
         // Para campos numéricos, usamos 'equals' para busca exata
         orConditions.push({ nFicha: { equals: nFichaNum } });
       }
+      // Se a busca estiver vazia, redireciona para a listagem geral
+      if (!query || query.trim() === '') {
+        return res.redirect('/pacientes');
+      }
+
+      query = query.trim();
 
       const pacientes = await prisma.paciente.findMany({
         where: {

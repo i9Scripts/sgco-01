@@ -1,6 +1,4 @@
 <div class="container-fluid py-4">
-
-
     <% if (messages.error) { %>
         <div class="alert alert-danger" role="alert"><%= messages.error %></div>
     <% } %>
@@ -8,34 +6,42 @@
         <div class="alert alert-success" role="alert"><%= messages.success %></div>
     <% } %>
 
-    <div class="row text-center mb-5">
-        <div class="col-md-4 mb-3">
-            <!-- Botão para adicionar novo paciente -->
-          <button class="btn btn-primary btn-lg btn-block custom-dashboard-btn" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
-            <span class="bi bi-person-plus-fill icon-large"></span>
-          </button>
+    <div class="row">
+        <!-- Left: Fila de Espera -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Fila de Espera</h6>
+                </div>
+                <div class="card-body">
+                    <div id="fila-de-espera-recepcao">
+                        <%- include('./partials/_filaEspera.ejs', { pacientes: pacientesNaFila }) %>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-3">
 
-          <a href="/pacientes" class="btn btn-success btn-lg btn-block custom-dashboard-btn" title="Buscar Paciente"><span class="bi bi-search icon-large"></span></a>
+        <!-- Right: Ações rápidas -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Ações Rápidas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-primary btn-block" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
+                            <span class="bi bi-person-plus-fill"></span> Adicionar Paciente
+                        </button>
+                        <a href="/pacientes" class="btn btn-success btn-block" title="Buscar Paciente"><span class="bi bi-search"></span> Buscar Paciente</a>
+                        <button class="btn btn-info btn-block" title="Registrar Pagamento" onclick="abrirModalGenerico('/financeiro/selecionar-paciente','Novo Paciente')">
+                            <span class="bi bi-cash-coin"></span> Registrar Pagamento
+                        </button>
+                        <a href="/parceiros" class="btn btn-secondary btn-block" title="Ver Parceiros"><span class="bi bi-people"></span> Ver Parceiros</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-3">
-            <button class="btn btn-info btn-lg btn-block custom-dashboard-btn" title="Registrar Pagamento" onclick="abrirModalGenerico('/financeiro/selecionar-paciente','Novo Paciente')">
-            <span class="bi bi-cash-coin icon-large"></span>
-          </button>
-        </div>
-        <div class="col-md-4 mb-3">
-          <a href="/parceiros" class="btn btn-info btn-lg btn-block custom-dashboard-btn" title="Ver Parceiros"><span class="bi bi-people icon-large"></span>
-          </a>
-        </div>
-    </div>
-
-    <hr>
-
-    <h2 class="text-center mb-4">Fila de Espera</h2>
-    <div id="fila-de-espera-recepcao">
-        <%- include('./partials/_filaEspera.ejs', { pacientes: pacientesNaFila }) %>
     </div>
     
+    <div><%- include('./partials/_modal') %></div>
 </div>
-<div><%- include('./partials/_modal') %></div>

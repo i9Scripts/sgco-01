@@ -1,9 +1,17 @@
 <div>
+  <!-- Formulário de busca -->
+  <form action="/diagnosticos/search" method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="query" class="form-control" placeholder="Buscar por nome do paciente" />
+      <button class="btn btn-secondary" type="submit">Buscar</button>
+    </div>
+  </form>
 
   <a href="/diagnosticos/new" class="btn btn-primary">Novo Diagnóstico</a>
   <table class="table">
     <thead>
       <tr>
+        <th>Nº da Ficha</th>
         <th>Paciente</th>
         <th>Profissional</th>
         <th>Descrição</th>
@@ -11,20 +19,27 @@
       </tr>
     </thead>
     <tbody>
-      <% diagnosticos.forEach(diagnostico => { %>
-      <tr>
-        <td><%= diagnostico.paciente.nome %></td>
-        <td><%= diagnostico.profissional.nome %></td>
-        <td class="col-descricao"><%= diagnostico.descricao %></td>
-        <td>
-          <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-round btn-info" title="Ver Receita"><span class="material-symbols-outlined icon-btn">visibility</span></a>
-          <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-round btn-warning" title="Editar diagnostico"><span class="material-symbols-outlined icon-btn">edit</span></a>
-          <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-round btn-danger" onclick="return confirm('Tem certeza que deseja excluir este diagnóstico?')" title="Excluir Diagnostico"><span class="material-symbols-outlined icon-btn">delete</span></button>
-          </form>
-        </td>
-      </tr>
-      <% }) %>
+      <% if (diagnosticos && diagnosticos.length > 0) { %>
+        <% diagnosticos.forEach(diagnostico => { %>
+        <tr>
+          <td><%= diagnostico.paciente.nFicha %></td>
+          <td><%= diagnostico.paciente.nome %></td>
+          <td><%= diagnostico.profissional.nome %></td>
+          <td class="col-descricao"><%= diagnostico.descricao %></td>
+          <td>
+            <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-round btn-info" title="Ver Receita"><span class="material-symbols-outlined icon-btn">visibility</span></a>
+            <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-round btn-warning" title="Editar diagnostico"><span class="material-symbols-outlined icon-btn">edit</span></a>
+            <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-round btn-danger" onclick="return confirm('Tem certeza que deseja excluir este diagnóstico?')" title="Excluir Diagnostico"><span class="material-symbols-outlined icon-btn">delete</span></button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="4" class="text-center">Nenhum diagnóstico encontrado.</td>
+        </tr>
+      <% } %>
     </tbody>
   </table>
   <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
