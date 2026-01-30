@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Agenda de Atendimentos</h3>
+    <button
+      class="btn btn-primary"
+      onclick="abrirModalGenerico('/agendamentos/new', 'Novo Agendamento')"
+    >
+      <i class="ri-add-line"></i> Novo Agendamento
+    </button>
+  </div>
+
+  <% if (messages.error) { %>
+  <div class="alert alert-danger"><%= messages.error %></div>
+  <% } %> <% if (messages.success) { %>
+  <div class="alert alert-success"><%= messages.success %></div>
+  <% } %> <% if (!agendamentos || agendamentos.length === 0) { %>
+  <div class="alert alert-info">Nenhum agendamento encontrado.</div>
+  <% } else { %>
+  <div class="list-group">
+    <% agendamentos.forEach(agendamento => { %>
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1"><%= agendamento.paciente.nome %></h5>
+        <small><%= new Date(agendamento.dataHora).toLocaleDateString('pt-BR', {weekday: 'long', day:
+          '2-digit', month: 'long'}) %></small>
+      </div>
+      <p class="mb-1">
+        Horário: <strong><%= new Date(agendamento.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></strong>
+      </p>
+      <small>
+        Convênio: <%= agendamento.parceiro ? agendamento.parceiro.nome : 'Particular' %>
+      </small>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+</div>
+
+<%- include('../partials/_modal') %>

@@ -12,75 +12,14 @@
         </p>
       </div>
     </div>
-    <div class="col-md-12 mb-3">
-      <input type="text" class="form-control" id="motivo" name="motivo" required maxlength="100" />
-      <label for="motivo">Motivo</label>
-    </div>
     <div class="row form-group">
-      <div class="col-md-12 mb-3">
+      <div class="col-md-9 mb-3">
+        <input type="text" class="form-control" id="motivo" name="motivo" required maxlength="100" />
+        <label for="motivo">Motivo</label>
+      </div>
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="ultimoExame" name="ultimoExame" required maxlength="20" />
         <label for="ultimoExame">Último Exame</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="usuarioOculos" name="usuarioOculos">
-          <option value="true">Sim</option>
-          <option value="false">Não</option>
-        </select>
-        <label for="usuarioOculos">Usou Óculos?</label>
-      </div>
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="usuarioLC" name="usuarioLC">
-          <option value="true">Sim</option>
-          <option value="false">Não</option>
-        </select>
-        <label for="usuarioLC">Usou Lentes de Contato?</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="trauma" name="trauma" maxlength="50" />
-        <label for="trauma">Trauma</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="dm" name="dm">
-          <option value="true">Sim</option>
-          <option value="false">Não</option>
-        </select>
-        <label for="dm">Tem Diabetes?</label>
-      </div>
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="has" name="has">
-          <option value="true">Sim</option>
-          <option value="false">Não</option>
-        </select>
-        <label for="dm">Tem Pressão alta?</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="glauc" name="glauc">
-          <option value="true">Sim</option>
-          <option value="false">Não</option>
-        </select>
-        <label for="glauc">Tem Glaucoma?</label>
-      </div>
-      <div class="col-md-6 mb-3">
-        <input type="text" class="form-control" id="dmFam" name="dmFam" maxlength="50" />
-        <label for="dmFam">Diabetes na Família</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <input type="text" class="form-control" id="hasFam" name="hasFam" maxlength="50" />
-        <label for="hasFam">Pressão Alta na Família</label>
-      </div>
-      <div class="col-md-6 mb-3">
-        <input type="text" class="form-control" id="glaucFam" name="glaucFam" maxlength="50" />
-        <label for="glaucFam">Glaucoma na Família</label>
       </div>
     </div>
     <div class="row form-group">
@@ -88,55 +27,110 @@
         <input type="text" class="form-control" id="sintomas" name="sintomas" maxlength="50" />
         <label for="sintomas">Sintomas</label>
       </div>
+      <div class="col-md-12 mb-3">
+        <input type="text" class="form-control" id="obsGerais" name="obsGerais" maxlength="255" />
+        <label for="obsGerais">Observações Gerais</label>
+      </div>
+      <div class="col-md-12 mb-3">
+        <input type="text" class="form-control" id="trauma" name="trauma" maxlength="50" />
+        <label for="trauma">Trauma</label>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="usuarioOculos" name="usuarioOculos">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+        <label for="usuarioOculos">Usou Óculos?</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="usuarioLC" name="usuarioLC">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+        <label for="usuarioLC">Usou Lentes de Contato?</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="dm" name="dm">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+        <label for="dm">Tem Diabetes?</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="has" name="has">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+        <label for="dm">Tem Pressão alta?</label>
+      </div>
+      <div class="col-md-4 mb-3">
+        <select class="form-control" id="glauc" name="glauc">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+        <label for="glauc">Tem Glaucoma?</label>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" id="dmFam" name="dmFam" maxlength="50" />
+        <label for="dmFam">Diabetes na Família</label>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" id="hasFam" name="hasFam" maxlength="50" />
+        <label for="hasFam">Pressão Alta na Família</label>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" id="glaucFam" name="glaucFam" maxlength="50" />
+        <label for="glaucFam">Glaucoma na Família</label>
+      </div>
     </div>
     <div class="row form-group">
       <div class="col-md-12 mb-3">
         <input type="text" class="form-control" id="remedio" name="remedio" maxlength="50" />
         <label for="remedio">Remédio</label>
       </div>
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="obsGerais" name="obsGerais" maxlength="255" />
-        <label for="obsGerais">Observações Gerais</label>
-      </div>
     </div>
     <div class="row form-group">
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="EsfOD" name="esfOD" maxlength="6" />
         <label for="esfOD">Lesometria OD Esférico</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="CilOD" name="cilOD" maxlength="6" />
         <label for="cilOD">Lesometria OD Cilíndrico</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="EixoOD" name="eixoOD" maxlength="4" />
         <label for="eixoOD">Lesometria OD Eixo</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="avSCOD" name="avSCOD" maxlength="6" />
         <label id="avSCOD">AV sem correção OD</label>
       </div>
     </div>
     <div class="row form-group">
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="esfOE" name="esfOE" maxlength="6" />
         <label for="esfOE">Lesometria OE Esférico</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="cilOE" name="cilOE" maxlength="6" />
         <label for="cilOE">Lesometria OE Cilíndrico</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="eixoOE" name="eixoOE" maxlength="4" />
         <label for="eixoOE">Lesometria OE Eixo</label>
       </div>
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="avSCOE" name="avSCOE" maxlength="6" />
         <label id="avSCOE">AV sem correção OE</label>
       </div>
     </div>
     <div class="row form-group">
-      <div class="col-md-2 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="adicao" name="adicao" maxlength="6" />
         <label for="adicao">Lesometria Adição</label>
       </div>

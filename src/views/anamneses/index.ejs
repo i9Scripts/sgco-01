@@ -27,16 +27,28 @@
         <td><%= anamnese.ultimoExame || 'Não informado' %></td>
         <td><%= anamnese.motivo %></td>
         <td>
-          <!-- Botão para adicionar nova anamnese -->
-         <button class="btn btn-round btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
-    <span class="material-symbols-outlined icon-btn">person_add</span> 
-  </button>
+          <!-- Botão para adicionar nova anamnese para o paciente desta anamnese -->
+          <button
+            class="btn btn-round btn-sm btn-success"
+            title="Nova Anamnese"
+            onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>', 'Nova Anamnese')"
+          >
+            <span class="material-symbols-outlined icon-btn">add</span>
+          </button>
           <!-- Botão para visualizar anamnese -->
-          <button class="btn btn-round btn-sm btn-info" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Dados da Anamnese')" title="Ver anamnese">
+          <button
+            class="btn btn-round btn-sm btn-info"
+            onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Dados da Anamnese')"
+            title="Ver anamnese"
+          >
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar anamnese -->
-          <button class="btn btn-round btn-sm btn-warning" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Dados')" title="Editar anamnese">
+          <button
+            class="btn btn-round btn-sm btn-warning"
+            onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Dados')"
+            title="Editar anamnese"
+          >
             <span class="material-symbols-outlined icon-btn">edit</span>
           </button>
         </td>

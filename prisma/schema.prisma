@@ -34,6 +34,7 @@ model Consultorio {
   profissionais Profissional[]
   usuarios      User[]
   lancamentos   LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
+  agendamentos  Agendamento[]
 
   @@index([cpf])
   @@index([nome])
@@ -86,6 +87,7 @@ model Paciente {
   lancamentos   LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
   parceiro      Parceiro?              @relation(fields: [parceiroId], references: [idParceiro])
   parceiroId    Int?
+  agendamentos  Agendamento[]
 
   @@index([nome])
   @@index([cpf])
@@ -134,6 +136,7 @@ model Parceiro {
   consultorio       Consultorio            @relation(fields: [consultorioId], references: [idConsultorio])
   lancamentos       LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
   pacientes         Paciente[]
+  agendamentos      Agendamento[]
 
   @@index([nome])
   @@index([consultorioId], map: "Parceiro_consultorioId_fkey")
@@ -315,6 +318,24 @@ model migrations {
   id        Int    @id @default(autoincrement()) @db.UnsignedInt
   migration String @db.VarChar(255)
   batch     Int
+}
+
+model Agendamento {
+  id            Int         @id @default(autoincrement())
+  dataHora      DateTime
+  pacienteId    Int
+  paciente      Paciente    @relation(fields: [pacienteId], references: [idPaciente])
+  parceiroId    Int?
+  parceiro      Parceiro?   @relation(fields: [parceiroId], references: [idParceiro])
+  consultorioId Int
+  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  status        String      @default("Agendado") // e.g., Agendado, Confirmado, Cancelado
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([pacienteId])
+  @@index([parceiroId])
+  @@index([consultorioId])
 }
 
 enum StatusConsulta {

@@ -17,92 +17,85 @@
 
     <!-- Campos do formulário -->
     <div class="row form-group">
-      <div class="col-md-12 mb-3">
+      <div class="col-md-9 mb-3">
         <input type="text" class="form-control" id="motivo" name="motivo" value="<%= anamnese.motivo %>" required maxlength="100" />
         <label id="motivo">Motivo</label>
       </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-12 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="ultimoExame" name="ultimoExame" value="<%= anamnese.ultimoExame %>" maxlength="20" />
         <label id="ultimoExame">Último Exame</label>
       </div>
     </div>
+
     <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="usuarioOculos" name="usuarioOculos">
-          <option value="true" <%= anamnese.usuarioOculos ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.usuarioOculos ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="usuarioOculos">Usa Óculos?</label>
+      <div class="col-md-12 mb-3">
+        <input type="text" class="form-control" id="sintomas" name="sintomas" value="<%= anamnese.sintomas %>" maxlength="50" />
+        <label id="sintomas">Sintomas</label>
       </div>
-      <div class="col-md-6 mb-3">
-        <select class="form-control" id="usuarioLC" name="usuarioLC">
-          <option value="true" <%= anamnese.usuarioLC ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.usuarioLC ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="usuarioLC">Usou Lente de Contato?</label>
+      <div class="col-md-12 mb-3">
+        <input type="text" class="form-control" id="obsGerais" name="obsGerais" value="<%= anamnese.obsGerais %>" maxlength="255" />
+        <label id="obsGerais">Observações Gerais</label>
       </div>
-    </div>
-    <div class="row form-group">
       <div class="col-md-12 mb-3">
         <input type="text" class="form-control" id="trauma" name="trauma" value="<%= anamnese.trauma %>" maxlength="50" />
         <label id="trauma">Trauma</label>
       </div>
     </div>
     <div class="row form-group">
-      <div class="col-md-6 mb-3">
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="usuarioOculos" name="usuarioOculos">
+          <option value="true" <%= anamnese.usuarioOculos ? 'selected' : '' %>>Sim</option>
+          <option value="false" <%= !anamnese.usuarioOculos ? 'selected' : '' %>>Não</option>
+        </select>
+        <label id="usuarioOculos">Usa Óculos?</label>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-control" id="usuarioLC" name="usuarioLC">
+          <option value="true" <%= anamnese.usuarioLC ? 'selected' : '' %>>Sim</option>
+          <option value="false" <%= !anamnese.usuarioLC ? 'selected' : '' %>>Não</option>
+        </select>
+        <label id="usuarioLC">Usou Lente de Contato?</label>
+      </div>
+      <div class="col-md-2 mb-3">
         <select class="form-control" id="dm" name="dm">
           <option value="true" <%= anamnese.dm ? 'selected' : '' %>>Sim</option>
           <option value="false" <%= !anamnese.dm ? 'selected' : '' %>>Não</option>
         </select>
         <label id="dm">Tem Diabetes?</label>
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-md-2 mb-3">
         <select class="form-control" id="has" name="has">
           <option value="true" <%= anamnese.has ? 'selected' : '' %>>Sim</option>
           <option value="false" <%= !anamnese.has ? 'selected' : '' %>>Não</option>
         </select>
         <label id="has">Tem Pressão Alta?</label>
       </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
+    <div class="col-md-4 mb-3">
         <select class="form-control" id="glauc" name="glauc">
           <option value="true" <%= anamnese.glauc ? 'selected' : '' %>>Sim</option>
           <option value="false" <%= !anamnese.glauc ? 'selected' : '' %>>Não</option>
         </select>
         <label id="glauc">Tem Glaucoma?</label>
-      </div>
-      <div class="col-md-6 mb-3">
+    </div>
+  </div>
+    <div class="row form-group">
+      <div class="col-md-4 mb-3">
         <input type="text" class="form-control" id="dmFam" name="dmFam" value="<%= anamnese.dmFam %>" maxlength="50" />
         <label id="dmFam">Diabetes na Família</label>
       </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-        <input type="text" class="form-control" id="hasFam" name="hasFam" value="<%= anamnese.hasFam %>" maxlength="50" />
-        <label id="hasFam">Pressão Alta na Família</label>
+        <div class="col-md-4 mb-3">
+          <input type="text" class="form-control" id="hasFam" name="hasFam" value="<%= anamnese.hasFam %>" maxlength="50" />
+          <label id="hasFam">Pressão Alta na Família</label>
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-md-4 mb-3">
         <input type="text" class="form-control" id="glaucFam" name="glaucFam" value="<%= anamnese.glaucFam %>" maxlength="50" />
         <label id="glaucFam">Glaucoma na Família</label>
       </div>
     </div>
     <div class="row form-group">
       <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="sintomas" name="sintomas" value="<%= anamnese.sintomas %>" maxlength="50" />
-        <label id="sintomas">Sintomas</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-12 mb-3">
         <input type="text" class="form-control" id="remedio" name="remedio" value="<%= anamnese.remedio %>" maxlength="50" />
         <label id="remedio">Remédio</label>
-      </div>
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="obsGerais" name="obsGerais" value="<%= anamnese.obsGerais %>" maxlength="255" />
-        <label id="obsGerais">Observações Gerais</label>
       </div>
     </div>
     <div class="row form-group">
@@ -142,7 +135,7 @@
       </div>
     </div>
     <div class="row form-group">
-      <div class="col-md-4 mb-3">
+      <div class="col-md-3 mb-3">
         <input type="text" class="form-control" id="adicao" name="adicao" value="<%= anamnese.adicao %>" maxlength="6" />
         <label id="adicao">Lesometria Adição</label>
       </div>

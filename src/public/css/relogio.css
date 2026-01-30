@@ -3,7 +3,7 @@
   padding: 0;
 }
 .container {
-  height: 30vh;
+  height: 20vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +13,7 @@
 }
 .clock {
   display: inline-block;
-  color: var(--sapphire);
+  color: var(--secondary-color);
 }
 #Date {
   font-size: 0.7rem !important;

@@ -1,0 +1,39 @@
+<form action="/agendamentos" method="POST">
+  <div class="mb-3">
+    <label for="pacienteId" class="form-label">Paciente</label>
+    <select class="form-select" id="pacienteId" name="pacienteId" required>
+      <option value="" disabled selected>Selecione um paciente</option>
+      <% pacientes.forEach(paciente => { %>
+      <option value="<%= paciente.idPaciente %>"><%= paciente.nome %></option>
+      <% }); %>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="parceiroId" class="form-label">Convênio / Parceiro</label>
+    <select class="form-select" id="parceiroId" name="parceiroId">
+      <option value="">Particular</option>
+      <% parceiros.forEach(parceiro => { %>
+      <option value="<%= parceiro.idParceiro %>"><%= parceiro.nome %></option>
+      <% }); %>
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="data" class="form-label">Data</label>
+      <input type="date" class="form-control" id="data" name="data" required />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="hora" class="form-label">Hora</label>
+      <input type="time" class="form-control" id="hora" name="hora" required />
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      Fechar
+    </button>
+    <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+  </div>
+</form>

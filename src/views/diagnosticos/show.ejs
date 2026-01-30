@@ -40,17 +40,17 @@
               <tbody>
                 <tr>
                   <td><strong>Longe OD</strong></td>
-                  <td><%= diagnostico.esfOD %></td>
-                  <td><%= diagnostico.cilOD %></td>
-                  <td><%= diagnostico.eixoOD %></td>
-                  <td><strong><%= diagnostico ? diagnostico.adicao : '' %> </strong></td>
+                  <td><%= diagnostico.esfOD || '0,00' %></td>
+                  <td><%= diagnostico.cilOD || '0,00' %></td>
+                  <td><%= diagnostico.eixoOD || '000' %> º</td>
+                  <td><%= diagnostico.adicao || '0,00'  %></td>
                   <!-- espaço para dnp -->
                 </tr>
                 <tr>
                   <td><strong>Longe OE</strong></td>
-                  <td><%= diagnostico.esfOE %></td>
-                  <td><%= diagnostico.cilOE %></td>
-                  <td><%= diagnostico.eixoOE %></td>
+                  <td><%= diagnostico.esfOE || '0,00' %></td>
+                  <td><%= diagnostico.cilOE || '0,00' %></td>
+                  <td><%= diagnostico.eixoOE || '000' %> º</td>
                   <td></td>
                 </tr>
                 <tr>

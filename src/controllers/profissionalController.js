@@ -276,7 +276,7 @@ export const profissionalController = {
       const pacientesReservados = res.locals.pacientesReservados || [];
 
       return res.render('profissionais/dashboard', {
-        pageTitle: 'Dashboard do Profissional',
+        pageTitle: 'Profissional',
         pageIcon: 'ri-dashboard-line',
         pacientesNaFila,
         pacientesReservados,
