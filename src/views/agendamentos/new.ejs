@@ -1,20 +1,34 @@
 <form action="/agendamentos" method="POST">
-  <div class="mb-3">
+  <% if (errors.message) { %>
+    <div class="alert alert-danger"><%= errors.message %></div>
+  <% } %>
+
+  <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="pacienteNaoCadastrado" <%= formData.nome ? 'checked' : '' %>>
+    <label class="form-check-label" for="pacienteNaoCadastrado">Paciente não cadastrado</label>
+  </div>
+
+  <div class="mb-3" id="divPacienteCadastrado">
     <label for="pacienteId" class="form-label">Paciente</label>
-    <select class="form-select" id="pacienteId" name="pacienteId" required>
-      <option value="" disabled selected>Selecione um paciente</option>
+    <select class="form-select" id="pacienteId" name="pacienteId" <%= formData.nome ? 'disabled' : '' %> required>
+      <option value="" disabled <%= !formData.pacienteId ? 'selected' : '' %>>Selecione um paciente</option>
       <% pacientes.forEach(paciente => { %>
-      <option value="<%= paciente.idPaciente %>"><%= paciente.nome %></option>
+        <option value="<%= paciente.idPaciente %>" <%= formData.pacienteId == paciente.idPaciente ? 'selected' : '' %>><%= paciente.nome %></option>
       <% }); %>
     </select>
+  </div>
+
+  <div class="mb-3" id="nomePacienteNaoCadastrado" <%= formData.nome ? 'display: block;' : 'display: none;' %>">
+    <label for="nome" class="form-label">Nome do Paciente</label>
+    <input type="text" class="form-control" id="nome" name="nome" value="<%= formData.nome || '' %>" <%= formData.nome ? 'required' : '' %>>
   </div>
 
   <div class="mb-3">
     <label for="parceiroId" class="form-label">Convênio / Parceiro</label>
     <select class="form-select" id="parceiroId" name="parceiroId">
-      <option value="">Particular</option>
+      <option value="" <%= !formData.parceiroId ? 'selected' : '' %>>Particular</option>
       <% parceiros.forEach(parceiro => { %>
-      <option value="<%= parceiro.idParceiro %>"><%= parceiro.nome %></option>
+        <option value="<%= parceiro.idParceiro %>" <%= formData.parceiroId == parceiro.idParceiro ? 'selected' : '' %>><%= parceiro.nome %></option>
       <% }); %>
     </select>
   </div>
@@ -22,12 +36,17 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <label for="data" class="form-label">Data</label>
-      <input type="date" class="form-control" id="data" name="data" required />
+      <input type="date" class="form-control" id="data" name="data" value="<%= formData.data || '' %>" required />
     </div>
     <div class="col-md-6 mb-3">
       <label for="hora" class="form-label">Hora</label>
-      <input type="time" class="form-control" id="hora" name="hora" required />
+      <input type="time" class="form-control" id="hora" name="hora" value="<%= formData.hora || '' %>" required />
     </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="observacao" class="form-label">Observação</label>
+    <textarea class="form-control" id="observacao" name="observacao" rows="3"><%= formData.observacao || '' %></textarea>
   </div>
 
   <div class="modal-footer">
@@ -37,3 +56,44 @@
     <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
   </div>
 </form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const pacienteNaoCadastradoCheckbox = document.getElementById('pacienteNaoCadastrado');
+    const divPacienteCadastrado = document.getElementById('divPacienteCadastrado');
+    const pacienteIdSelect = document.getElementById('pacienteId');
+    const nomePacienteNaoCadastradoDiv = document.getElementById('nomePacienteNaoCadastrado');
+    const nomeInput = document.getElementById('nome');
+
+    // Initial state based on formData
+    if (pacienteNaoCadastradoCheckbox.checked) {
+      divPacienteCadastrado.style.display = 'none';
+      pacienteIdSelect.disabled = true;
+      pacienteIdSelect.required = false;
+      nomePacienteNaoCadastradoDiv.style.display = 'block';
+      nomeInput.required = true;
+    } else {
+      divPacienteCadastrado.style.display = 'block';
+      pacienteIdSelect.disabled = false;
+      pacienteIdSelect.required = true;
+      nomePacienteNaoCadastradoDiv.style.display = 'none';
+      nomeInput.required = false;
+    }
+
+    pacienteNaoCadastradoCheckbox.addEventListener('change', function () {
+      if (this.checked) {
+        divPacienteCadastrado.style.display = 'none';
+        pacienteIdSelect.disabled = true;
+        pacienteIdSelect.required = false;
+        nomePacienteNaoCadastradoDiv.style.display = 'block';
+        nomeInput.required = true;
+      } else {
+        divPacienteCadastrado.style.display = 'block';
+        pacienteIdSelect.disabled = false;
+        pacienteIdSelect.required = true;
+        nomePacienteNaoCadastradoDiv.style.display = 'none';
+        nomeInput.required = false;
+      }
+    });
+  });
+</script>
