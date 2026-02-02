@@ -1,4 +1,4 @@
-<form action="/agendamentos" method="POST">
+<form action="/agendamentos/<%= formData.id %>?_method=PUT" method="POST">
   <% if (errors.message) { %>
     <div class="alert alert-danger"><%= errors.message %></div>
   <% } %>
@@ -18,7 +18,7 @@
     </select>
   </div>
 
-  <div class="mb-3" id="nomePacienteNaoCadastrado" <%= formData.nome ? 'display: block;' : 'display: none;' %>">
+  <div class="mb-3" id="nomePacienteNaoCadastrado" <%= formData.nome ? 'style="display: block;"' : 'style="display: none;"' %>>
     <label for="nome" class="form-label">Nome do Paciente</label>
     <input type="text" class="form-control" id="nome" name="nome" value="<%= formData.nome || '' %>" <%= formData.nome ? 'required' : '' %>>
   </div>
@@ -36,12 +36,25 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <label for="data" class="form-label">Data</label>
-      <input type="date" class="form-control" id="data" name="data" value="<%= formData.data || '' %>" required />
+      <input type="date" class="form-control" id="data" name="data" value="<%= new Date(formData.dataHora).toISOString().split('T')[0] %>" required />
     </div>
     <div class="col-md-6 mb-3">
       <label for="hora" class="form-label">Hora</label>
-      <input type="time" class="form-control" id="hora" name="hora" value="<%= formData.hora || '' %>" required />
+      <input type="time" class="form-control" id="hora" name="hora" value="<%= new Date(formData.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %>" required />
     </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select class="form-select" id="status" name="status">
+      <option value="Agendado" <%= formData.status === 'Agendado' ? 'selected' : '' %>>Agendado</option>
+      <option value="EmAtendimento" <%= formData.status === 'EmAtendimento' ? 'selected' : '' %>>Em Atendimento</option>
+      <option value="Finalizada" <%= formData.status === 'Finalizada' ? 'selected' : '' %>>Finalizado</option>
+      <option value="NaoCompareceu" <%= formData.status === 'NaoCompareceu' ? 'selected' : '' %>>Nao Compareceu</option>
+      <option value="Reagendado" <%= formData.status === 'Reagendado' ? 'selected' : '' %>>Reagendado</option>
+      <option value="Cancelado" <%= formData.status === 'Cancelado' ? 'selected' : '' %>>Cancelado</option>
+      <option value="Realizado" <%= formData.status === 'Realizado' ? 'selected' : '' %>>Realizado</option>
+    </select>
   </div>
 
   <div class="mb-3">
@@ -53,7 +66,7 @@
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
       Fechar
     </button>
-    <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
   </div>
 </form>
 

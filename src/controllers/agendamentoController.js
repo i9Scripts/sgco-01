@@ -94,7 +94,6 @@ export const agendamentoController = {
 
       const agendamentoData = {
         dataHora,
-        nome: nome || undefined,
         observacao: observacao || undefined,
         parceiro: parceiroId ? { connect: { idParceiro: parseInt(parceiroId) } } : undefined,
         consultorio: {
@@ -107,6 +106,8 @@ export const agendamentoController = {
         agendamentoData.paciente = {
           connect: { idPaciente: parseInt(pacienteId) },
         };
+      } else if (nome) {
+        agendamentoData.nome = nome;
       }
 
       await prisma.agendamento.create({
@@ -131,6 +132,99 @@ export const agendamentoController = {
         errors: { message: error.message },
         messages: req.flash(''),
       });
+    }
+  },
+
+  async editAgendamentoForm(req, res) {
+    const { id } = req.params;
+    try {
+      const agendamento = await prisma.agendamento.findUnique({
+        where: { id: parseInt(id) },
+        include: { paciente: true },
+      });
+
+      if (!agendamento) {
+        req.flash('error', 'Agendamento não encontrado.');
+        return res.redirect('/agendamentos');
+      }
+
+      const idConsultorio = req.session.idConsultorio;
+      const pacientes = await prisma.paciente.findMany({
+        where: { consultorioId: idConsultorio },
+        orderBy: { nome: 'asc' },
+      });
+      const parceiros = await prisma.parceiro.findMany({
+        where: { consultorioId: idConsultorio },
+        orderBy: { nome: 'asc' },
+      });
+
+      res.render('agendamentos/edit', {
+        agendamento,
+        pacientes,
+        parceiros,
+        formData: agendamento,
+        errors: {},
+        messages: req.flash(''),
+      });
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Erro ao carregar o formulário de edição.');
+      res.redirect('/agendamentos');
+    }
+  },
+
+  async updateAgendamento(req, res) {
+    const { id } = req.params;
+    const { pacienteId, nome, parceiroId, data, hora, observacao, status } = req.body;
+
+    try {
+      const dataHora = new Date(`${data}T${hora}`);
+
+      const agendamentoData = {
+        dataHora,
+        observacao,
+        status,
+        parceiro: parceiroId ? { connect: { idParceiro: parseInt(parceiroId) } } : { disconnect: true },
+      };
+
+      if (pacienteId) {
+        agendamentoData.paciente = {
+          connect: { idPaciente: parseInt(pacienteId) },
+        };
+        agendamentoData.nome = null;
+      } else {
+        agendamentoData.paciente = {
+          disconnect: true,
+        };
+        agendamentoData.nome = nome;
+      }
+
+      await prisma.agendamento.update({
+        where: { id: parseInt(id) },
+        data: agendamentoData,
+      });
+
+      req.flash('success', 'Agendamento atualizado com sucesso!');
+      res.redirect('/agendamentos');
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Erro ao atualizar o agendamento.');
+      res.redirect(`/agendamentos/${id}/edit`);
+    }
+  },
+
+  async deleteAgendamento(req, res) {
+    const { id } = req.params;
+    try {
+      await prisma.agendamento.delete({
+        where: { id: parseInt(id) },
+      });
+      req.flash('success', 'Agendamento excluído com sucesso!');
+      res.redirect('/agendamentos');
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Erro ao excluir o agendamento.');
+      res.redirect('/agendamentos');
     }
   },
 };

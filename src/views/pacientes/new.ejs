@@ -23,7 +23,6 @@
           value="<%= formData && formData.dataAtend %>"
           oninput="mascaraData(this)"
           maxlength="20"
-          autofocus
         /> 
         <label for="dataAtend">Data Atendimento</label>
       </div>
@@ -205,8 +204,25 @@
   </form>
 <!-- Cadastrar novo parceiro ou procurar na lista para vincular o parceiro ao paciente -->
 </div>
+<!-- inserir data de hoje -->
+ <script>
+  window.addEventListener('load', function() {
+    const inputData = document.getElementById('dataAtend');
+    
+    // Só preenche se o campo estiver vazio (evita sobrescrever dados do banco)
+    if (!inputData.value || inputData.value === "undefined") {
+      const hoje = new Date();
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Janeiro é 0
+      const ano = hoje.getFullYear();
+      
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+      inputData.value = dataFormatada;
+    }
+  });
+</script>
 
-<script>
+<!-- <script>
   document.getElementById('cpf').addEventListener('blur', function() {
     console.log('CPF field lost focus.');
     const cpf = this.value.replace(/\D/g, '');
@@ -258,4 +274,4 @@
         .catch(error => console.error('Error during fetch:', error));
     }
   });
-</script>
+</script> -->

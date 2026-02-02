@@ -180,9 +180,18 @@ export const vendasDoDia = async (req, res) => {
 export const renderizarSelecionarPaciente = async (req, res) => {
   try {
     const consultorioId = req.session.consultorio.idConsultorio;
+    const searchQuery = req.query.search;
+
+    let whereClause = { consultorioId: consultorioId };
+
+    if (searchQuery) {
+      whereClause.nome = {
+        contains: searchQuery,
+      };
+    }
 
     const pacientes = await prisma.paciente.findMany({
-      where: { consultorioId: consultorioId },
+      where: whereClause,
       select: { idPaciente: true, nome: true, naFila: true },
       orderBy: { nome: 'asc' },
     });
@@ -191,6 +200,7 @@ export const renderizarSelecionarPaciente = async (req, res) => {
       pageTitle: 'Selecionar Paciente para Cobrança',
       pageIcon: 'bi-person-check',
       pacientes,
+      query: searchQuery, // Passa o termo de busca para a view
       messages: req.flash(),
     });
   } catch (error) {

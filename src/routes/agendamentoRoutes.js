@@ -10,5 +10,9 @@ const router = Router();
 router.get('/', agendamentoController.listAgendamentos);
 router.get('/new', agendamentoController.createAgendamentoForm); // Rota para o formulário (pode ser em modal)
 router.post('/', agendamentoController.createAgendamento);
+router.get('/:id/edit', agendamentoController.editAgendamentoForm);
+router.put('/:id', agendamentoController.updateAgendamento);
+router.delete('/:id', agendamentoController.deleteAgendamento);
+
 
 export default router;

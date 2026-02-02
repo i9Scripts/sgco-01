@@ -27,6 +27,8 @@
           <th>Nome do Paciente</th>
           <th>Convênio</th>
           <th>Observações</th>
+          <th>Status</th> 
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +40,17 @@
             <td><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></td>
             <td><%= agendamento.parceiro ? agendamento.parceiro.nome : 'Particular' %></td>
             <td><%= agendamento.observacao || 'N/A' %></td>
+            <td><%= agendamento.status %></td> 
+            <td>
+              <button class="btn btn-sm btn-warning" title="Editar Agendamento" onclick="abrirModalGenerico('/agendamentos/<%= agendamento.id %>/edit', 'Editar Agendamento')">
+                <span class="material-symbols-outlined icon-btn">edit</span>
+              </button>
+              <form action="/agendamentos/<%= agendamento.id %>?_method=DELETE" method="post" class="d-inline" title="Excluir Agendamento">
+                <button type="submit" class="btn btn-round btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+                  <span class="material-symbols-outlined icon-btn">delete</span>
+                </button>
+              </form>
+            </td>
           </tr>
         <% }); %>
       </tbody>

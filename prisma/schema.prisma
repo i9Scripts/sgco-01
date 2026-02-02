@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Agendamento {
-  id            Int       @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   dataHora      DateTime
   pacienteId    Int?
-  nome          String?   @db.VarChar(60) // For non-registered patients
+  nome          String?  @db.VarChar(60) // For non-registered patients
   parceiroId    Int?
   consultorioId Int
-  status        String    @default("Agendado") @db.VarChar(191)
-  observacao    String?   @db.VarChar(255)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  status        String   @default("Agendado") @db.VarChar(191)
+  observacao    String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  paciente    Paciente?    @relation(fields: [pacienteId], references: [idPaciente])
-  parceiro    Parceiro?    @relation(fields: [parceiroId], references: [idParceiro])
+  paciente    Paciente?   @relation(fields: [pacienteId], references: [idPaciente])
+  parceiro    Parceiro?   @relation(fields: [parceiroId], references: [idParceiro])
   consultorio Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
 
   @@index([pacienteId])
@@ -213,11 +213,11 @@ model Anamnese {
   cilOD         String?     @db.VarChar(6)
   cilOE         String?     @db.VarChar(6)
   eixoOD        String?     @db.VarChar(4)
-  avSCOD        String?     @db.VarChar(6)
+  avSCOD        String?     @db.VarChar(8)
   eixoOE        String?     @db.VarChar(4)
   esfOD         String?     @db.VarChar(6)
   esfOE         String?     @db.VarChar(6)
-  avSCOE        String?     @db.VarChar(6)
+  avSCOE        String?     @db.VarChar(8)
   consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
   paciente      Paciente    @relation(fields: [pacienteId], references: [idPaciente])
   consultas     Consulta[]
@@ -231,11 +231,11 @@ model Diagnostico {
   esfOD          String       @db.VarChar(6)
   cilOD          String?      @db.VarChar(6)
   eixoOD         String?      @db.VarChar(4)
-  avFinalOD      String?      @db.VarChar(6)
+  avFinalOD      String?      @db.VarChar(8)
   esfOE          String       @db.VarChar(6)
   cilOE          String?      @db.VarChar(6)
   eixoOE         String?      @db.VarChar(4)
-  avFinalOE      String?      @db.VarChar(6)
+  avFinalOE      String?      @db.VarChar(8)
   adicao         String       @db.VarChar(6)
   descricao      String       @db.VarChar(255)
   createdAt      DateTime     @default(now())
@@ -347,7 +347,7 @@ enum StatusConsulta {
   Finalizada
   Cancelada
   NaoCompareceu
-  Remarcada
+  Reagendado
 }
 
 enum StatusPagamento {

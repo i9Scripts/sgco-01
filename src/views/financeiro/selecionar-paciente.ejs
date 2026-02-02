@@ -11,6 +11,14 @@
             <h6 class="m-0 font-weight-bold text-primary">Selecionar Paciente para Cobrança</h6>
         </div>
         <div class="card-body">
+            <!-- Formulário de busca por nome -->
+            <form action="/financeiro/selecionar-paciente" method="get" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar paciente por nome..." value="<%= query || '' %>">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+
             <% if (pacientes.length === 0) { %>
                 <p>Nenhum paciente encontrado.</p>
             <% } else { %>
