@@ -6,6 +6,7 @@
       <button class="btn btn-secondary" type="submit">Buscar</button>
     </div>
   </form>
+  <a href="/pacientes/new" class="btn btn-primary"><span class="material-symbols-outlined icon-btn" title="Adicionar Novo Paciente">person_add</span>Novo Paciente</a>
  <!-- Lista de pacientes -->
   <% if (pacientes && pacientes.length > 0) { %>
   <table class="table table-striped">
@@ -25,10 +26,6 @@
         <td><%= paciente.nome %></td>
         <td><%= paciente.responsavel %></td>
         <td>
-          <!-- Botão para adicionar novo paciente -->
-          <button class="btn btn-sm btn-primary btn-hover-outline" title="Adicionar Novo Paciente" onclick="abrirModalGenerico('/pacientes/new','Novo Paciente')">
-            <span class="material-symbols-outlined icon-btn">person_add</span>
-          </button>
           <!-- Botão para visualizar paciente -->
           <button class="btn btn-sm btn-info" title="Ver Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
             <span class="material-symbols-outlined icon-btn">visibility</span>
@@ -44,11 +41,11 @@
             </button>
           </form>
           <!-- Botão para excluir paciente -->
-          <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir Paciente">
+          <!-- <form action="/pacientes/<%= paciente.idPaciente %>?_method=DELETE" method="post" class="d-inline" title="Excluir Paciente">
             <button type="submit" class="btn btn-round btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
               <span class="material-symbols-outlined icon-btn">delete</span>
             </button>
-          </form>
+          </form> -->
         </td>
 
         <!-- Anamnese -->

@@ -30,9 +30,9 @@
           <td>
             <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-round btn-info" title="Ver Receita"><span class="material-symbols-outlined icon-btn">visibility</span></a>
             <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-round btn-warning" title="Editar diagnostico"><span class="material-symbols-outlined icon-btn">edit</span></a>
-            <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
+            <!-- <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
               <button type="submit" class="btn btn-round btn-danger" onclick="return confirm('Tem certeza que deseja excluir este diagnóstico?')" title="Excluir Diagnostico"><span class="material-symbols-outlined icon-btn">delete</span></button>
-            </form>
+            </form> -->
           </td>
         </tr>
         <% }) %>
