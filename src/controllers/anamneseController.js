@@ -48,7 +48,6 @@ export const anamneseController = {
         idConsultorio,
         paciente,
         formData: {},
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de anamnese:', error);
@@ -196,7 +195,6 @@ export const anamneseController = {
         paciente, // Passa os dados do paciente para a view
         dataCreatedAt,
         idadePaciente,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar anamnese:', error);
@@ -232,7 +230,6 @@ export const anamneseController = {
         pageTitle: 'Lista de Anamneses',
         pageIcon: 'ri-file-list-line',
         anamneses: anamnesesFormatadas,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar anamneses:', error);
@@ -402,7 +399,6 @@ export const anamneseController = {
         pageTitle: `Resultados da busca por "${q}"`,
         pageIcon: 'ri-search-line',
         anamneses: anamnesesFormatadas,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar anamneses:', error);
@@ -464,7 +460,6 @@ export const anamneseController = {
         anamnese,
         paciente, // Passa os dados do paciente para a view
         idadePaciente, // passa para a view
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

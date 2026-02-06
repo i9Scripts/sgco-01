@@ -72,10 +72,12 @@ app.set('layout', 'layouts/main');
 app.use(clearFlashMessages);
 app.use(carregarFilaDeEspera);
 app.use((req, res, next) => {
+  // Não sobrescrever `res.locals.messages` populado pelo middleware de flash;
+  // apenas mesclar mensagens vindas de query string (se houver) para compatibilidade.
   res.locals.messages = {
-    success: req.query.success || null,
-    error: req.query.error || null,
-    welcome: req.flash('welcome') || null,
+    ...(res.locals.messages || {}),
+    success: (res.locals.messages && res.locals.messages.success) || req.query.success || null,
+    error: (res.locals.messages && res.locals.messages.error) || req.query.error || null,
   };
   // defaults para título/ícone quando não fornecidos nas rotas
   res.locals.pageTitle = res.locals.pageTitle || 'OptoSystem';

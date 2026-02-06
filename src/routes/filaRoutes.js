@@ -12,7 +12,6 @@ router.get('/fila-espera', async (req, res) => {
       pageTitle: 'Fila de Espera',
       pageIcon: 'ri-list-check', // Ícone dinâmico para a página
       pacientes: res.locals.pacientesNaFila || [], // Usa a variável local
-      messages: req.flash(''),
     });
   } catch (error) {
     console.error('Erro ao carregar a fila de espera:', error);

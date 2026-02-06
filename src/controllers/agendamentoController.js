@@ -26,7 +26,6 @@ export const agendamentoController = {
         pageTitle: 'Agenda de Atendimentos',
         pageIcon: 'bi bi-calendar-event',
         agendamentos,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error(error);
@@ -58,7 +57,6 @@ export const agendamentoController = {
         parceiros,
         formData: {},
         errors: {},
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error(error);
@@ -130,7 +128,6 @@ export const agendamentoController = {
         parceiros,
         formData: req.body,
         errors: { message: error.message },
-        messages: req.flash(''),
       });
     }
   },
@@ -164,7 +161,6 @@ export const agendamentoController = {
         parceiros,
         formData: agendamento,
         errors: {},
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error(error);

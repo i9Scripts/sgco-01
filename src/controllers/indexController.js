@@ -14,10 +14,9 @@ export const indexController = {
       }
 
       res.render('index', {
-        pageTitle: 'Recepção', // More appropriate title
+        pageTitle: 'Recepção',
         pageIcon: 'bi bi-reception-4', // New icon
-        pacientesNaFila, // Pass this to the view
-        messages: req.flash(),
+        pacientesNaFila, // Passa para a view
       });
     } catch (error) {
       console.error('Erro ao carregar o dashboard da recepção:', error);

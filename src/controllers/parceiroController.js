@@ -24,7 +24,6 @@ export const parceiroController = {
         pageTitle: 'Novo Parceiro',
         pageIcon: 'ri-handshake-line',
         formData: {},
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de parceiro:', error);
@@ -91,7 +90,6 @@ export const parceiroController = {
         pageTitle: 'Detalhes do Parceiro',
         pageIcon: 'ri-handshake-line',
         parceiro,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar parceiro:', error);
@@ -116,7 +114,6 @@ export const parceiroController = {
         pageTitle: 'Lista de Parceiros',
         pageIcon: 'ri-handshake-line',
         parceiros,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar parceiros:', error);
@@ -148,7 +145,6 @@ export const parceiroController = {
         pageTitle: 'Resultados da Busca',
         pageIcon: 'ri-search-line',
         parceiros,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar parceiros:', error);
@@ -244,7 +240,6 @@ export const parceiroController = {
         pageTitle: 'Editar Parceiro',
         pageIcon: 'ri-edit-line',
         parceiro,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

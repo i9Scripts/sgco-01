@@ -15,7 +15,6 @@ export const consultorioController = {
         pageTitle: 'Consultório',
         pageIcon: 'ri-home-office-line',
         formData: {}, // Adiciona formData com um objeto vazio
-        messages: req.flash(), // Passa as mensagens flash para a view
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de consultório:', error);
@@ -159,7 +158,6 @@ export const consultorioController = {
         pageTitle: 'Lista de Consultórios',
         pageIcon: 'ri-home-office-line',
         consultorios,
-        messages: req.flash(), // Passa as mensagens flash para a view
       });
     } catch (error) {
       console.error('Erro ao buscar consultórios:', error);
@@ -249,7 +247,6 @@ export const consultorioController = {
         pageTitle: 'Lista de Consultórios',
         pageIcon: 'ri-home-office-line',
         consultorios: consultorios, // A variável correta aqui é 'consultorios'
-        messages: req.flash('success', 'Consultório criado com sucesso!'),
       });
     } catch (error) {
       console.error('Erro ao buscar consultórios:', error);

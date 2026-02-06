@@ -41,7 +41,6 @@ export const pacienteController = {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
         formData: {},
-        messages: req.flash(''),
         parceiros,
       });
     } catch (error) {
@@ -162,7 +161,6 @@ export const pacienteController = {
         pageIcon: 'ri-folder-user-line',
         paciente,
         idadePaciente,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar paciente:', error);
@@ -201,7 +199,6 @@ export const pacienteController = {
         pageTitle: 'Lista de Pacientes',
         pageIcon: 'ri-folder-user-line',
         pacientes,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar pacientes:', error);
@@ -266,7 +263,6 @@ export const pacienteController = {
         pageTitle: `Resultados para "${q}"`,
         pageIcon: 'ri-search-line',
         pacientes,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar pacientes:', error);
@@ -363,7 +359,6 @@ export const pacienteController = {
         pageIcon: 'ri-edit-line',
         paciente,
         idadePaciente,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);
@@ -373,7 +368,7 @@ export const pacienteController = {
   },
   // Deletar paciente
   async deletePaciente(req, res) {
-    try { 
+    try {
       const idConsultorio = req.session.idConsultorio;
       const { idPaciente } = req.params;
       const idPacienteInt = parseInt(idPaciente);

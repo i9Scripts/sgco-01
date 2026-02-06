@@ -31,7 +31,6 @@ export const profissionalController = {
         pageTitle: 'Lista de Profissionais',
         pageIcon: 'ri-user-line',
         profissionais,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar profissionais:', error);
@@ -47,7 +46,6 @@ export const profissionalController = {
         pageTitle: 'Novo Profissional',
         pageIcon: 'ri-user-add-line',
         formData: {},
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de profissional:', error);
@@ -119,7 +117,6 @@ export const profissionalController = {
         pageTitle: 'Detalhes do Profissional',
         pageIcon: 'ri-user-line',
         profissional,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar profissional:', error);
@@ -155,7 +152,6 @@ export const profissionalController = {
         pageTitle: 'Editar Profissional',
         pageIcon: 'ri-edit-line',
         profissional,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);
@@ -280,7 +276,6 @@ export const profissionalController = {
         pageIcon: 'ri-dashboard-line',
         pacientesNaFila,
         pacientesReservados,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao abrir dashboard do profissional:', error);

@@ -31,7 +31,6 @@ export const userController = {
         formData: {},
         profissionalId,
         // layout: false,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de usuário:', error);
@@ -124,7 +123,6 @@ export const userController = {
         pageTitle: 'Detalhes do Usuário',
         pageIcon: 'ri-user-line',
         user, // Passa os dados do usuário para a view
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar usuário:', error);
@@ -151,7 +149,6 @@ export const userController = {
         pageTitle: 'Lista de Usuários',
         pageIcon: 'ri-user-line',
         users,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
@@ -183,7 +180,6 @@ export const userController = {
         pageIcon: 'ri-user-edit-line',
         user, // Passa os dados do usuário para a view
         // layout: false,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição de usuário:', error);

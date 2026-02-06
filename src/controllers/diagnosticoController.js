@@ -108,7 +108,6 @@ export const diagnosticoController = {
         profissionais,
         idConsultorio,
         diagnostico: null,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de diagnóstico:', error);
@@ -150,7 +149,6 @@ export const diagnosticoController = {
         pageIcon: 'ri-file-list-line',
         diagnostico,
         layout: false,
-        messages: req.flash(),
         formatarSoma: (v1, v2) => {
           const n1 = parseFloat(String(v1 || '0').replace(',', '.'));
           const n2 = parseFloat(String(v2 || '0').replace(',', '.'));
@@ -191,7 +189,6 @@ export const diagnosticoController = {
         pageTitle: 'Lista de Diagnósticos',
         pageIcon: 'ri-file-list-line',
         diagnosticos,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar diagnósticos:', error);
@@ -252,7 +249,6 @@ export const diagnosticoController = {
         pageTitle: `Resultados para "${q}"`,
         pageIcon: 'ri-search-line',
         diagnosticos,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao buscar diagnósticos:', error);
@@ -288,7 +284,6 @@ export const diagnosticoController = {
         pacientes,
         profissionais,
         idConsultorio,
-        messages: req.flash(),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

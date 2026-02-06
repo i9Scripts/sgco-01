@@ -28,7 +28,6 @@ export const produtoController = {
         pageTitle: 'Novo Produto/Serviço',
         pageIcon: 'ri-add-box-line',
         formData: {},
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir o formulário de produto:', error);
@@ -44,7 +43,7 @@ export const produtoController = {
   async createProduto(req, res) {
     try {
       const { descricao, valor, quantidade } = req.body;
-      // imagem can come from multer as req.file
+      // imagem pode vir do multer como req.file
       const file = req.file;
       const idConsultorio = req.session.idConsultorio;
 
@@ -102,7 +101,6 @@ export const produtoController = {
         pageTitle: 'Lista de Produtos',
         pageIcon: 'ri-archive-line',
         produtos,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);
@@ -130,7 +128,6 @@ export const produtoController = {
         pageTitle: 'Detalhes do Produto',
         pageIcon: 'ri-box-3-line',
         produto,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar produto:', error);
@@ -158,7 +155,6 @@ export const produtoController = {
         pageTitle: 'Editar Produto/Serviço',
         pageIcon: 'ri-edit-box-line',
         produto,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição de produto:', error);
@@ -270,7 +266,6 @@ export const produtoController = {
         pageTitle: `Resultados para "${q}"`,
         pageIcon: 'ri-search-line',
         produtos,
-        messages: req.flash(''),
       });
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);

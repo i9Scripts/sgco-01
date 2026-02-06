@@ -1,4 +1,7 @@
 export function clearFlashMessages(req, res, next) {
-  req.flash(''); // Acessa e limpa as mensagens
+  // Move todas as mensagens de flash para `res.locals.messages`
+  // para que as views (ex: footer/_mensagens) as acessem diretamente.
+  // `req.flash()` retorna um objeto com arrays por tipo de mensagem.
+  res.locals.messages = req.flash();
   next();
 }

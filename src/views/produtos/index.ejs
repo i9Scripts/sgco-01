@@ -29,7 +29,7 @@
               <td class="text-end"><%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.valor) %></td>
               <td class="text-center"><%= produto.quantidade %></td>
               <td class="text-center">
-                <!-- Botão para visualizar anamnese -->
+                <!-- Botão para visualizar Produto -->
                 <button class="btn btn-round btn-sm btn-info" title="Ver Produto" onclick="abrirModalGenerico('/produtos/<%= produto.idProduto %>', 'Ver Produto')">
                   <span class="material-symbols-outlined icon-btn">visibility</span>
                 </button>
@@ -43,7 +43,7 @@
   <% } else { %>
     <div class="alert alert-info">
       Nenhum produto ou serviço encontrado. 
-      <a href="/produtos/new">Clique aqui para adicionar o primeiro.</a>
+      <a href="/produtos/new">Adicionar o primeiro produto.</a>
     </div>
   <% } %>
 </div>

@@ -47,7 +47,6 @@ export const renderizarCobranca = async (req, res) => {
       parceiro,
       valorDesconto: descontoParceiro.toFixed(2),
       formasPagamento: Object.values(FormaPagamento),
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao renderizar formulário de cobrança:', error);
@@ -113,7 +112,6 @@ export const renderizarConfirmacaoFila = async (req, res) => {
       pageTitle: 'Confirmar Fila de Espera',
       pageIcon: 'bi-question-circle',
       paciente,
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao renderizar página de confirmação:', error);
@@ -128,7 +126,6 @@ export const renderizarRelatorios = async (req, res) => {
     res.render('financeiro/relatorios', {
       pageTitle: 'Relatórios Financeiros',
       pageIcon: 'bi-graph-up',
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao renderizar página de relatórios:', error);
@@ -165,7 +162,6 @@ export const vendasDoDia = async (req, res) => {
       pageIcon: 'bi-calendar-day',
       vendas,
       total: total.toFixed(2),
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao gerar relatório de vendas do dia:', error);
@@ -199,7 +195,6 @@ export const renderizarSelecionarPaciente = async (req, res) => {
       pageIcon: 'bi-person-check',
       pacientes,
       query: searchQuery, // Passa o termo de busca para a view
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao renderizar seleção de paciente:', error);
@@ -230,7 +225,6 @@ export const listarLancamentos = async (req, res) => {
       pageTitle: 'Extrato Financeiro',
       pageIcon: 'bi-cash-stack',
       lancamentos,
-      messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao listar lançamentos financeiros:', error);
