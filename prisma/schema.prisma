@@ -176,6 +176,7 @@ model LancamentoFinanceiro {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
+  produtoId     Int?
   pacienteId    Int
   parceiroId    Int? // Optional, if the patient has a partner
   consultorioId Int
@@ -183,10 +184,12 @@ model LancamentoFinanceiro {
   paciente    Paciente    @relation(fields: [pacienteId], references: [idPaciente])
   parceiro    Parceiro?   @relation(fields: [parceiroId], references: [idParceiro])
   consultorio Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  produto     Produto?    @relation(fields: [produtoId], references: [idProduto])
 
   @@index([pacienteId])
   @@index([parceiroId])
   @@index([consultorioId])
+  @@index([produtoId])
 }
 
 model Anamnese {
@@ -326,11 +329,13 @@ model Pagamento {
 model Produto {
   idProduto     Int          @id @default(autoincrement())
   descricao     String       @db.VarChar(100)
-  preco         Decimal
+  valor         Decimal      @db.Decimal(10, 2)
+  imagem        String?
   quantidade    Int
   consultorioId Int
   venda         ItensVenda[]
   consultorio   Consultorio  @relation(fields: [consultorioId], references: [idConsultorio])
+  lancamentos   LancamentoFinanceiro[]
 
   @@index([consultorioId], map: "Produto_consultorioId_fkey")
 }

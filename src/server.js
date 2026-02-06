@@ -35,7 +35,7 @@ import userRoutes from './routes/userRoutes.js';
 import registerWeather from './routes/weather.js';
 import financeiroRoutes from './routes/financeiroRoutes.js'; // New import
 import agendamentoRoutes from './routes/agendamentoRoutes.js';
-
+import produtoRoutes from './routes/produtoRoutes.js';
 // Configuração da aplicação
 const app = express();
 const port_in_use = process.env.PORT || 3000;
@@ -102,6 +102,7 @@ app.use('/diagnosticos', diagnosticoRoutes);
 app.use('/financeiro', financeiroRoutes); // New route usage
 app.use('/', filaRoutes); // Registro das rotas da fila de espera
 app.use('/agendamentos', agendamentoRoutes);
+app.use('/produtos', produtoRoutes); //Rotas para produtos
 
 // Proteger rotas, exceto a rota de registro de consultório
 app.use(

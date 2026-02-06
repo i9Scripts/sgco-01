@@ -1,0 +1,62 @@
+<form action="/produtos/<%= produto.idProduto %>/edit" method="post" enctype="multipart/form-data">
+  <div class="row form-group">
+    <div class="col-md-12 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="descricao"
+        name="descricao"
+        value="<%= produto.descricao %>"
+        required
+        maxlength="100"
+        autofocus
+      />
+      <label for="descricao">Descrição do Produto/Serviço</label>
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-md-6 mb-3">
+      <input
+        type="number"
+        class="form-control"
+        id="valor"
+        name="valor"
+        value="<%= produto.valor %>"
+        required
+        step="0.01"
+        min="0"
+      />
+      <label for="valor">Valor (R$)</label>
+    </div>
+    <div class="col-md-6 mb-3">
+      <input
+        type="number"
+        class="form-control"
+        id="quantidade"
+        name="quantidade"
+        value="<%= produto.quantidade %>"
+        required
+        step="1"
+        min="0"
+      />
+      <label for="quantidade">Quantidade em Estoque</label>
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-md-12 mb-3">
+      <label for="imagem">Imagem (substituir se enviar nova)</label>
+      <input type="file" class="form-control" id="imagem" name="imagem" accept="image/*" />
+    </div>
+  </div>
+
+  <div class="fixed-buttons">
+    <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar alterações">
+      <span class="material-symbols-outlined icon-btn">save</span> Salvar
+    </button>
+    <a href="/produtos" class="btn btn-secondary btn-hover-outline" title="Cancelar e voltar">
+      <span class="material-symbols-outlined icon-btn">cancel</span> Cancelar
+    </a>
+  </div>
+</form>

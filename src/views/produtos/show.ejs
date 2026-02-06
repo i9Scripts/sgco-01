@@ -1,0 +1,22 @@
+<div class="card">
+  <div class="card-header">
+    <h3><%= produto.descricao %></h3>
+    <div class="card-body">
+      <% if (produto.imagem) { %>
+        <img src="<%= produto.imagem %>" alt="<%= produto.descricao %>" style="max-width:200px;" />
+      <% } %>
+      <p><strong>Valor:</strong> R$ <%= produto.valor %></p>
+      <p><strong>Quantidade em estoque:</strong> <%= produto.quantidade %></p>
+    </div>
+    <div class="card-actions">
+      <a href="/produtos/<%= produto.idProduto %>/edit" class="btn btn-sm btn-warning">
+        <span class="material-symbols-outlined icon-btn">edit</span>
+      </a>
+      <form action="/produtos/<%= produto.idProduto %>?_method=DELETE" method="post" style="display:inline-block;">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Confirma exclusão?')">
+          <span class="material-symbols-outlined icon-btn">delete</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

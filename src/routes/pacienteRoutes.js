@@ -20,6 +20,6 @@ router.get('/:idPaciente/edit', pacienteController.editPacienteForm); // GET /pa
 router.put('/:idPaciente', pacienteController.updatePaciente); // PUT /pacientes/2
 router.put('/:idPaciente/atendido', pacienteController.marcarAtendido); // PUT /pacientes/2/atendido
 router.put('/:idPaciente/adicionar-fila', pacienteController.adicionarFila); // PUT /pacientes/2/adicionar-fila
-router.delete('/:idPaciente', pacienteController.deletePaciente); // DELETE /pacientes/2
+router.delete('/:idPaciente', pacienteController.deletePaciente); // DELETE /pacientes/2 
 
 export default router;

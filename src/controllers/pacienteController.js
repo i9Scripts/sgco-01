@@ -373,7 +373,7 @@ export const pacienteController = {
   },
   // Deletar paciente
   async deletePaciente(req, res) {
-    try {
+    try { 
       const idConsultorio = req.session.idConsultorio;
       const { idPaciente } = req.params;
       const idPacienteInt = parseInt(idPaciente);

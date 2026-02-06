@@ -1,8 +1,6 @@
 import { PrismaClient, FormaPagamento, StatusPagamento } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const FINANCEIRO_BASE_PRICE = 100.0; // Preço base do atendimento em R$
-
 // GET para exibir o formulário de cobrança para um paciente específico
 export const renderizarCobranca = async (req, res) => {
   const { pacienteId } = req.params;
@@ -16,10 +14,14 @@ export const renderizarCobranca = async (req, res) => {
 
     if (!paciente) {
       req.flash('error', 'Paciente não encontrado.');
-      return res.redirect('/pacientes'); // Ou para onde for apropriado
+      return res.redirect('/pacientes');
     }
 
     const parceiros = await prisma.parceiro.findMany({
+      where: { consultorioId: consultorioId },
+    });
+
+    const produtos = await prisma.produto.findMany({
       where: { consultorioId: consultorioId },
     });
 
@@ -35,27 +37,22 @@ export const renderizarCobranca = async (req, res) => {
       }
     }
 
-    const valorBruto = FINANCEIRO_BASE_PRICE;
-    const valorDesconto = descontoParceiro;
-    const valorFinal = valorBruto - valorDesconto;
-
-    // Renderizar o formulário de cobrança
+    // Os valores agora serão definidos no lado do cliente
     res.render('financeiro/cobrar', {
       pageTitle: 'Registrar Cobrança',
       pageIcon: 'bi-cash-coin',
       paciente,
       parceiros,
-      parceiro, // Passa o objeto parceiro para a view (pode ser null)
-      valorBruto: valorBruto.toFixed(2),
-      valorDesconto: valorDesconto.toFixed(2),
-      valorFinal: valorFinal.toFixed(2),
-      formasPagamento: Object.values(FormaPagamento), // Usar o enum importado
+      produtos, // Passa a lista de produtos para a view
+      parceiro,
+      valorDesconto: descontoParceiro.toFixed(2),
+      formasPagamento: Object.values(FormaPagamento),
       messages: req.flash(),
     });
   } catch (error) {
     console.error('Erro ao renderizar formulário de cobrança:', error);
     req.flash('error', 'Erro ao carregar dados para cobrança.');
-    res.redirect('/pacientes'); // Ou para onde for apropriado
+    res.redirect('/pacientes');
   }
 };
 
@@ -63,38 +60,39 @@ export const renderizarCobranca = async (req, res) => {
 export const processarCobranca = async (req, res) => {
   const {
     pacienteId,
+    produtoId, // O ID do produto selecionado
     valorBruto,
     valorDesconto,
     valorFinal,
     formaPagamento,
     observacao,
-    parceiroId, // Pode vir do formulário se houver uma seleção manual de parceiro
+    parceiroId,
   } = req.body;
   const consultorioId = req.session.consultorio.idConsultorio;
 
   try {
     await prisma.lancamentoFinanceiro.create({
       data: {
-        descricao: `Atendimento ao Paciente ${pacienteId}`, // Descrição padrão
+        descricao: `Venda para o paciente ${pacienteId}`, // Ou pode pegar a descrição do produto
         valorBruto: parseFloat(valorBruto),
         valorDesconto: parseFloat(valorDesconto),
         valorFinal: parseFloat(valorFinal),
-        formaPagamento: formaPagamento, // Enum já formatado
-        statusPagamento: 'Pago', // Assumimos que ao registrar, já foi pago
+        formaPagamento: formaPagamento,
+        statusPagamento: 'Pago',
         observacao: observacao || null,
         paciente: { connect: { idPaciente: parseInt(pacienteId) } },
         consultorio: { connect: { idConsultorio: consultorioId } },
         ...(parceiroId && { parceiro: { connect: { idParceiro: parseInt(parceiroId) } } }),
+        ...(produtoId && { produto: { connect: { idProduto: parseInt(produtoId) } } }),
       },
     });
 
     req.flash('success', 'Cobrança registrada com sucesso!');
-    // Instead of adding to the queue, redirect to a confirmation page
     res.redirect(`/financeiro/confirmar-fila/${pacienteId}`);
   } catch (error) {
     console.error('Erro ao processar cobrança:', error);
     req.flash('error', 'Erro ao registrar cobrança.');
-    res.redirect(`/financeiro/cobrar/${pacienteId}`); // Mantém na página de cobrança com erro
+    res.redirect(`/financeiro/cobrar/${pacienteId}`);
   }
 };
 
