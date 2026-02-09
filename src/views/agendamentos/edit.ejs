@@ -1,9 +1,5 @@
 <form action="/agendamentos/<%= formData.id %>?_method=PUT" method="POST">
-  <% if (errors.message) { %>
-    <div class="alert alert-danger"><%= errors.message %></div>
-  <% } %>
-
-  <div class="mb-3 form-check">
+   <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="pacienteNaoCadastrado" <%= formData.nome ? 'checked' : '' %>>
     <label class="form-check-label" for="pacienteNaoCadastrado">Paciente não cadastrado</label>
   </div> 

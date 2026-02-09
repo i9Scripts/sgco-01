@@ -1,10 +1,41 @@
-import { PrismaClient, FormaPagamento, StatusPagamento } from '@prisma/client';
+import { PrismaClient, FormaPagamento, StatusPagamento, StatusConsulta } from '@prisma/client';
 const prisma = new PrismaClient();
+
+// Função auxiliar para criar ou obter uma consulta vinculada ao paciente
+async function obterOuCriarConsulta(pacienteId, consultorioId) {
+  // Verificar se já existe uma consulta para o paciente
+  let consulta = await prisma.consulta.findFirst({
+    where: { pacienteId, consultorioId },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  // Se não existir, criar uma nova consulta
+  if (!consulta) {
+    const anamnese = await prisma.anamnese.findFirst({
+      where: { pacienteId, consultorioId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    consulta = await prisma.consulta.create({
+      data: {
+        paciente: { connect: { idPaciente: pacienteId } },
+        consultorio: { connect: { idConsultorio: consultorioId } },
+        anamnese: anamnese ? { connect: { idAnam: anamnese.idAnam } } : undefined,
+        valorPago: 0,
+        valorTotal: 0,
+        statusConsulta: StatusConsulta.Agendada,
+        statusPagamento: StatusPagamento.Pendente,
+      },
+    });
+  }
+
+  return consulta;
+}
 
 // GET para exibir o formulário de cobrança para um paciente específico
 export const renderizarCobranca = async (req, res) => {
   const { pacienteId } = req.params;
-  const { parceiroId: queryParceiroId } = req.query; // Pega parceiroId da query string
+  const { parceiroId: queryParceiroId } = req.query;
   const consultorioId = req.session.consultorio.idConsultorio;
 
   try {
@@ -18,12 +49,20 @@ export const renderizarCobranca = async (req, res) => {
     }
 
     const parceiros = await prisma.parceiro.findMany({
-      where: { consultorioId: consultorioId },
+      where: { consultorioId },
     });
 
     const produtos = await prisma.produto.findMany({
-      where: { consultorioId: consultorioId },
+      where: { consultorioId },
     });
+
+    // `Servico` model may not exist yet in Prisma schema; guard the call
+    let servicos = [];
+    if (prisma.servico && typeof prisma.servico.findMany === 'function') {
+      servicos = await prisma.servico.findMany({
+        where: { consultorioId },
+      });
+    }
 
     let parceiro = null;
     let descontoParceiro = 0;
@@ -32,18 +71,16 @@ export const renderizarCobranca = async (req, res) => {
       parceiro = await prisma.parceiro.findUnique({
         where: { idParceiro: parseInt(queryParceiroId) },
       });
-      if (parceiro) {
-        descontoParceiro = parceiro.desconto.toNumber();
-      }
+      if (parceiro) descontoParceiro = parceiro.desconto.toNumber();
     }
 
-    // Os valores agora serão definidos no lado do cliente
     res.render('financeiro/cobrar', {
       pageTitle: 'Registrar Cobrança',
       pageIcon: 'bi-cash-coin',
       paciente,
       parceiros,
-      produtos, // Passa a lista de produtos para a view
+      produtos,
+      servicos,
       parceiro,
       valorDesconto: descontoParceiro.toFixed(2),
       formasPagamento: Object.values(FormaPagamento),
@@ -55,34 +92,68 @@ export const renderizarCobranca = async (req, res) => {
   }
 };
 
-// POST para registrar um novo lançamento financeiro (pagamento)
+// POST para registrar um novo lançamento financeiro (pagamento) com múltiplos itens
 export const processarCobranca = async (req, res) => {
   const {
     pacienteId,
-    produtoId, // O ID do produto selecionado
-    valorBruto,
+    items: itemsJson,
     valorDesconto,
-    valorFinal,
+    valorFinal: valorFinalFromClient,
     formaPagamento,
     observacao,
     parceiroId,
   } = req.body;
+
   const consultorioId = req.session.consultorio.idConsultorio;
+  let items = [];
 
   try {
+    if (itemsJson) {
+      items = JSON.parse(itemsJson);
+    }
+
+    // Recalcular total a partir dos items por segurança
+    const valorBruto = items.reduce((sum, it) => {
+      const unit = parseFloat(it.valorUnitario) || 0;
+      const qty = parseInt(it.quantidade, 10) || 1;
+      return sum + unit * qty;
+    }, 0);
+
+    const desconto = parseFloat(valorDesconto) || 0;
+    const valorFinal = parseFloat(valorFinalFromClient) || valorBruto - desconto;
+
+    // Validação/normalização da forma de pagamento
+    const formasValidas = Object.values(FormaPagamento);
+    let forma = formaPagamento;
+    if (!forma || !formasValidas.includes(forma)) {
+      forma = formasValidas[0];
+    }
+
+    // Obter ou criar consulta vinculada ao paciente
+    const consulta = await obterOuCriarConsulta(parseInt(pacienteId), consultorioId);
+
     await prisma.lancamentoFinanceiro.create({
       data: {
-        descricao: `Venda para o paciente ${pacienteId}`, // Ou pode pegar a descrição do produto
-        valorBruto: parseFloat(valorBruto),
-        valorDesconto: parseFloat(valorDesconto),
-        valorFinal: parseFloat(valorFinal),
-        formaPagamento: formaPagamento,
+        descricao: `Venda para o paciente ${pacienteId}`,
+        valorBruto: valorBruto,
+        valorDesconto: desconto,
+        valorFinal: valorFinal,
+        formaPagamento: forma,
         statusPagamento: 'Pago',
         observacao: observacao || null,
         paciente: { connect: { idPaciente: parseInt(pacienteId) } },
         consultorio: { connect: { idConsultorio: consultorioId } },
         ...(parceiroId && { parceiro: { connect: { idParceiro: parseInt(parceiroId) } } }),
-        ...(produtoId && { produto: { connect: { idProduto: parseInt(produtoId) } } }),
+        items: {
+          create: items.map((it) => ({
+            quantidade: parseInt(it.quantidade || 1, 10),
+            valorUnitario: parseFloat(it.valorUnitario),
+            ...(it.produtoId && { produto: { connect: { idProduto: parseInt(it.produtoId) } } }),
+            ...(it.servicoId && { servico: { connect: { idServico: parseInt(it.servicoId) } } }),
+            consultorio: { connect: { idConsultorio: consultorioId } },
+            consulta: { connect: { idConsulta: consulta.idConsulta } },
+          })),
+        },
       },
     });
 

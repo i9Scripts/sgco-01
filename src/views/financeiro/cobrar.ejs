@@ -6,89 +6,88 @@
                     <h6 class="m-0 font-weight-bold text-primary">PDV para Paciente: <%= paciente.nome %></h6>
                 </div>
                 <div class="card-body">
-                    <% if (messages.error) { %>
-                        <div class="alert alert-danger" role="alert"><%= messages.error %></div>
-                    <% } %>
-                    <% if (messages.success) { %>
-                        <div class="alert alert-success" role="alert"><%= messages.success %></div>
-                    <% } %>
-
-                    <form action="/financeiro/registrar" method="POST">
+                    <form id="cobrarForm" action="/financeiro/registrar" method="POST">
                         <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
                         <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= parceiro ? parceiro.idParceiro : '' %>">
+                        <input type="hidden" name="items" id="itemsField" value="[]">
+                        <input type="hidden" name="valorBruto" id="valorBrutoField" value="0.00">
+                        <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
+                        <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
 
-                        <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label">Paciente:</label>
-                            <div class="col-sm-8">
-                                <p class="form-control-plaintext"><%= paciente.nome %></p>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="produtoSelect" class="col-sm-4 col-form-label">Produto/Serviço:</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" id="produtoSelect" name="produtoId" required>
-                                    <option value="">Selecione um produto</option>
-                                    <% produtos.forEach(produto => { %>
-                                        <option value="<%= produto.idProduto %>" data-valor="<%= produto.valor %>">
-                                            <%= produto.descricao %> - R$ <%= produto.valor %>
-                                        </option>
-                                    <% }); %>
+                        <!-- Seleção de Produto/Serviço e botão Adicionar -->
+                        <div class="form-row align-items-end">
+                            <div class="col-md-5">
+                                <label>Tipo</label>
+                                <select id="tipoItem" class="form-control">
+                                    <option value="produto">Produto</option>
+                                    <option value="servico">Serviço</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="parceiroSelect" class="col-sm-4 col-form-label">Parceiro:</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" id="parceiroSelect" name="parceiroSelect">
-                                    <option value="">Particular</option>
-                                    <% parceiros.forEach(p => { %>
-                                        <option value="<%= p.idParceiro %>" data-desconto="<%= p.desconto %>" <%= (parceiro && parceiro.idParceiro === p.idParceiro) ? 'selected' : '' %>>
-                                            <%= p.nome %>
-                                        </option>
-                                    <% }); %>
+                            <div class="col-md-5">
+                                <label>Item</label>
+                                <select id="itemSelect" class="form-control">
+                                    <option value="">Selecione...</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label">Valor Bruto (R$):</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control-plaintext" id="valorBruto" name="valorBruto" value="0.00" readonly>
+                            <div class="col-md-1">
+                                <label>Qtd</label>
+                                <input type="number" id="itemQuantidade" class="form-control" value="1" min="1">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" id="addItemBtn" class="btn btn-primary">Adicionar</button>
                             </div>
                         </div>
 
-                        <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label">Desconto (R$):</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="valorDesconto" name="valorDesconto" value="<%= valorDesconto %>">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label font-weight-bold">Valor Final (R$):</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control-plaintext font-weight-bold text-success" id="valorFinal" name="valorFinal" value="0.00" readonly>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="formaPagamento">Forma de Pagamento:</label>
-                            <select class="form-control" id="formaPagamento" name="formaPagamento" required>
-                                <% formasPagamento.forEach(forma => { %>
-                                    <option value="<%= forma %>"><%= forma %></option>
-                                <% }) %>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="observacao">Observações (opcional):</label>
-                            <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                        <!-- Tabela do carrinho -->
+                        <div class="mt-3">
+                            <table class="table table-sm" id="cartTable">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Tipo</th>
+                                        <th>Qtd</th>
+                                        <th>Unit R$</th>
+                                        <th>Subtotal R$</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" class="text-right">Bruto:</th>
+                                        <th id="brutoDisplay">0.00</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="4" class="text-right">Desconto:</th>
+                                        <th><input type="text" id="descontoDisplay" class="form-control form-control-sm" value="<%= valorDesconto %>"></th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="4" class="text-right">Final:</th>
+                                        <th id="finalDisplay">0.00</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Registrar Pagamento</button>
+                          <div class="row mb-3">
+                            <div class="col-md-6">
+                              <label>Forma de Pagamento</label>
+                              <select name="formaPagamento" id="formaPagamento" class="form-control">
+                                <% (formasPagamento || []).forEach(function(f){ %>
+                                  <option value="<%= f %>"><%= f %></option>
+                                <% }) %>
+                              </select>
+                            </div>
+                            <div class="col-md-6">
+                              <label>Observação</label>
+                              <input type="text" name="observacao" class="form-control" placeholder="Observação (opcional)">
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-primary btn-lg">Registrar Pagamento</button>
                             <a href="/" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </form>
@@ -99,43 +98,104 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const produtoSelect = document.getElementById('produtoSelect');
-        const parceiroSelect = document.getElementById('parceiroSelect');
-        const parceiroIdField = document.getElementById('parceiroIdField');
-        const valorBrutoInput = document.getElementById('valorBruto');
-        const valorDescontoInput = document.getElementById('valorDesconto');
-        const valorFinalInput = document.getElementById('valorFinal');
+  const produtos = <%-JSON.stringify(produtos || [])%>;
+  const servicos = <%-JSON.stringify(servicos || [])%>;
 
-        function calcularValorFinal() {
-            const valorBruto = parseFloat(valorBrutoInput.value) || 0;
-            const valorDesconto = parseFloat(valorDescontoInput.value) || 0;
-            const valorFinal = valorBruto - valorDesconto;
-            valorFinalInput.value = valorFinal.toFixed(2);
-        }
+  document.addEventListener('DOMContentLoaded', () => {
+    const tipoItem = document.getElementById('tipoItem');
+    const itemSelect = document.getElementById('itemSelect');
+    const itemQuantidade = document.getElementById('itemQuantidade');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const cartTableBody = document.querySelector('#cartTable tbody');
+    const brutoDisplay = document.getElementById('brutoDisplay');
+    const descontoDisplay = document.getElementById('descontoDisplay');
+    const finalDisplay = document.getElementById('finalDisplay');
+    const itemsField = document.getElementById('itemsField');
+    const valorBrutoField = document.getElementById('valorBrutoField');
+    const valorFinalField = document.getElementById('valorFinalField');
+    const parceiroIdField = document.getElementById('parceiroIdField');
 
-        produtoSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const valor = selectedOption.dataset.valor || 0;
-            valorBrutoInput.value = parseFloat(valor).toFixed(2);
-            calcularValorFinal();
-        });
+    let cart = [];
 
-        parceiroSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const desconto = selectedOption.dataset.desconto || 0;
-            const parceiroId = selectedOption.value;
+    function populateItemSelect() {
+      const list = tipoItem.value === 'produto' ? produtos : servicos;
+      itemSelect.innerHTML = '<option value="">Selecione...</option>';
+      list.forEach(it => {
+        const val = tipoItem.value === 'produto' ? it.idProduto : it.idServico;
+        const valor = it.valor;
+        const descricao = it.descricao;
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.dataset.valor = valor;
+        opt.textContent = `${descricao} - R$ ${valor}`;
+        itemSelect.appendChild(opt);
+      });
+    }
 
-            parceiroIdField.value = parceiroId;
-            valorDescontoInput.value = parseFloat(desconto).toFixed(2);
-            calcularValorFinal();
-        });
+    function recalc() {
+      const bruto = cart.reduce((s, it) => s + (parseFloat(it.valorUnitario) * it.quantidade), 0);
+      const desconto = parseFloat(descontoDisplay.value) || 0;
+      const finalV = bruto - desconto;
+      brutoDisplay.textContent = bruto.toFixed(2);
+      finalDisplay.textContent = finalV.toFixed(2);
+      itemsField.value = JSON.stringify(cart);
+      valorBrutoField.value = bruto.toFixed(2);
+      valorFinalField.value = finalV.toFixed(2);
+    }
 
-        valorDescontoInput.addEventListener('input', function() {
-            calcularValorFinal();
-        });
+    tipoItem.addEventListener('change', populateItemSelect);
 
-        // Initial calculation on page load
-        calcularValorFinal();
+    addItemBtn.addEventListener('click', () => {
+      const selectedVal = itemSelect.value;
+      if (!selectedVal) return alert('Selecione um item.');
+      const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+      const valorUnit = parseFloat(selectedOption.dataset.valor || 0);
+      const qtd = parseInt(itemQuantidade.value, 10) || 1;
+      const tipo = tipoItem.value;
+
+      const item = {
+        descricao: selectedOption.textContent,
+        quantidade: qtd,
+        valorUnitario: valorUnit,
+        produtoId: tipo === 'produto' ? selectedVal : undefined,
+        servicoId: tipo === 'servico' ? selectedVal : undefined,
+        tipo,
+      };
+
+      cart.push(item);
+      renderCart();
+      recalc();
     });
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+      recalc();
+    }
+
+    function renderCart() {
+      cartTableBody.innerHTML = '';
+      cart.forEach((it, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${it.descricao}</td>
+          <td>${it.tipo}</td>
+          <td>${it.quantidade}</td>
+          <td>${parseFloat(it.valorUnitario).toFixed(2)}</td>
+          <td>${(it.quantidade * parseFloat(it.valorUnitario)).toFixed(2)}</td>
+          <td><button type="button" class="btn btn-sm btn-danger remove-btn" data-idx="${idx}">x</button></td>
+        `;
+        cartTableBody.appendChild(tr);
+      });
+      cartTableBody.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => removeItem(parseInt(e.target.dataset.idx, 10)));
+      });
+    }
+
+    descontoDisplay.addEventListener('input', recalc);
+
+    // Inicializa select
+    populateItemSelect();
+    recalc();
+  });
 </script>

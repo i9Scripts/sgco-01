@@ -172,17 +172,16 @@ body {
   margin-top: 1rem;
   padding: 1rem;
   font-size: 14px;
-  border-radius: 10px;
 }
 
 .alert-success {
   background-color: var(--success-color);
-  color: var(--back-color);
+  color: var(--secondary-color);
 }
 
 .alert-danger {
   background-color: var(--danger-color);
-  color: var(--back-color);
+  color: var(--secondary-color);
 }
 
 .form-control {

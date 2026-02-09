@@ -1,7 +1,4 @@
 <form action="/agendamentos" method="POST">
-  <% if (errors.message) { %>
-    <div class="alert alert-danger"><%= errors.message %></div>
-  <% } %>
 
   <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="pacienteNaoCadastrado" <%= formData.nome ? 'checked' : '' %>>

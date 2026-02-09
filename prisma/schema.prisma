@@ -29,33 +29,34 @@ model Agendamento {
 }
 
 model Consultorio {
-  idConsultorio Int                    @id @default(autoincrement())
-  nome          String                 @db.VarChar(60)
-  endereco      String                 @db.VarChar(60)
-  cpf           String?                @db.VarChar(15)
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-  bairro        String                 @db.VarChar(60)
-  celular       String                 @db.VarChar(15)
-  cep           String?                @db.VarChar(9)
-  cidade        String                 @db.VarChar(30)
-  numero        Int
-  profissao     String                 @db.VarChar(30)
-  responsavel   String?                @db.VarChar(60)
-  numeroSerie   String                 @unique @db.VarChar(36)
-  complemento   String?                @db.VarChar(30)
-  agendamentos  Agendamento[]
-  anamneses     Anamnese[]
-  consultas     Consulta[]
-  diagnosticos  Diagnostico[]
-  itensVenda    ItensVenda[]
-  pacientes     Paciente[]
-  pagamentos    Pagamento[]
-  parceiros     Parceiro[]
-  produtos      Produto[]
-  profissionais Profissional[]
-  usuarios      User[]
-  lancamentos   LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
+  idConsultorio   Int                    @id @default(autoincrement())
+  nome            String                 @db.VarChar(60)
+  endereco        String                 @db.VarChar(60)
+  cpf             String?                @db.VarChar(15)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  bairro          String                 @db.VarChar(60)
+  celular         String                 @db.VarChar(15)
+  cep             String?                @db.VarChar(9)
+  cidade          String                 @db.VarChar(30)
+  numero          Int
+  profissao       String                 @db.VarChar(30)
+  responsavel     String?                @db.VarChar(60)
+  numeroSerie     String                 @unique @db.VarChar(36)
+  complemento     String?                @db.VarChar(30)
+  agendamentos    Agendamento[]
+  anamneses       Anamnese[]
+  consultas       Consulta[]
+  diagnosticos    Diagnostico[]
+  pacientes       Paciente[]
+  pagamentos      Pagamento[]
+  parceiros       Parceiro[]
+  produtos        Produto[]
+  profissionais   Profissional[]
+  usuarios        User[]
+  lancamentos     LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
+  servicos        Servico[]
+  lancamentoItems LancamentoItem[]
 
   @@index([cpf])
   @@index([nome])
@@ -109,6 +110,7 @@ model Paciente {
   lancamentos   LancamentoFinanceiro[] // Adicionado para linkar com LancamentoFinanceiro
   parceiro      Parceiro?              @relation(fields: [parceiroId], references: [idParceiro])
   parceiroId    Int?
+  status        String?                @db.VarChar(20) // Field to track patient status
 
   @@index([nome])
   @@index([cpf])
@@ -132,8 +134,8 @@ model Profissional {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   consultas      Consulta[]
-  diagnosticos   Diagnostico[]
   consultorio    Consultorio   @relation(fields: [consultorioId], references: [idConsultorio])
+  diagnosticos   Diagnostico[]
 
   @@index([nome])
   @@index([celular])
@@ -149,7 +151,7 @@ model Parceiro {
   telefone          String                 @db.VarChar(15)
   contato           String?                @db.VarChar(30)
   credito           Decimal?
-  desconto          Decimal                @default(0.00) @db.Decimal(10, 2) // Added this line
+  desconto          Decimal                @default(0.00) @db.Decimal(10, 2)
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @updatedAt
   consultorioId     Int
@@ -165,7 +167,7 @@ model Parceiro {
 
 model LancamentoFinanceiro {
   idLancamento    Int             @id @default(autoincrement())
-  descricao       String?         @db.VarChar(255) // e.g., "Atendimento ao paciente", "Consulta"
+  descricao       String?         @db.VarChar(255)
   valorBruto      Decimal         @db.Decimal(10, 2)
   valorDesconto   Decimal         @default(0.00) @db.Decimal(10, 2)
   valorFinal      Decimal         @db.Decimal(10, 2)
@@ -176,20 +178,20 @@ model LancamentoFinanceiro {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
-  produtoId     Int?
   pacienteId    Int
-  parceiroId    Int? // Optional, if the patient has a partner
+  parceiroId    Int?
   consultorioId Int
 
-  paciente    Paciente    @relation(fields: [pacienteId], references: [idPaciente])
-  parceiro    Parceiro?   @relation(fields: [parceiroId], references: [idParceiro])
-  consultorio Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
-  produto     Produto?    @relation(fields: [produtoId], references: [idProduto])
+  paciente         Paciente         @relation(fields: [pacienteId], references: [idPaciente])
+  parceiro         Parceiro?        @relation(fields: [parceiroId], references: [idParceiro])
+  consultorio      Consultorio      @relation(fields: [consultorioId], references: [idConsultorio])
+  items            LancamentoItem[] // novos itens do lançamento
+  produto          Produto?         @relation(fields: [produtoIdProduto], references: [idProduto])
+  produtoIdProduto Int?
 
   @@index([pacienteId])
   @@index([parceiroId])
   @@index([consultorioId])
-  @@index([produtoId])
 }
 
 model Anamnese {
@@ -257,28 +259,29 @@ model Diagnostico {
 }
 
 model Consulta {
-  idConsulta           Int             @id @default(autoincrement())
+  idConsulta           Int              @id @default(autoincrement())
   valorPago            Decimal
-  statusConsulta       StatusConsulta  @default(Agendada)
-  dataVenciPagParceiro DateTime?       @db.Date
+  statusConsulta       StatusConsulta   @default(Agendada)
+  dataVenciPagParceiro DateTime?        @db.Date
   valorAPagarParceiro  Decimal?
   valorTotal           Decimal
-  statusPagamento      StatusPagamento @default(Pendente)
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
+  statusPagamento      StatusPagamento  @default(Pendente)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
   pacienteId           Int
-  profissionalId       Int
+  profissionalId       Int? // Tornado opcional
   anamneseId           Int
   parceiroId           Int?
-  diagnosticoId        Int
+  diagnosticoId        Int? // Tornado opcional
   consultorioId        Int
-  anamnese             Anamnese        @relation(fields: [anamneseId], references: [idAnam])
-  consultorio          Consultorio     @relation(fields: [consultorioId], references: [idConsultorio])
-  diagnostico          Diagnostico     @relation(fields: [diagnosticoId], references: [idDiagnostico])
-  paciente             Paciente        @relation(fields: [pacienteId], references: [idPaciente])
-  parceiro             Parceiro?       @relation("ParceiroConsulta", fields: [parceiroId], references: [idParceiro])
-  profissional         Profissional    @relation(fields: [profissionalId], references: [idProfissional])
-  vendas               ItensVenda[]
+  pagamentoRealizado   Boolean          @default(false)
+  anamnese             Anamnese         @relation(fields: [anamneseId], references: [idAnam])
+  consultorio          Consultorio      @relation(fields: [consultorioId], references: [idConsultorio])
+  diagnostico          Diagnostico?     @relation(fields: [diagnosticoId], references: [idDiagnostico]) // Atualizado para opcional
+  paciente             Paciente         @relation(fields: [pacienteId], references: [idPaciente])
+  parceiro             Parceiro?        @relation("ParceiroConsulta", fields: [parceiroId], references: [idParceiro])
+  profissional         Profissional?    @relation(fields: [profissionalId], references: [idProfissional]) // Atualizado para opcional
+  vendas               LancamentoItem[]
   pagamentos           Pagamento[]
 
   @@index([pacienteId])
@@ -289,55 +292,78 @@ model Consulta {
   @@index([consultorioId], map: "Consulta_consultorioId_fkey")
 }
 
-model ItensVenda {
-  idItenVenda   Int         @id @default(autoincrement())
-  quantidade    Int
-  valorUnitario Decimal
-  produtoId     Int
-  consultaId    Int
-  consultorioId Int
-  consulta      Consulta    @relation(fields: [consultaId], references: [idConsulta])
-  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
-  produto       Produto     @relation(fields: [produtoId], references: [idProduto])
-  pagamentos    Pagamento[]
-
-  @@index([consultaId], map: "ItensVenda_consultaId_fkey")
-  @@index([consultorioId], map: "ItensVenda_consultorioId_fkey")
-  @@index([produtoId], map: "ItensVenda_produtoId_fkey")
-}
-
 model Pagamento {
-  idPagamento    Int            @id @default(autoincrement())
-  valorPago      Decimal
-  dataPagamento  DateTime       @db.Date
-  observacao     String         @db.VarChar(255)
-  formaPagamento FormaPagamento
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  itensVendaId   Int
-  consultaId     Int?
-  consultorioId  Int
-  consulta       Consulta?      @relation(fields: [consultaId], references: [idConsulta])
-  consultorio    Consultorio    @relation(fields: [consultorioId], references: [idConsultorio])
-  itensVenda     ItensVenda     @relation(fields: [itensVendaId], references: [idItenVenda])
+  idPagamento      Int             @id @default(autoincrement())
+  valorPago        Decimal
+  dataPagamento    DateTime        @db.Date
+  observacao       String          @db.VarChar(255)
+  formaPagamento   FormaPagamento
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  lancamentoItemId Int?
+  consultaId       Int?
+  consultorioId    Int
+  consulta         Consulta?       @relation(fields: [consultaId], references: [idConsulta])
+  consultorio      Consultorio     @relation(fields: [consultorioId], references: [idConsultorio])
+  lancamentoItem   LancamentoItem? @relation(fields: [lancamentoItemId], references: [idLancamentoItem])
 
   @@index([consultaId], map: "Pagamento_consultaId_fkey")
   @@index([consultorioId], map: "Pagamento_consultorioId_fkey")
-  @@index([itensVendaId], map: "Pagamento_itensVendaId_fkey")
+  @@index([lancamentoItemId], map: "Pagamento_lancamentoItemId_fkey")
 }
 
 model Produto {
-  idProduto     Int          @id @default(autoincrement())
-  descricao     String       @db.VarChar(100)
-  valor         Decimal      @db.Decimal(10, 2)
-  imagem        String?
-  quantidade    Int
-  consultorioId Int
-  venda         ItensVenda[]
-  consultorio   Consultorio  @relation(fields: [consultorioId], references: [idConsultorio])
-  lancamentos   LancamentoFinanceiro[]
+  idProduto             Int                    @id @default(autoincrement())
+  descricao             String                 @db.VarChar(100)
+  valor                 Decimal                @db.Decimal(10, 2)
+  imagem                String?
+  quantidade            Int
+  consultorioId         Int
+  consultorio           Consultorio            @relation(fields: [consultorioId], references: [idConsultorio])
+  lancamentos           LancamentoItem[]
+  lancamentoFinanceiros LancamentoFinanceiro[]
 
   @@index([consultorioId], map: "Produto_consultorioId_fkey")
+}
+
+model Servico {
+  idServico     Int      @id @default(autoincrement())
+  descricao     String   @db.VarChar(100)
+  valor         Decimal  @db.Decimal(10, 2)
+  consultorioId Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  consultorio Consultorio      @relation(fields: [consultorioId], references: [idConsultorio])
+  lancamentos LancamentoItem[]
+
+  @@index([consultorioId])
+}
+
+model LancamentoItem {
+  idLancamentoItem Int      @id @default(autoincrement())
+  quantidade       Int      @default(1)
+  valorUnitario    Decimal  @db.Decimal(10, 2)
+  produtoId        Int?
+  servicoId        Int?
+  lancamentoId     Int
+  consultorioId    Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  produto     Produto?             @relation(fields: [produtoId], references: [idProduto])
+  servico     Servico?             @relation(fields: [servicoId], references: [idServico])
+  lancamento  LancamentoFinanceiro @relation(fields: [lancamentoId], references: [idLancamento])
+  consultorio Consultorio          @relation(fields: [consultorioId], references: [idConsultorio])
+  consultaId  Int
+  consulta    Consulta             @relation(fields: [consultaId], references: [idConsulta])
+  pagamentos  Pagamento[]
+
+  @@index([produtoId])
+  @@index([servicoId])
+  @@index([lancamentoId])
+  @@index([consultorioId])
+  @@index([consultaId])
 }
 
 model migrations {

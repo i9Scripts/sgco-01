@@ -18,6 +18,15 @@
         </select>
         <label for="profissionalId">Profissional</label>
       </div>
+      <!-- lista somente pagamento realizado -->
+      <!-- <div class="col-md-3 mb-3">
+        <select id="consultaId" name="consultaId" class="form-control" required>
+          <% consultas.filter(consulta => consulta.pagamentoRealizado).forEach(consulta => { %>
+            <option value="<%= consulta.idConsulta %>"><%= consulta.idConsulta %> - <%= consulta.paciente.nome %></option>
+          <% }) %>
+        </select>
+        <label for="consultaId">Consulta (com pagamento realizado)</label>
+      </div> -->
     </div>
     <div class="row form-group">
       <div class="col-md-2 mb-3">

@@ -55,6 +55,15 @@ export const diagnosticoController = {
         },
       });
 
+      // Update patient status to 'atendido' and remove from queue
+      await prisma.paciente.update({
+        where: { idPaciente: parseInt(pacienteId) },
+        data: {
+          naFila: false,
+          status: 'atendido',
+        },
+      });
+
       req.flash('success', 'Diagnóstico criado com sucesso!');
       return res.redirect('/diagnosticos');
     } catch (error) {
@@ -101,11 +110,25 @@ export const diagnosticoController = {
         return res.redirect('/profissionais/new');
       }
 
+      const consultas = await prisma.consulta.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          pagamentoRealizado: true,
+        },
+        include: {
+          paciente: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
       res.render('diagnosticos/new', {
         pageTitle: 'Novo Diagnóstico',
         pageIcon: 'ri-file-add-line',
         pacientes,
         profissionais,
+        consultas, // Passa as consultas para a view
         idConsultorio,
         diagnostico: null,
       });

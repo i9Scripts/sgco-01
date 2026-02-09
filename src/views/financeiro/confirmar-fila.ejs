@@ -1,12 +1,6 @@
-<%- include('../partials/header.ejs') %>
 
 <div class="container mt-5">
-    <% if (messages.success && messages.success.length > 0) { %>
-        <div class="alert alert-success" role="alert">
-            <%= messages.success %>
-        </div>
-    <% } %>
-    
+
     <div class="text-center">
         <h1 class="mb-4"><%= pageTitle %></h1>
         <p class="lead">Deseja adicionar o paciente <strong><%= paciente.nome %></strong> à fila de espera?</p>
@@ -68,4 +62,3 @@
     });
 </script>
 
-<%- include('../partials/footer') %>

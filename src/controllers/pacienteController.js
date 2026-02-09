@@ -398,7 +398,7 @@ export const pacienteController = {
           await tx.pagamento.deleteMany({
             where: { consultaId: { in: consultaIds } },
           });
-          await tx.itensVenda.deleteMany({
+          await tx.lancamentoItem.deleteMany({
             where: { consultaId: { in: consultaIds } },
           });
         }
