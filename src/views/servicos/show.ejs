@@ -1,0 +1,14 @@
+<div class="container">
+  <h1><i class="<%= pageIcon %>"></i> <%= pageTitle %></h1>
+
+  <dl class="row">
+    <dt class="col-sm-3">Descrição</dt>
+    <dd class="col-sm-9"><%= servico.descricao %></dd>
+
+    <dt class="col-sm-3">Valor</dt>
+    <dd class="col-sm-9">R$ <%= servico.valor.toFixed(2) %></dd>
+  </dl>
+
+  <a href="/servicos" class="btn btn-secondary">Voltar</a>
+  <a href="/servicos/<%= servico.idServico %>/edit" class="btn btn-primary">Editar</a>
+</div>

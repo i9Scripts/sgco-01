@@ -25,7 +25,7 @@ export const produtoController = {
       }
 
       res.render('produtos/new', {
-        pageTitle: 'Novo Produto/Serviço',
+        pageTitle: 'Novo Produto',
         pageIcon: 'ri-add-box-line',
         formData: {},
       });
@@ -75,7 +75,7 @@ export const produtoController = {
         },
       });
 
-      req.flash('success', 'Produto/Serviço registrado com sucesso!');
+      req.flash('success', 'Produto registrado com sucesso!');
       return res.redirect('/produtos');
     } catch (error) {
       console.error('Erro ao registrar produto:', error);
@@ -152,7 +152,7 @@ export const produtoController = {
       }
 
       res.render('produtos/edit', {
-        pageTitle: 'Editar Produto/Serviço',
+        pageTitle: 'Editar Produto',
         pageIcon: 'ri-edit-box-line',
         produto,
       });
