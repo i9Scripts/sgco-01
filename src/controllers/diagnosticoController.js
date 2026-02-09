@@ -76,10 +76,11 @@ export const diagnosticoController = {
   // Formulário para criar novo diagnóstico
   async newDiagnosticoForm(req, res) {
     try {
-      const idConsultorio = req.session.idConsultorio;
-      const idProfissional = req.session.idProfissional; // ID do profissional autenticado
+      // Garanta que o idConsultorio seja um número para o Prisma
+      const idConsultorio = parseInt(req.session.idConsultorio);
+      const idProfissional = req.session.idProfissional;
 
-      if (!idConsultorio) {
+      if (isNaN(idConsultorio)) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
@@ -123,6 +124,29 @@ export const diagnosticoController = {
         },
       });
 
+      // ... busca de pacientes e profissionais ...
+
+      const { idPaciente } = req.query;
+      let selectedPaciente = null;
+      let diagnostico = null;
+
+      if (idPaciente) {
+        const pid = parseInt(idPaciente);
+        if (!Number.isNaN(pid)) {
+          // Busca direta no banco para garantir que temos o objeto completo e pertence ao consultório
+          selectedPaciente = await prisma.paciente.findFirst({
+            where: {
+              idPaciente: pid,
+              consultorioId: idConsultorio,
+            },
+          });
+
+          if (selectedPaciente) {
+            diagnostico = { pacienteId: selectedPaciente.idPaciente };
+          }
+        }
+      }
+
       res.render('diagnosticos/new', {
         pageTitle: 'Novo Diagnóstico',
         pageIcon: 'ri-file-add-line',
@@ -130,7 +154,8 @@ export const diagnosticoController = {
         profissionais,
         consultas, // Passa as consultas para a view
         idConsultorio,
-        diagnostico: null,
+        diagnostico,
+        selectedPaciente,
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de diagnóstico:', error);
@@ -291,7 +316,15 @@ export const diagnosticoController = {
         return res.redirect('/consultorios/new');
       }
 
-      const diagnostico = await findDiagnosticoDoConsultorio(idDiagnostico, idConsultorio);
+      // 1. Buscamos o diagnóstico incluindo os dados do paciente
+      const diagnostico = await prisma.diagnostico.findFirst({
+        where: {
+          idDiagnostico: parseInt(idDiagnostico),
+          consultorioId: idConsultorio,
+        },
+        include: { paciente: true }, // Isso traz o objeto 'paciente' junto com o diagnóstico
+      });
+
       if (!diagnostico) {
         req.flash('error', 'Diagnóstico não encontrado.');
         return res.redirect('/diagnosticos');
@@ -300,6 +333,9 @@ export const diagnosticoController = {
       const pacientes = await prisma.paciente.findMany({ where: { consultorioId: idConsultorio } });
       const profissionais = await prisma.profissional.findMany({ where: { consultorioId: idConsultorio } });
 
+      // 2. Definimos a variável selectedPaciente que a sua View edit.ejs agora exige
+      const selectedPaciente = diagnostico.paciente;
+
       res.render('diagnosticos/edit', {
         pageTitle: 'Editar Diagnóstico',
         pageIcon: 'ri-edit-line',
@@ -307,6 +343,7 @@ export const diagnosticoController = {
         pacientes,
         profissionais,
         idConsultorio,
+        selectedPaciente, // <--- Aqui está a correção para o erro de ReferenceError
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);
@@ -314,7 +351,6 @@ export const diagnosticoController = {
       return res.redirect('/diagnosticos');
     }
   },
-
   // Atualizar diagnóstico
   async updateDiagnostico(req, res) {
     try {

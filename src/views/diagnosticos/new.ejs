@@ -1,15 +1,17 @@
 <div>
   <form action="/diagnosticos" method="post">
     <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <select id="pacienteId" name="pacienteId" class="form-control" required>
-          <% pacientes.forEach(paciente => { %>
-            <option value="<%= paciente.idPaciente %>" <%= diagnostico && diagnostico.pacienteId === paciente.idPaciente ? 'selected' : '' %>><%= paciente.nome %></option>
-          <% }) %>
-        </select>
-        <label for="pacienteId">Paciente</label>
-      </div>
+    <% if (typeof selectedPaciente !== 'undefined' && selectedPaciente) { %>
+        <input type="hidden" name="pacienteId" value="<%= selectedPaciente.idPaciente %>" />
+        <div class="alert alert-secondary">
+          <h5 class="mb-1"><i class="ri-user-line"></i> Paciente:</h5>
+          <p class="mb-0">
+            <strong>Nome:</strong> <%= selectedPaciente.nome %> | 
+            <strong>Ficha:</strong> <%= selectedPaciente.nFicha || 'N/D' %>
+          </p>
+        </div>
+      
+    <% } %>
       <div class="col-md-3 mb-3">
         <select id="profissionalId" name="profissionalId" class="form-control" required>
           <% profissionais.forEach(profissional => { %>
