@@ -30,7 +30,7 @@
                             <!-- Ações específicas do profissional ou recepcionista podem ser adicionadas aqui via lógica EJS -->
                             <!-- Exemplo para o profissional: -->
                             <% if (typeof isProfissional !== 'undefined' && isProfissional) { %> 
-                                <a href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>" class="btn btn-sm btn-success ml-2" title="Atender Paciente">
+                                <a href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>" class="btn btn-sm btn-success ml-2" title="Fazer a Receita">
                                 <i class="bi bi-person-check-fill"></i> 
                                 </a>
                                 <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
@@ -41,13 +41,13 @@
                                         <span class="material-symbols-outlined icon-btn">check</span>
                                     </button>
                                     <!-- Botão para visualizar anamnese -->
-                                    <button class="btn btn-sm btn-info" title="Ver Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')">
+                                    <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-round btn-sm btn-info" title="Editar Anamnese">
                                         <span class="material-symbols-outlined icon-btn">visibility</span>
-                                    </button>
+                                    </a>
                                     <!-- Botão para editar anamnese -->
-                                    <button class="btn btn-sm btn-warning" title="Editar Anamnese" onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')">
+                                    <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-round btn-sm btn-warning" title="Editar Anamnese">
                                         <span class="material-symbols-outlined icon-btn">edit</span>
-                                    </button>
+                                    </a>
                                 <% } else { %>
                                     <span class="badge bg-secondary">Não registrada</span>
                                     <!-- Botão para criar nova anamnese -->
@@ -74,6 +74,3 @@
         vertical-align: middle;
     }
 </style>
-<script src="/socket.io/socket.io.js"></script>
-<!-- Modal genérico -->
-<div><%- include('./_modal') %></div>

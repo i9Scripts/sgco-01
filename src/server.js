@@ -174,6 +174,19 @@ app.get('/espera', async (req, res) => {
     res.status(500).send('Erro ao carregar a página de espera.');
   }
 });
+// Endpoint para retornar apenas o fragmento HTML da fila (usado por atualizações via socket)
+app.get('/fila/partial', (req, res) => {
+  try {
+    const pacientes = res.locals.pacientesNaFila || [];
+    const fragmentOptions = { pacientes, layout: false };
+    // passe flag de profissional com base na sessão
+    fragmentOptions.isProfissional = !!req.session?.idProfissional;
+    return res.render('partials/_filaEspera', fragmentOptions);
+  } catch (err) {
+    console.error('Erro ao renderizar fragmento da fila:', err);
+    return res.status(500).send('Erro ao renderizar fragmento');
+  }
+});
 // Registrar rota de clima
 registerWeather(app);
 // Registrar rota de notícias

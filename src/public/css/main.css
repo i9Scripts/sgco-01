@@ -97,8 +97,8 @@ body {
   z-index: 1050; /* Certifique-se de que o modal está acima de outros elementos */
   left: 0;
   top: 0;
-  width: 100%;
-
+  width: 100vw;
+  height: 100vh;
   overflow: auto;
 }
 
@@ -328,7 +328,7 @@ select.form-control:focus {
 .btn .material-symbols-outlined.icon-btn,
 .btn .icon-btn {
   display: block;
-  font-size: 18px !important;
+  font-size: 10px !important;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -364,6 +364,8 @@ select.form-control:focus {
 }
 .btn .material-symbols-outlined.icon-btn {
   font-size: 16px !important;
+  padding: 0;
+  margin: 0;
 }
 /* Estilos básicos para os botões do dashboard */
 .custom-dashboard-btn {
@@ -371,7 +373,7 @@ select.form-control:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 80%;
   height: 100px; /* Altura fixa para todos os botões */
   font-size: 1.1rem;
   border-radius: 10px;
@@ -387,3 +389,68 @@ select.form-control:focus {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
+/* Início do cobrar.ejs */
+/* Wide card layout reformulado */
+.wide-card {
+  max-width: 1300px; /* Largura máxima desejada */
+  width: 95%; /* Responsivo em telas menores */
+  margin: 20px;
+  border-radius: 8px;
+  background: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+/* Transformando o formulário no motor do layout */
+.grid-form-container {
+  display: grid;
+  /* Coluna 1: flexível (1fr) | Coluna 2: fixa (360px) */
+  grid-template-columns: 1fr 360px;
+  grid-template-areas:
+    'left right'
+    'footer footer'; /* Rodapé ocupa as duas colunas */
+  gap: 30px;
+  padding: 20px;
+  background-color: rgba(222, 223, 224, 0.534);
+  width: 1200px;
+}
+.section-left {
+  grid-area: left;
+  min-width: 0; /* Evita que a tabela estoure o grid */
+}
+
+.section-right {
+  grid-area: right;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.section-footer {
+  grid-area: footer;
+  border-top: 2px solid #eee;
+  padding-top: 20px;
+  padding-right: 20px;
+}
+
+/* Ajuste para telas de tablet/celular */
+@media (max-width: 992px) {
+  .grid-form-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'left'
+      'right'
+      'footer';
+  }
+}
+/* image preview tweaks */
+#imagePreview {
+  width: 100%;
+}
+#produtoImage {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+/* Fim do cobrar.ejs */

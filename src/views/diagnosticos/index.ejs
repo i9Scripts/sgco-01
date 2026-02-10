@@ -27,6 +27,9 @@
           <td><%= diagnostico.profissional.nome %></td>
           <td class="col-descricao"><%= diagnostico.descricao %></td>
           <td>
+            <a href="/diagnosticos/new?idPaciente=<%= (diagnostico.paciente && diagnostico.paciente.idPaciente) ? diagnostico.paciente.idPaciente : diagnostico.pacienteId %>" class="btn btn-round btn-primary" title="Outra Receita">
+              <i class="bi bi-prescription2"></i> 
+            </a>
             <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-round btn-info" title="Ver Receita"><span class="material-symbols-outlined icon-btn">visibility</span></a>
             <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-round btn-warning" title="Editar diagnostico"><span class="material-symbols-outlined icon-btn">edit</span></a>
             <!-- <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">

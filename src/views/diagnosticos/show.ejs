@@ -19,7 +19,7 @@
               <div class="nome"><strong>Paciente:</strong> <span class="nome-val"><%= diagnostico.paciente?.nome || 'N/D' %></span></div>
               <div class="dados-row">
                 <div class="idade"><strong>Idade:</strong> <%= diagnostico.paciente?.idade || 'N/D' %></div>
-                <div class="data"><strong>Data:</strong> <%= diagnostico.createdAt ? new Date(diagnostico.createdAt).toLocaleDateString() : new Date().toLocaleDateString() %></div>
+                <div class="data"><strong>Data:</strong> <%= diagnostico && diagnostico.paciente && diagnostico.paciente.dataAtend ? (new Date(diagnostico.paciente.dataAtend)).toLocaleDateString() : (new Date()).toLocaleDateString() %></div>
               </div>
             </div>
           </div>

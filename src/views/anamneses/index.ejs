@@ -28,13 +28,9 @@
         <td><%= anamnese.motivo %></td>
         <td>
           <!-- Botão para adicionar nova anamnese para o paciente desta anamnese -->
-          <button
-            class="btn btn-round btn-sm btn-success"
-            title="Nova Anamnese"
-            onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>', 'Nova Anamnese')"
-          >
+          <a href="/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>" class="btn btn-round btn-sm btn-success" title="Nova Anamnese">
             <span class="material-symbols-outlined icon-btn">add</span>
-          </button>
+          </a>
           <!-- Botão para visualizar anamnese -->
           <button
             class="btn btn-round btn-sm btn-info"
@@ -44,13 +40,16 @@
             <span class="material-symbols-outlined icon-btn">visibility</span>
           </button>
           <!-- Botão para editar anamnese -->
-          <button
+          <!-- <button
             class="btn btn-round btn-sm btn-warning"
             onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Dados')"
             title="Editar anamnese"
           >
             <span class="material-symbols-outlined icon-btn">edit</span>
-          </button>
+          </button> -->
+          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-round btn-sm btn-warning" title="Editar Anamnese">
+            <span class="material-symbols-outlined icon-btn">edit</span>
+          </a>
         </td>
       </tr>
       <% }); %>

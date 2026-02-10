@@ -1,12 +1,13 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">PDV para Paciente: <%= paciente.nome %></h6>
-                </div>
-                <div class="card-body">
-                    <form id="cobrarForm" action="/financeiro/registrar" method="POST">
+        <div class="col-12">
+          <div class="card shadow mb-4 wide-card">
+            <div class="wide-card-header py-2">
+              <h6 class="m-4">PDV para Paciente: <%= paciente.nome %></h6>
+              <div class="m-4 text-right text-muted small">Paciente ID: <%= paciente.idPaciente %></div>
+            </div>
+            <div class="wide-card-body">
+                    <form id="cobrarForm" action="/financeiro/registrar" method="POST" class="grid-form-container">
                         <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
                         <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= parceiro ? parceiro.idParceiro : '' %>">
                         <input type="hidden" name="items" id="itemsField" value="[]">
@@ -14,66 +15,89 @@
                         <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
                         <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
 
-                        <!-- Seleção de Produto/Serviço e botão Adicionar -->
-                        <div class="form-row align-items-end">
-                            <div class="col-md-5">
-                                <label>Tipo</label>
+                        <!-- Layout reformulado: left = seleção/carrinho, right = imagem/parceiro/totais -->
+                        <div class="section-left">
+                          <div class="form-row"> 
+                            <div class="col-md-8 mb-2">
+                              <label>Tipo</label>
                                 <select id="tipoItem" class="form-control">
-                                    <option value="produto">Produto</option>
-                                    <option value="servico">Serviço</option>
+                                  <option value="produto">Produto</option>
+                                  <option value="servico">Serviço</option>
                                 </select>
                             </div>
-                            <div class="col-md-5">
-                                <label>Item</label>
-                                <select id="itemSelect" class="form-control">
-                                    <option value="">Selecione...</option>
+                            <!-- mudar esse -->
+                                <div class="col-md-8 mb-2">
+                                    <label>Item</label>
+                                    <div class="input-group">
+                                      <select id="itemSelect" class="form-control">
+                                          <option value="">Selecione...</option>
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label>Qtd</label>
+                                    <input type="number" id="itemQuantidade" class="form-control" value="1" min="1">
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <button type="button" id="addItemBtn" class="btn btn-primary btn-block">Adicionar</button>
+                                </div>
+                              <!-- mudar até aqui -->
+                            </div>
+
+                            <!-- Tabela do carrinho -->
+                            <div class="mt-4">
+                                <table class="table table-sm" id="cartTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Descrição</th>
+                                            <th>Tipo</th>
+                                            <th>Qtd</th>
+                                            <th>Unit R$</th>
+                                            <th>Subtotal R$</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                          </div>
+                          <!-- A DIREITA -->
+                           <div class="section-right">
+                              <div id="imagePreview" class="mb-3 text-center" style="background: #fff; border-radius: 5px; padding: 10px;">
+                                  <img id="produtoImage" src="" style="max-width:100%; height:180px; object-fit: contain; display:none;" />
+                                  <div id="noImageText" class="text-muted">Visualização do Item</div>
+                              </div>
+                              <div class="form-group">
+                                <label>Parceiro (Opcional)</label>
+                                <select id="parceiroSelect" class="form-control">
+                                  <option value="">Nenhum</option>
+                                  <% (parceiros || []).forEach(function(p){ %>
+                                    <option value="<%= p.idParceiro %>" data-credito="<%= p.credito || 0 %>"><%= p.nome %></option>
+                                  <% }) %>
                                 </select>
-                            </div>
-                            <div class="col-md-1">
-                                <label>Qtd</label>
-                                <input type="number" id="itemQuantidade" class="form-control" value="1" min="1">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" id="addItemBtn" class="btn btn-primary">Adicionar</button>
-                            </div>
-                        </div>
+                                <div class="totals-box mt-4">
+                                  <table class="table table-borderless table-sm">
+                                    <tbody>
+                                      <tr>
+                                        <th>Bruto:</th>
+                                        <td class="text-right"><span id="brutoDisplay">0.00</span></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Desconto:</th>
+                                        <td class="text-right"><input type="text" id="descontoDisplay" class="form-control form-control-sm text-right" value="<%= valorDesconto %>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Final:</th>
+                                        <td class="text-right"><span id="finalDisplay">0.00</span></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                           </div>
 
-                        <!-- Tabela do carrinho -->
-                        <div class="mt-3">
-                            <table class="table table-sm" id="cartTable">
-                                <thead>
-                                    <tr>
-                                        <th>Descrição</th>
-                                        <th>Tipo</th>
-                                        <th>Qtd</th>
-                                        <th>Unit R$</th>
-                                        <th>Subtotal R$</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="4" class="text-right">Bruto:</th>
-                                        <th id="brutoDisplay">0.00</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4" class="text-right">Desconto:</th>
-                                        <th><input type="text" id="descontoDisplay" class="form-control form-control-sm" value="<%= valorDesconto %>"></th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4" class="text-right">Final:</th>
-                                        <th id="finalDisplay">0.00</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-4">
-                          <div class="row mb-3">
+                        <div class="section-footer">
+                          <div class="row">
                             <div class="col-md-6">
                               <label>Forma de Pagamento</label>
                               <select name="formaPagamento" id="formaPagamento" class="form-control">
@@ -82,24 +106,27 @@
                                 <% }) %>
                               </select>
                             </div>
-                            <div class="col-md-6">
+                              <div class="col-md-6">
                               <label>Observação</label>
                               <input type="text" name="observacao" class="form-control" placeholder="Observação (opcional)">
                             </div>
                           </div>
-                          <button type="submit" class="btn btn-primary btn-lg">Registrar Pagamento</button>
-                            <a href="/" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">Registrar Pagamento</button>
+                            <a href="/" class="btn btn-outline-secondary btn-lg">Cancelar</a>
                         </div>
                     </form>
-                </div>
-            </div>
+              </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
 <script>
   const produtos = <%-JSON.stringify(produtos || [])%>;
   const servicos = <%-JSON.stringify(servicos || [])%>;
+  const parceiros = <%-JSON.stringify(parceiros || [])%>;
 
   document.addEventListener('DOMContentLoaded', () => {
     const tipoItem = document.getElementById('tipoItem');
@@ -124,12 +151,31 @@
         const val = tipoItem.value === 'produto' ? it.idProduto : it.idServico;
         const valor = it.valor;
         const descricao = it.descricao;
+        const imagem = it.imagem || '';
         const opt = document.createElement('option');
         opt.value = val;
         opt.dataset.valor = valor;
+        opt.dataset.imagem = imagem;
         opt.textContent = `${descricao} - R$ ${valor}`;
         itemSelect.appendChild(opt);
       });
+    }
+
+    function showPreviewForSelected() {
+      const sel = itemSelect.options[itemSelect.selectedIndex];
+      const imgEl = document.getElementById('produtoImage');
+      const noImgText = document.getElementById('noImageText');
+      if (!sel) return;
+      const imagem = sel.dataset.imagem;
+      if (imagem) {
+        imgEl.src = imagem;
+        imgEl.style.display = '';
+        noImgText.style.display = 'none';
+      } else {
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+        noImgText.style.display = '';
+      }
     }
 
     function recalc() {
@@ -143,7 +189,18 @@
       valorFinalField.value = finalV.toFixed(2);
     }
 
-    tipoItem.addEventListener('change', populateItemSelect);
+    tipoItem.addEventListener('change', () => { populateItemSelect(); showPreviewForSelected(); });
+    itemSelect.addEventListener('change', showPreviewForSelected);
+
+    const parceiroSelect = document.getElementById('parceiroSelect');
+    parceiroSelect && parceiroSelect.addEventListener('change', (e) => {
+      const selected = parceiroSelect.options[parceiroSelect.selectedIndex];
+      const credito = parseFloat(selected.dataset.credito || 0) || 0;
+      parceiroIdField.value = selected.value || '';
+      // Apply credito as desconto but keep field editable
+      descontoDisplay.value = credito.toFixed(2);
+      recalc();
+    });
 
     addItemBtn.addEventListener('click', () => {
       const selectedVal = itemSelect.value;
@@ -165,6 +222,8 @@
       cart.push(item);
       renderCart();
       recalc();
+      // show image for product just added
+      showPreviewForSelected();
     });
 
     function removeItem(index) {

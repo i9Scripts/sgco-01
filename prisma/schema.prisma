@@ -241,8 +241,9 @@ model Diagnostico {
   cilOE          String?      @db.VarChar(6)
   eixoOE         String?      @db.VarChar(4)
   avFinalOE      String?      @db.VarChar(8)
-  adicao         String       @db.VarChar(6)
-  descricao      String       @db.VarChar(255)
+  adicao         String?      @db.VarChar(6)
+  descricao      String?      @db.VarChar(255)
+  minhasOBS      String?      @db.VarChar(255)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   pacienteId     Int
