@@ -22,7 +22,7 @@
     </div>
     <div class="row form-group">
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="esfOD" name="esfOD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6" required />
+          <input type="text" class="form-control" id="esfOD" name="esfOD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6"/>
           <label for="esfOD">ESF OD</label>
         </div>
         <div class="col-md-2 mb-3">
@@ -40,7 +40,7 @@
       </div>
       <div class="row form-group">
         <div class="col-md-2 mb-3">
-          <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6" required />
+          <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6"/>
           <label for="esfOE">ESF OE</label>
         </div>
         <div class="col-md-2 mb-3">
@@ -65,7 +65,13 @@
     <div class="row form-group">  
       <div class="col-md-6 mb-3">
         <textarea class="form-control" id="descricao" name="descricao" maxlength="200" style="height: 120px;"><%= diagnostico ? diagnostico.descricao : '' %></textarea>
-        <label for="descricao">Descrição</label>
+        <label for="descricao">Observação que vai aparecer na receita</label>
+      </div>
+    </div>
+    <div class="row form-group">  
+      <div class="col-md-6 mb-3">
+        <textarea class="form-control" id="minhasOBS" name="minhasOBS" maxlength="200" style="height: 120px;"><%= diagnostico ? diagnostico.minhasOBS : '' %></textarea>
+        <label for="minhasOBS">Minhas Observações</label>
       </div>
     </div>
     <div class="fixed-buttons">
@@ -75,5 +81,6 @@
       <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
       <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
     </div>
+    <script src="/js/mascaraLens.js"></script>
   </form>
 </div>

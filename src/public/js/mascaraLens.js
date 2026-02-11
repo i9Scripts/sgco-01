@@ -60,17 +60,24 @@ function validateMultiple(input) {
 function addMaskEvents() {
   document.addEventListener('DOMContentLoaded', function () {
     const inputs = document.querySelectorAll('input[type="text"]');
-    inputs.forEach((input) => {
-      if (['esfOD', 'cilOD', 'esfOE', 'cilOE', 'adicao', 'eixoOD', 'eixoOE'].includes(input.name)) {
+    // Attach mask events to inputs by name so we cover different input types
+    const names = ['esfOD', 'cilOD', 'esfOE', 'cilOE', 'adicao', 'eixoOD', 'eixoOE'];
+    names.forEach((name) => {
+      const els = document.querySelectorAll(`input[name="${name}"]`);
+      els.forEach((input) => {
         input.addEventListener('input', function () {
           applyMask(this);
         });
-        if (['esfOD', 'cilOD', 'esfOE', 'cilOE', 'adicao'].includes(input.name)) {
+        // For refractive fields, also validate rounding to multiples of 0.25 on blur/change
+        if (['esfOD', 'cilOD', 'esfOE', 'cilOE', 'adicao'].includes(name)) {
           input.addEventListener('blur', function () {
             validateMultiple(this);
           });
+          input.addEventListener('change', function () {
+            validateMultiple(this);
+          });
         }
-      }
+      });
     });
   });
 }

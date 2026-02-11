@@ -220,43 +220,43 @@ export const profissionalController = {
     }
   },
 
-  // Atender paciente (remover da fila e redirecionar)
-  async atenderPaciente(req, res) {
-    const { idPaciente } = req.params;
-    const idConsultorio = req.session.idConsultorio;
+  // // Atender paciente (remover da fila e redirecionar)
+  // async atenderPaciente(req, res) {
+  //   const { idPaciente } = req.params;
+  //   const idConsultorio = req.session.idConsultorio;
 
-    try {
-      if (!idConsultorio) {
-        req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios/new');
-      }
+  //   try {
+  //     if (!idConsultorio) {
+  //       req.flash('error', 'Nenhum consultório selecionado.');
+  //       return res.redirect('/consultorios/new');
+  //     }
 
-      const paciente = await prisma.paciente.findFirst({
-        where: {
-          idPaciente: parseInt(idPaciente),
-          consultorioId: idConsultorio,
-        },
-      });
+  //     const paciente = await prisma.paciente.findFirst({
+  //       where: {
+  //         idPaciente: parseInt(idPaciente),
+  //         consultorioId: idConsultorio,
+  //       },
+  //     });
 
-      if (!paciente) {
-        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
-        return res.redirect('/profissionais/dashboard');
-      }
+  //     if (!paciente) {
+  //       req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+  //       return res.redirect('/profissionais/dashboard');
+  //     }
 
-      await prisma.paciente.update({
-        where: { idPaciente: parseInt(idPaciente) },
-        data: { naFila: false }, // Remove o paciente da fila
-      });
+  //     await prisma.paciente.update({
+  //       where: { idPaciente: parseInt(idPaciente) },
+  //       data: { naFila: false }, // Remove o paciente da fila
+  //     });
 
-      req.flash('success', `Paciente ${paciente.nome} removido da fila. Prossiga com o atendimento.`);
-      // Redireciona para o perfil do paciente ou para a anamnese
-      return res.redirect(`/pacientes/${paciente.idPaciente}`);
-    } catch (error) {
-      console.error('Erro ao atender paciente:', error);
-      req.flash('error', 'Erro ao processar atendimento do paciente. Tente novamente.');
-      return res.redirect('/profissionais/dashboard');
-    }
-  },
+  //     req.flash('success', `Paciente ${paciente.nome} removido da fila. Prossiga com o atendimento.`);
+  //     // Redireciona para o perfil do paciente ou para a anamnese
+  //     return res.redirect(`/pacientes/${paciente.idPaciente}`);
+  //   } catch (error) {
+  //     console.error('Erro ao atender paciente:', error);
+  //     req.flash('error', 'Erro ao processar atendimento do paciente. Tente novamente.');
+  //     return res.redirect('/profissionais/dashboard');
+  //   }
+  // },
 
   // Dashboard do profissional: acessa CRUD e visualiza fila
   async dashboard(req, res) {

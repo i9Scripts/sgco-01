@@ -6,7 +6,6 @@
       <button class="btn btn-secondary" type="submit">Buscar</button>
     </div>
   </form>
-
   <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
   <table class="table">
     <thead>
@@ -14,7 +13,7 @@
         <th>Nº da Ficha</th>
         <th>Paciente</th>
         <th>Profissional</th>
-        <th>Descrição</th>
+        <th>Observações</th>
         <th>Ações</th> 
       </tr>
     </thead>
@@ -25,7 +24,7 @@
           <td><%= diagnostico.paciente.nFicha %></td>
           <td><%= diagnostico.paciente.nome %></td>
           <td><%= diagnostico.profissional.nome %></td>
-          <td class="col-descricao"><%= diagnostico.descricao %></td>
+          <td class="col-descricao"><%= diagnostico.minhasOBS %></td>
           <td>
             <a href="/diagnosticos/new?idPaciente=<%= (diagnostico.paciente && diagnostico.paciente.idPaciente) ? diagnostico.paciente.idPaciente : diagnostico.pacienteId %>" class="btn btn-round btn-primary" title="Outra Receita">
               <i class="bi bi-prescription2"></i> 

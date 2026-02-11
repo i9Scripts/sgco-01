@@ -27,6 +27,7 @@ export const diagnosticoController = {
         avFinalOE,
         adicao,
         descricao,
+        minhasOBS,
         pacienteId,
         profissionalId,
       } = req.body;
@@ -49,6 +50,7 @@ export const diagnosticoController = {
           avFinalOE,
           adicao,
           descricao,
+          minhasOBS,
           pacienteId: parseInt(pacienteId),
           profissionalId: parseInt(profissionalId),
           consultorioId: idConsultorio,
@@ -367,6 +369,7 @@ export const diagnosticoController = {
         avFinalOE,
         adicao,
         descricao,
+        minhasOBS,
         pacienteId,
         profissionalId,
       } = req.body;
@@ -395,6 +398,7 @@ export const diagnosticoController = {
           avFinalOE,
           adicao,
           descricao,
+          minhasOBS,
           pacienteId: parseInt(pacienteId),
           profissionalId: parseInt(profissionalId),
         },
