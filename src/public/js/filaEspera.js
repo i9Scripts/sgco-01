@@ -15,7 +15,7 @@ document.addEventListener('submit', async (e) => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json',
       },
       body,
     });
@@ -42,10 +42,10 @@ document.addEventListener('submit', async (e) => {
         }
       }
     } else {
-      alert('Erro ao salvar: ' + (json.error || 'tente novamente'));
+      if (window.showMessage) showMessage('error', 'Erro ao salvar: ' + (json.error || 'tente novamente'));
     }
   } catch (err) {
     console.error('Erro AJAX ao salvar anamnese:', err);
-    alert('Erro ao salvar anamnese. Veja console.');
+    if (window.showMessage) showMessage('error', 'Erro ao salvar anamnese. Veja console.');
   }
 });

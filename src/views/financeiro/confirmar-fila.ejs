@@ -51,8 +51,8 @@
                 // Re-enable buttons if there was an error
                 btnSim.disabled = false;
                 btnNao.disabled = false;
-                // You can use a more sophisticated way to show errors, like a toast notification
-                alert('Ocorreu um erro ao adicionar o paciente à fila. Tente novamente.');
+                // Show error in footer
+                if (window.showMessage) showMessage('error','Ocorreu um erro ao adicionar o paciente à fila. Tente novamente.');
             });
         });
 

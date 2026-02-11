@@ -7,7 +7,7 @@ $(document).ready(function () {
       $.get(`/buscar-endereco/${cep}`, function (data) {
         // Caso a requisição seja bem-sucedida e o CEP seja encontrado
         if (data.erro) {
-          alert('CEP não encontrado!');
+          if (window.showMessage) showMessage('error', 'CEP não encontrado!');
         } else {
           // Preenche os campos com os dados retornados pela API
           $('#endereco').val(data.logradouro);
@@ -16,10 +16,10 @@ $(document).ready(function () {
           $('#numero').focus(); // Foca no campo de número
         }
       }).fail(function () {
-        alert('Erro ao buscar o endereço.');
+        if (window.showMessage) showMessage('error', 'Erro ao buscar o endereço.');
       });
     } else {
-      alert('CEP inválido. Por favor, insira um CEP válido.');
+      if (window.showMessage) showMessage('error', 'CEP inválido. Por favor, insira um CEP válido.');
     }
   });
 });
