@@ -33,10 +33,12 @@ function applyMask(input) {
 
     input.value = value;
   } else if (type === 'eixoOD' || type === 'eixoOE') {
-    // Para campos de eixo (exemplo: 000°)
+    // Para campos de eixo: durante a digitação apenas números (até 3 dígitos).
+    // O símbolo '°' será adicionado apenas ao perder o foco para não
+    // atrapalhar a edição e o uso do backspace.
     value = value.replace(/[^0-9]/g, ''); // Apenas números
     if (value.length > 3) value = value.slice(0, 3); // Limita a 3 dígitos
-    input.value = value + '°'; // Adiciona o grau no final
+    input.value = value;
   }
 }
 
@@ -44,14 +46,28 @@ function validateMultiple(input) {
   let value = input.value;
   // Verifica se o campo precisa ser múltiplo de 0.25
   if (value) {
-    // Remove o símbolo (para calcular)
-    value = value.replace(',', '.');
+    // Preserva sinal (+/-) se existir no início
+    let sign = '';
+    if (value.length > 0 && (value[0] === '+' || value[0] === '-')) {
+      sign = value[0];
+      value = value.slice(1);
+    }
+    // Normaliza separador decimal e remove caracteres não numéricos
+    value = value.replace(',', '.').replace(/[^0-9.]/g, '');
     // Verifica se o valor é um múltiplo de 0.25
     let num = parseFloat(value);
     if (!isNaN(num)) {
       let rounded = Math.round(num / 0.25) * 0.25;
-      // Ajusta o valor no campo
-      input.value = rounded.toFixed(2).replace('.', ',');
+      let formatted = rounded.toFixed(2).replace('.', ',');
+      // Readiciona o sinal se era positivo ou negativo
+      if (sign === '+') {
+        input.value = '+' + formatted;
+      } else if (sign === '-') {
+        // Garante que o negativo esteja presente
+        input.value = '-' + formatted;
+      } else {
+        input.value = formatted;
+      }
     }
   }
 }
@@ -75,6 +91,27 @@ function addMaskEvents() {
           });
           input.addEventListener('change', function () {
             validateMultiple(this);
+          });
+        }
+
+        // For eixo fields, allow free editing (numbers only) while focused,
+        // and append the degree symbol on blur. Remove the symbol on focus so
+        // the user can edit/backspace normally.
+        if (['eixoOD', 'eixoOE'].includes(name)) {
+          input.addEventListener('focus', function () {
+            // Remove any non-digit characters (including the trailing '°')
+            this.value = this.value.replace(/[^0-9]/g, '');
+          });
+
+          input.addEventListener('blur', function () {
+            // On blur, normalize and append '°' if there's a value
+            let v = this.value.replace(/[^0-9]/g, '');
+            if (v.length > 3) v = v.slice(0, 3);
+            if (v.length > 0) {
+              this.value = v + '°';
+            } else {
+              this.value = '';
+            }
           });
         }
       });
