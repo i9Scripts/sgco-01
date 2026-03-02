@@ -41,7 +41,7 @@
     "vite.config*": "vite.config*, vite.config.*.js",
     ".env.local": ".env*",
     ".env": ".env*",
-    ".gitignore": ".eslintrc*, .eslintignore*, .prettierrc*, .prettierignore*, *.sh, *.bat, *.gz"
+    ".gitignore": ".eslintrc*, .eslintignore*, .prettierrc*, .prettierignore*, *.sh, *.bat, *.gz, *.sql"
   },
   "[svg]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

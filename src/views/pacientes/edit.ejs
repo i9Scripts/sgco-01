@@ -26,7 +26,7 @@
     </div>
     <div class="row form-group">
       <div class="col-md-3 mb-3">
-        <input type="text" class="form-control <%= messages.errors && messages.errors.dataNasc ? 'is-invalid' : '' %>" id="dataNasc" name="dataNasc" value="<%= paciente.dataNascFormatada %>" readonly onkeyup="mascaraData(this, event)" onblur="calcularIdadeFrontend()" maxlength="10" />
+        <input type="text" class="form-control <%= messages.errors && messages.errors.dataNasc ? 'is-invalid' : '' %>" id="dataNasc" name="dataNasc" value="<%= paciente.dataNascFormatada %>" onkeyup="mascaraData(this, event)" onblur="calcularIdadeFrontend(this)" maxlength="10" />
         <label for="dataNasc">Data Nascimento</label>
       </div>
       <div class="col-md-2 mb-3">
