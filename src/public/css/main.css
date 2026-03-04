@@ -169,19 +169,25 @@ body {
 /* fim do modal */
 
 .alert {
-  margin-top: 1rem;
-  padding: 1rem;
+  margin-top: 0.4rem;
+  padding: 0.4rem;
   font-size: 14px;
 }
-
-.alert-success {
-  background-color: var(--success-color);
+.alert-info {
+  background-color: rgb(209, 173, 14);
   color: var(--secondary-color);
+  font-weight: 700;
+}
+.alert-success {
+  background-color: rgba(28, 173, 15);
+  color: var(--secondary-color);
+  font-weight: 700;
 }
 
 .alert-danger {
-  background-color: var(--danger-color);
+  background-color: rgb(221, 43, 11);
   color: var(--secondary-color);
+  font-weight: 700;
 }
 
 .form-control {
@@ -238,6 +244,24 @@ select.form-control:focus {
   color: var(--saphire);
   background-color: transparent;
 }
+/* Grupo para alinhar input e botão com label abaixo do input */
+.login-label {
+  margin-bottom: 8px;
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.input-row .form-control {
+  flex: 1 1 auto;
+  min-width: 0; /* evita estouro em flex containers */
+}
+.input-row .btn-round {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
 /* tabelas */
 .table {
   border-collapse: collapse;

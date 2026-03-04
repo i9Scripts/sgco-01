@@ -4,19 +4,40 @@
       <h2 class="mb-3">Login</h2>
       
       <form action="/login" method="post">
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" name="email" class="form-control" required />
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Senha</label>
-          <input type="password" id="password" name="password" class="form-control" required />
+        <div class="row form-group">
+          <div class="mb-6">
+            <input type="email" id="email" name="email" class="form-control" required />
+            <label for="email">Email</label>
+          </div>
+          <div class="mb-6 input-row">
+            <input type="password" id="password" name="password" class="form-control" required />
+            <button  type="button" class="btn btn-primary btn-round" id="togglePassword" aria-label="Mostrar senha" title="Mostrar senha">
+              <span class="material-symbols-outlined icon-btn" id="toggleIcon">visibility</span>
+            </button>
+          </div>
+          <label for="password" class="login-label">Senha</label>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <button class="btn btn-primary" type="submit">Entrar</button>
-          <a href="/users/new.ejs" class="small">Criar conta</a>
+          <a href="/users/new.ejs" class="btn btn-outline-light">Criar conta</a>
         </div>
       </form>
+      <script>
+        (function(){
+          const pwd = document.getElementById('password');
+          const btn = document.getElementById('togglePassword');
+          if (!pwd || !btn) return;
+          const icon = document.getElementById('toggleIcon');
+          btn.addEventListener('click', function(){
+            const show = pwd.type === 'password';
+            pwd.type = show ? 'text' : 'password';
+            if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+            btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+            btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+            btn.title = show ? 'Ocultar senha' : 'Mostrar senha';
+          });
+        })();
+      </script>
     </div>
   </div>
 </div>
