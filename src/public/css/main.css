@@ -479,3 +479,19 @@ select.form-control:focus {
   margin: 0 auto;
 }
 /* Fim do cobrar.ejs */
+
+/* Styles for paciente_ficha_a5.ejs */
+@page { size: A5; margin: 10mm; }
+html,body { margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; color:#000; }
+body { padding: 8mm; font-size:12px; }
+.header { text-align:center; margin-bottom:8px; }
+h1 { font-size:16px; margin:0; }
+.section { margin-bottom:8px; }
+.label { font-weight:700; display:inline-block; width:110px; }
+.row { margin-bottom:4px; }
+.two-col { display:flex; gap:12px; }
+.col { flex:1; }
+.small { font-size:11px; }
+.obs { border-top:1px solid #ccc; padding-top:6px; margin-top:6px; }
+.no-print { display:none; }
+@media print { .no-print { display:none; } }

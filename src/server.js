@@ -65,6 +65,7 @@ app.use(loadConsultorioToSession);
 // Configuração do mecanismo de visualização EJS
 app.set('view engine', 'ejs');
 app.set('views', join(process.cwd(), 'src/views'));
+
 // Configure o layout padrão do express-ejs-layouts
 // a configuração deve apontar para o caminho relativo dentro de `views`, sem extensão
 app.set('layout', 'layouts/main');

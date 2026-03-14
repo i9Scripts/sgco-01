@@ -28,10 +28,13 @@
                             </td>
                             <td>
                             <!-- Ações específicas do profissional ou recepcionista podem ser adicionadas aqui via lógica EJS -->
-                            <!-- Exemplo para o profissional: -->
+                            <!-- Exemplo para o profissional: --> 
                             <% if (typeof isProfissional !== 'undefined' && isProfissional) { %> 
                                 <a href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>" class="btn btn-sm btn-success ml-2" title="Fazer a Receita">
                                 <i class="bi bi-person-check-fill"></i> 
+                                </a>
+                                <a href="/<%= paciente.idPaciente %>/ficha" class="btn btn-sm btn-outline-primary ml-2" title="Imprimir Ficha" target="_blank">
+                                    <span class="material-symbols-outlined icon-btn">print</span>
                                 </a>
                                 <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
                                     <% const anamnese = paciente.anamneses[0]; %>

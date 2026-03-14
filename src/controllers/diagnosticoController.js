@@ -67,7 +67,7 @@ export const diagnosticoController = {
       });
 
       req.flash('success', 'Diagnóstico criado com sucesso!');
-      return res.redirect('/diagnosticos');
+      return res.redirect('/profissionais/dashboard');
     } catch (error) {
       console.error('Erro ao criar diagnóstico:', error);
       req.flash('error', 'Erro ao criar diagnóstico. Tente novamente.');

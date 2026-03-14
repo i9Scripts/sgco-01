@@ -124,7 +124,7 @@ model Paciente {
 
 model Profissional {
   idProfissional Int           @id @default(autoincrement())
-  nome           String?       @db.VarChar(60)
+  nome           String        @db.VarChar(60)
   especialidade  String        @db.VarChar(30)
   celular        String?       @db.VarChar(15)
   consultorioId  Int

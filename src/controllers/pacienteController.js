@@ -532,4 +532,54 @@ export const pacienteController = {
     req.session.idPaciente = idPaciente; // salva o paciente selecionado
     return res.redirect('/anamneses'); // redireciona para o formulário de anamnese
   },
+
+  async PacienteFicha(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const idPaciente = parseInt(req.params.idPaciente);
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      if (isNaN(idPaciente)) {
+        req.flash('error', 'ID do paciente inválido.');
+        return res.redirect('/pacientes');
+      }
+
+      const paciente = await prisma.paciente.findUnique({
+        where: { idPaciente: idPaciente },
+        include: {
+          anamneses: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+        },
+      });
+
+      if (!paciente || paciente.consultorioId !== idConsultorio) {
+        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/pacientes');
+      }
+
+      const idadePaciente = paciente.dataNasc ? calcularIdadeFromDate(paciente.dataNasc) : null;
+
+      // Formatar a data de nascimento para exibição, se existir
+      paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
+
+      res.render('pacientes/paciente_ficha_a5', {
+        pageTitle: `Ficha de ${paciente.nome}`,
+        pageIcon: 'ri-file-text-line', // Ícone para relatórios
+        paciente,
+        anamneses: paciente.anamneses,
+        idadePaciente,
+      });
+    } catch (error) {
+      console.error('Erro ao gerar ficha do paciente:', error);
+      req.flash('error', 'Erro ao gerar ficha do paciente. Tente novamente.');
+      return res.redirect(`/pacientes/${req.params.idPaciente}`);
+    }
+  },
 };

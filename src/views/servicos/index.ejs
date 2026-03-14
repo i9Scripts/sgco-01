@@ -15,7 +15,7 @@
       <tbody>
         <% servicos.forEach(function(s) { %>
           <tr>
-            <td><a href="/servicos/<%= s.idServico %>"><%= s.descricao %></a></td>
+            <td><%= s.descricao %></td>
             <td>R$ <%= s.valor.toFixed(2) %></td>
             <td class="text-end">
               <a href="/servicos/<%= s.idServico %>/edit" class="btn btn-sm btn-warning" title=" Editar Serviço">
