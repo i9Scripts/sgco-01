@@ -23,6 +23,10 @@
     </div>
     <div class="row form-group">
       <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="avFinalOD" name="avFinalOD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="8"  />
+        <label for="avFinalOD">AV Final OD</label>
+      </div>
+      <div class="col-md-2 mb-3">
         <input type="text" class="form-control" id="esfOD" name="esfOD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6"/>
         <label for="esfOD">ESF OD</label>
       </div>
@@ -34,12 +38,12 @@
         <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="4"  />
         <label for="eixoOD">EIXO OD</label>
       </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="avFinalOD" name="avFinalOD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="8"  />
-        <label for="avFinalOD">AV Final OD</label>
-      </div>
     </div>
     <div class="row form-group">
+      <div class="col-md-2 mb-3">
+        <input type="text" class="form-control" id="avFinalOE" name="avFinalOE" value="<%= diagnostico ? diagnostico.avFinalOE : '' %>" maxlength="8"  />
+        <label for="avFinalOE">AV Final OE</label>
+      </div>
       <div class="col-md-2 mb-3">
         <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6"/>
         <label for="esfOE">ESF OE</label>
@@ -52,10 +56,6 @@
         <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="4"  />
         <label for="eixoOE">EIXO OE</label>
       </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="avFinalOE" name="avFinalOE" value="<%= diagnostico ? diagnostico.avFinalOE : '' %>" maxlength="8"  />
-        <label for="avFinalOE">AV Final OE</label>
-      </div>
     </div>
     <div class="row form-group">
       <div class="col-md-2 mb-3">
@@ -67,14 +67,11 @@
           <textarea class="form-control" id="descricao" name="descricao" rows="6" style="min-height:150px;" maxlength="200" ><%= diagnostico ? diagnostico.descricao : '' %></textarea>
           <label for="descricao">Observação que vai aparecer na receita</label>
         </div>
-      </div>
-    </div> 
-    <div class="row form-group">
-      <div class="col-md-6 mb-3">
-          <textarea class="form-control" id="minhasOBS" name="minhasOBS" rows="6" style="min-height:150px;" maxlength="200" ><%= diagnostico ? diagnostico.minhasOBS : '' %></textarea>
-          <label for="minhasOBS">Minhas Observações</label>
+        <div class="col-md-6 mb-3">
+            <textarea class="form-control" id="minhasOBS" name="minhasOBS" rows="6" style="min-height:150px;" maxlength="200" ><%= diagnostico ? diagnostico.minhasOBS : '' %></textarea>
+            <label for="minhasOBS">Minhas Observações</label>
         </div>
-    </div>
+      </div>
     <div class="fixed-buttons">
       <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar diagnóstico">
         <span class="material-symbols-outlined icon-btn">save</span> Salvar

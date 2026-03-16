@@ -569,7 +569,7 @@ export const pacienteController = {
       // Formatar a data de nascimento para exibição, se existir
       paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
 
-      res.render('pacientes/paciente_ficha_a5', {
+      res.render('pacientes/ficha_a5', {
         pageTitle: `Ficha de ${paciente.nome}`,
         pageIcon: 'ri-file-text-line', // Ícone para relatórios
         paciente,
