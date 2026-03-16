@@ -106,8 +106,10 @@
                                   <option value="<%= f %>"><%= f %></option>
                                 <% }) %>
                               </select>
+                              <input type="date" name="dataPagamento" id="dataPagamento" class="form-control">
+                              <label class="mt-2">Data do Pagamento</label>
                             </div>
-                              <div class="col-md-6">
+                            <div class="col-md-6">
                               <label>Observação</label>
                               <input type="text" name="observacao" class="form-control" placeholder="Observação (opcional)">
                             </div>
@@ -142,6 +144,7 @@
     const valorBrutoField = document.getElementById('valorBrutoField');
     const valorFinalField = document.getElementById('valorFinalField');
     const parceiroIdField = document.getElementById('parceiroIdField');
+    const dataPagamentoInput = document.getElementById('dataPagamento');
 
     let cart = [];
 
@@ -198,7 +201,7 @@
       const selected = parceiroSelect.options[parceiroSelect.selectedIndex];
       const credito = parseFloat(selected.dataset.credito || 0) || 0;
       parceiroIdField.value = selected.value || '';
-      // Apply credito as desconto but keep field editable
+      // Aplicar desconto do campo Crédito do parceiro e editável
       descontoDisplay.value = credito.toFixed(2);
       recalc();
     });
@@ -256,6 +259,10 @@
 
     // Inicializa select
     populateItemSelect();
+    // Preenche data do pagamento com hoje por padrão
+    if (dataPagamentoInput && !dataPagamentoInput.value) {
+      dataPagamentoInput.value = new Date().toISOString().slice(0,10);
+    }
     recalc();
   });
 </script>
