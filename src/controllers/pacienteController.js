@@ -54,6 +54,27 @@ export const pacienteController = {
     }
   },
 
+  // Versão Moderna (Tailwind) para teste
+  async newPacienteModernForm(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const parceiros = await prisma.parceiro.findMany({
+        where: { consultorioId: idConsultorio },
+      });
+
+      res.render('pacientes/new-modern', {
+        layout: 'layouts/modern', // Usa o novo layout Tailwind
+        pageTitle: 'Novo Paciente (Moderno)',
+        pageIcon: 'bi-person-plus-fill',
+        formData: {},
+        parceiros,
+      });
+    } catch (error) {
+      console.error('Erro ao exibir o formulário moderno:', error);
+      res.redirect('/pacientes');
+    }
+  },
+
   // Criar um novo paciente
 
   async createPaciente(req, res) {

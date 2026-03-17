@@ -1,0 +1,200 @@
+<!-- BEGIN: Tailwind CSS & Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- END: Tailwind CSS & Plugins -->
+
+<!-- BEGIN: Custom Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clinic: {
+              50: '#f0f9fa',
+              100: '#d1edf2',
+              500: '#00a8cc',
+              600: '#008bb3',
+              700: '#006d8c',
+              800: '#004f66',
+              900: '#003645',
+            },
+            medical: {
+              navy: '#1a3a5a',
+              teal: '#2d9da6',
+              soft: '#f8fafc'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- END: Custom Configuration -->
+
+<!-- BEGIN: Global Styles -->
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    /* .dashboard-container {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+    } */
+  </style>
+<style data-purpose="layout-adjustments">
+    .sidebar-active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #00a8cc;
+    }
+    .status-badge-paid {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .status-badge-pending {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+    .status-badge-overdue {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    /* Ajuste para não conflitar com bootstrap do layout pai se necessário */
+    .tailwind-scope {
+        all: revert; /* Tenta isolar se necessário, mas tailwind costuma ser agressivo */
+    }
+  </style>
+<!-- END: Global Styles -->
+
+<div class="p-4 sm:p-8 font-sans bg-slate-100 min-h-screen">
+    <!-- BEGIN: Header -->
+    <header class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-slate-800">Gestão Financeira</h1>
+        <div class="flex items-center space-x-4">
+            <a href="/financeiro/selecionar-paciente" class="bg-clinic-500 hover:bg-clinic-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center space-x-2 no-underline">
+                <span>+</span>
+                <span>Nova Cobrança</span>
+            </a>
+        </div>
+    </header>
+    <!-- END: Header -->
+
+    <!-- BEGIN: Summary Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total to Receive -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-sm font-medium text-slate-500 mb-1">Total a Receber</p>
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-slate-800">R$ <%= stats.totalAReceber %></h3>
+                <span class="text-green-500 text-xs font-bold">Pendente</span>
+            </div>
+            <div class="mt-4 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-clinic-500 h-full w-3/4"></div>
+            </div>
+        </div>
+        <!-- Total to Pay -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-sm font-medium text-slate-500 mb-1">Total a Pagar (Parceiros)</p>
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-slate-800">R$ <%= stats.totalAPagar %></h3>
+                <span class="text-slate-400 text-xs font-bold">Agendado</span>
+            </div>
+            <div class="mt-4 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-amber-400 h-full w-2/5"></div>
+            </div>
+        </div>
+        <!-- Monthly Balance -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-sm font-medium text-slate-500 mb-1">Saldo Mensal (Recebido)</p>
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-clinic-600">+R$ <%= stats.saldoMensal %></h3>
+                <span class="text-emerald-500 text-xs font-bold">Saudável</span>
+            </div>
+            <div class="mt-4 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full w-full"></div>
+            </div>
+        </div>
+        <!-- Overdue -->
+        <div class="bg-white p-6 rounded-xl border border-red-100 shadow-sm bg-red-50/30">
+            <p class="text-sm font-medium text-red-600 mb-1">Atrasado</p>
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-red-700">R$ <%= stats.atrasado %></h3>
+                <div class="px-2 py-0.5 bg-red-100 text-red-600 rounded text-[10px] font-bold uppercase">Urgente</div>
+            </div>
+            <div class="mt-4 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-red-500 h-full w-1/4"></div>
+            </div>
+        </div>
+    </section>
+    <!-- END: Summary Cards -->
+
+    <!-- BEGIN: Transaction Table Section -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <!-- BEGIN: Table Controls -->
+        <div class="p-6 border-b bg-slate-50/50">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <!-- Toggle Switch -->
+                <div class="inline-flex p-1 bg-slate-200 rounded-lg">
+                    <button class="px-4 py-1.5 text-sm font-semibold rounded-md bg-white shadow-sm text-clinic-700">Lançamentos</button>
+                    <a href="/financeiro/extrato" class="px-4 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 no-underline">Ver Extrato Completo</a>
+                </div>
+                <!-- Search and Filters -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input class="pl-9 pr-4 py-2 border-slate-300 rounded-lg text-sm focus:ring-clinic-500 focus:border-clinic-500 w-full sm:w-64" placeholder="Pesquisar..." type="text"/>
+                        <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Table Controls -->
+
+        <!-- BEGIN: Data Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 border-b text-slate-600 text-xs font-semibold uppercase tracking-wider">
+                        <th class="px-6 py-4">Data</th>
+                        <th class="px-6 py-4">Paciente</th>
+                        <th class="px-6 py-4">Descrição</th>
+                        <th class="px-6 py-4 text-right">Valor</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    <% lancamentos.forEach(l => { %>
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-6 py-4 text-slate-500">
+                            <%= new Date(l.dataPagamento).toLocaleDateString('pt-BR') %>
+                        </td>
+                        <td class="px-6 py-4 font-medium text-slate-700">
+                            <%= l.paciente ? l.paciente.nome : 'N/A' %>
+                        </td>
+                        <td class="px-6 py-4 text-slate-600 italic text-xs">
+                            <%= l.descricao %>
+                        </td>
+                        <td class="px-6 py-4 text-right font-semibold">
+                            R$ <%= l.valorFinal.toFixed(2) %>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <% if (l.statusPagamento === 'Pago') { %>
+                                <span class="status-badge-paid px-3 py-1 rounded-full text-[11px] font-bold uppercase">Pago</span>
+                            <% } else if (new Date(l.dataPagamento) < new Date() && l.statusPagamento === 'Pendente') { %>
+                                <span class="status-badge-overdue px-3 py-1 rounded-full text-[11px] font-bold uppercase">Atrasado</span>
+                            <% } else { %>
+                                <span class="status-badge-pending px-3 py-1 rounded-full text-[11px] font-bold uppercase">Pendente</span>
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 text-right space-x-2">
+                            <button class="text-clinic-500 hover:text-clinic-700 text-xs font-bold">Ver</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    <% if (lancamentos.length === 0) { %>
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-500">Nenhum lançamento encontrado.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <!-- END: Data Table -->
+    </section>
+    <!-- END: Transaction Table Section -->
+</div>

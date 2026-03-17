@@ -305,3 +305,74 @@ export const listarLancamentos = async (req, res) => {
     res.redirect('/'); // Ou para onde for apropriado
   }
 };
+
+// GET para o Dashboard Financeiro
+export const renderizarDashboard = async (req, res) => {
+  const consultorioId = req.session.consultorio.idConsultorio;
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  try {
+    // 1. Lançamentos a Receber (Pendente)
+    const aReceber = await prisma.lancamentoFinanceiro.aggregate({
+      where: {
+        consultorioId,
+        statusPagamento: StatusPagamento.Pendente,
+      },
+      _sum: { valorFinal: true },
+    });
+
+    // 2. Lançamentos a Pagar (Consultas com parceiro pendente)
+    const aPagar = await prisma.consulta.aggregate({
+      where: {
+        consultorioId,
+        parceiroId: { not: null },
+        pagamentoRealizado: false,
+      },
+      _sum: { valorAPagarParceiro: true },
+    });
+    // 3. Saldo Mensal (Ganhos pagos no mês)
+    const saldoMensal = await prisma.lancamentoFinanceiro.aggregate({
+      where: {
+        consultorioId,
+        statusPagamento: StatusPagamento.Pago,
+        dataPagamento: { gte: startOfMonth },
+      },
+      _sum: { valorFinal: true },
+    });
+    // 4. Atrasados (Pendente com data vencida)
+    const atrasados = await prisma.lancamentoFinanceiro.aggregate({
+      where: {
+        consultorioId,
+        statusPagamento: StatusPagamento.Pendente,
+        dataPagamento: { lt: now },
+      },
+      _sum: { valorFinal: true },
+    });
+    // Lista de lançamentos recentes para a tabela
+    const lancamentosRecentes = await prisma.lancamentoFinanceiro.findMany({
+      where: { consultorioId },
+      include: {
+        paciente: { select: { nome: true } },
+        items: { include: { produto: true, servico: true } },
+      },
+      orderBy: { dataPagamento: 'desc' },
+      take: 10,
+    });
+
+    res.render('financeiro/dashboard', {
+      pageTitle: 'Gestão Financeira',
+      pageIcon: 'bi-speedometer2',
+      stats: {
+        totalAReceber: (aReceber._sum.valorFinal | 0).toFixed(2),
+        totalAPagar: (aPagar._sum.valorAPagarParceiro || 0).toFixed(2),
+        saldoMensal: (saldoMensal._sum.valorFinal || 0).toFixed(2),
+        atrasado: (atrasados._sum.valorFinal || 0).toFixed(2),
+      },
+      lancamentos: lancamentosRecentes,
+    });
+  } catch (error) {
+    console.error('Erro ao renderizar dashboard financeiro:', error);
+    req.flash('error', 'Erro ao carregar dashboard financeiro.');
+    res.redirect('/');
+  }
+};

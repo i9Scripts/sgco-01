@@ -9,6 +9,7 @@ const router = Router();
 
 router.get('/', pacienteController.getAllPacientes); // GET /pacientes
 router.get('/new', pacienteController.newPacienteForm); // GET /pacientes/new
+router.get('/new-modern', pacienteController.newPacienteModernForm); // GET /pacientes/new-modern (Tailwind)
 router.post('/', pacienteController.createPaciente); // POST /pacientes
 
 // Busca antes da rota dinâmica

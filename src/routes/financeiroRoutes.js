@@ -15,6 +15,9 @@ router.get('/cobrar/:pacienteId', financeiroController.renderizarCobranca);
 // POST para registrar um novo lançamento financeiro (pagamento)
 router.post('/registrar', financeiroController.processarCobranca);
 
+// GET para o Dashboard Financeiro
+router.get('/dashboard', financeiroController.renderizarDashboard);
+
 // GET para exibir o extrato de lançamentos financeiros
 router.get('/extrato', financeiroController.listarLancamentos);
 
