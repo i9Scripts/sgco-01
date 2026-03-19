@@ -13,26 +13,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Right: Ações rápidas -->
-        <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Ações Rápidas</h6>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-3">
-                        <a href="/pacientes/new" class="btn btn-primary btn-block" title="Adicionar Novo Paciente"><span class="bi bi-person-plus-fill"></span> Paciente</a>
-                        <a href="/pacientes" class="btn btn-success btn-block" title="Buscar Paciente"><span class="bi bi-search"></span> Paciente</a>
-                        <a href="/agendamentos" class="btn btn-warning btn-block" title="Ver Agenda"><span class="bi bi-calendar-event"></span> Agenda</a>
-                        <a href="/financeiro/dashboard" class="btn btn-dark btn-block" title="Painel Financeiro"><span class="bi bi-speedometer2"></span> Financeiro</a>
-                        <button class="btn btn-info btn-block" title="Registrar Pagamento" onclick="abrirModalGenerico('/financeiro/selecionar-paciente','Novo Paciente')">
-                            <span class="bi bi-cash-coin"></span> Pagamento
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     
     <div><%- include('./partials/_modal') %></div>

@@ -2,28 +2,82 @@
   <aside class="w-64 bg-medical-navy text-white flex-shrink-0 hidden md:flex flex-col shadow-xl">
     <div class="p-6 flex items-center space-x-3 border-b border-white/10">
       <div class="w-10 h-10 bg-clinic-500 rounded-lg flex items-center justify-center">
-        <span class="text-2xl">👁️</span>
+        <span class="material-symbols-outlined text-white text-2xl">visibility</span> 
       </div>
       <span class="font-bold text-xl tracking-tight">OptoSystem</span>
     </div>
     
-    <nav class="mt-6 flex-1 px-4 space-y-2">
-      <a href="/" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
-        <span class="w-5 h-5 opacity-70">🏠</span>
+    <nav class="mt-6 flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+      <a href="/" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">home</span>
         <span>Início</span>
       </a>
-      <a href="/pacientes" class="flex items-center space-x-3 p-3 rounded-lg bg-clinic-500/20 border-l-4 border-clinic-500 transition-colors no-underline text-sm text-white">
-        <span class="w-5 h-5">👥</span>
-        <span class="font-semibold text-clinic-100">Pacientes</span>
+
+      <!-- Menu geral -->
+        <div class="pt-4 pb-1 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Atendimento</div>
+        <a href="/pacientes/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+          <span class="material-symbols-outlined opacity-70">person_add</span>
+          <span>Novo Paciente</span>
+        </a>
+        <a href="/pacientes" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+           <span class="material-symbols-outlined opacity-70">groups</span>
+           <span>Pacientes</span>
+         </a>
+        <a href="/anamneses" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+          <span class="material-symbols-outlined opacity-70">medical_services</span>
+          <span>Anamneses</span>
+        </a>
+        <a href="/financeiro/selecionar-paciente" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+          <span class="material-symbols-outlined opacity-70">prescriptions</span>
+          <span>Pagamentos</span>
+        </a>
+        
+        <a href="/agendamentos" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+          <span class="material-symbols-outlined opacity-70">calendar_month</span>
+          <span>Agenda</span>
+        </a>
+<!-- Menu com login -->
+    <% if (locals.idProfissional) { %>
+      <div class="pt-4 pb-1 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Gestão</div>
+      <a href="/diagnosticos" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+          <span class="material-symbols-outlined opacity-70">prescriptions</span>
+          <span>Diagnósticos</span>
+        </a>
+      <a href="/parceiros" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">handshake</span>
+        <span>Parceiros</span>
       </a>
-      <a href="/agendamentos" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
-        <span class="w-5 h-5 opacity-70">📅</span>
-        <span>Agenda</span>
+      <a href="/produtos" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">inventory_2</span>
+        <span>Produtos</span>
       </a>
-      <a href="/financeiro/dashboard" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
-        <span class="w-5 h-5 opacity-70">💰</span>
-        <span>Financeiro</span>
+      <a href="/servicos" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">medical_information</span>
+        <span>Serviços</span>
       </a>
+
+      <div class="pt-4 pb-1 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Financeiro</div>
+      <a href="/financeiro/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">dashboard</span>
+        <span>Painel Financeiro</span>
+      </a>
+      <a href="/financeiro/selecionar-paciente" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">payments</span>
+        <span>Pagamentos</span>
+      </a>
+      <a href="/financeiro/extrato" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">receipt_long</span>
+        <span>Extrato</span>
+      </a>
+      <a href="/financeiro/relatorios" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">bar_chart</span>
+        <span>Relatórios</span>
+      </a>
+      <a href="/financeiro/relatorios/vendas-dia" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors no-underline text-sm text-white">
+        <span class="material-symbols-outlined opacity-70">point_of_sale</span>
+        <span>Vendas do Dia</span>
+      </a>
+    <% } %>
     </nav>
 
     <div class="p-4 border-t border-white/10 text-xs text-slate-400">

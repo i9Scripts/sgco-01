@@ -84,6 +84,8 @@ app.use((req, res, next) => {
   // defaults para título/ícone quando não fornecidos nas rotas
   res.locals.pageTitle = res.locals.pageTitle || 'OptoSystem';
   res.locals.pageIcon = res.locals.pageIcon || 'ri-information-line';
+  res.locals.idProfissional = req.session?.idProfissional;
+  res.locals.userRole = req.session?.userRole;
   next();
 });
 
