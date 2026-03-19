@@ -1,268 +1,314 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-          <div class="card shadow mb-4 wide-card">
-            <div class="wide-card-header py-2">
-              <h6 class="m-4">PDV para Paciente: <%= paciente.nome %></h6>
-            </div>
-            <div class="wide-card-body">
-                    <form id="cobrarForm" action="/financeiro/registrar" method="POST" class="grid-form-container">
-                        <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
-                        <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= parceiro ? parceiro.idParceiro : '' %>">
-                        <input type="hidden" name="items" id="itemsField" value="[]">
-                        <input type="hidden" name="valorBruto" id="valorBrutoField" value="0.00">
-                        <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
-                        <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
-
-                        <!-- Layout reformulado: left = seleção/carrinho, right = imagem/parceiro/totais -->
-                        <div class="section-left">
-                          <div class="form-row"> 
-                            <div class="col-md-8 mb-2">
-                              <label>Tipo</label>
-                                <select id="tipoItem" class="form-control">
-                                  <option value="servico">Serviço</option>
-                                  <option value="produto">Produto</option>
-                                </select>
-                            </div>
-                            <!-- mudar esse -->
-                                <div class="col-md-8 mb-2">
-                                    <label>Item</label>
-                                    <div class="input-group">
-                                      <select id="itemSelect" class="form-control">
-                                          <option value="" Selecione...</option>
-                                      </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-md-2 mb-2">
-                                      <label>Qtd</label>
-                                      <input type="number" id="itemQuantidade" class="form-control" value="1" min="1">
-                                  </div>
-                                  <div class="col-md-2 mb-2">
-                                      <button type="button" id="addItemBtn" class="btn btn-primary btn-block">Adicionar</button>
-                                  </div>
-                                </div>
-                              <!-- mudar até aqui -->
-                            </div>
-
-                            <!-- Tabela do carrinho -->
-                            <div class="mt-4">
-                                <table class="table table-sm" id="cartTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Descrição</th>
-                                            <th>Tipo</th>
-                                            <th>Qtd</th>
-                                            <th>Unit R$</th>
-                                            <th>Subtotal R$</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                          </div>
-                          <!-- A DIREITA -->
-                           <div class="section-right">
-                              <div id="imagePreview" class="mb-3 text-center" style="background: #fff; border-radius: 5px; padding: 10px;">
-                                  <img id="produtoImage" src="" style="max-width:100%; height:180px; object-fit: contain; display:none;" />
-                                  <div id="noImageText" class="text-muted">Visualização do Item</div>
-                              </div>
-                              <div class="form-group">
-                                <label>Parceiro (Opcional)</label>
-                                <select id="parceiroSelect" class="form-control">
-                                  <option value="">Nenhum</option>
-                                  <% (parceiros || []).forEach(function(p){ %>
-                                    <option value="<%= p.idParceiro %>" data-credito="<%= p.credito || 0 %>"><%= p.nome %></option>
-                                  <% }) %>
-                                </select>
-                                <div class="totals-box mt-4">
-                                  <table class="table table-borderless table-sm">
-                                    <tbody>
-                                      <tr>
-                                        <th>Bruto:</th>
-                                        <td class="text-right"><span id="brutoDisplay">0.00</span></td>
-                                      </tr>
-                                      <tr>
-                                        <th>Desconto:</th>
-                                        <td class="text-right"><input type="text" id="descontoDisplay" class="form-control form-control-sm text-right" value="<%= valorDesconto %>"></td>
-                                      </tr>
-                                      <tr>
-                                        <th>Final:</th>
-                                        <td class="text-right"><span id="finalDisplay">0.00</span></td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                           </div>
-
-                        <div class="section-footer">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <label>Forma de Pagamento</label>
-                              <select name="formaPagamento" id="formaPagamento" class="form-control">
-                                <% (formasPagamento || []).forEach(function(f){ %>
-                                  <option value="<%= f %>"><%= f %></option>
-                                <% }) %>
-                              </select>
-                              <input type="date" name="dataPagamento" id="dataPagamento" class="form-control">
-                              <label class="mt-2">Data do Pagamento</label>
-                            </div>
-                            <div class="col-md-6">
-                              <label>Observação</label>
-                              <input type="text" name="observacao" class="form-control" placeholder="Observação (opcional)">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mt-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">Registrar Pagamento</button>
-                            <a href="/" class="btn btn-outline-secondary btn-lg">Cancelar</a>
-                        </div>
-                    </form>
-              </div>
-          </div>
-        </div>
+<div class="max-w-6xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-medical-navy/90 p-6 flex justify-between items-center">
+      <div>
+        <h2 class="text-xl font-bold text-white flex items-center">
+          <span class="material-symbols-outlined mr-2">point_of_sale</span>
+          PDV / Checkout
+        </h2>
+        <p class="text-clinic-100 text-sm">Paciente: <%= paciente.nome %></p>
+      </div>
+      <div class="text-white text-right">
+        <span class="text-xs uppercase opacity-80 block">Data</span>
+        <span class="font-bold"><%= new Date().toLocaleDateString('pt-BR') %></span>
       </div>
     </div>
 
+    <form id="cobrarForm" action="/financeiro/registrar" method="POST" class="p-6 sm:p-8 space-y-8">
+      <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
+      <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= (typeof parceiro !== 'undefined' && parceiro) ? parceiro.idParceiro : '' %>">
+      <input type="hidden" name="items" id="itemsField" value="[]">
+      <input type="hidden" name="valorBruto" id="valorBrutoField" value="0.00">
+      <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
+      <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
+      
+      <input type="hidden" name="tipoItem" id="tipoItemValue" value="servico">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8 space-y-6">
+          
+          <div class="space-y-3">
+            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Tipo de Item</label>
+            <div class="flex gap-4">
+              <button type="button" onclick="setTipoItem('servico', this)" class="tipo-btn flex-1 flex items-center justify-center p-4 rounded-xl border-2 transition-all shadow-sm border-clinic-500 bg-clinic-50 text-clinic-700 font-bold">
+                <span class="material-symbols-outlined mr-2">medical_services</span>
+                Serviço
+              </button>
+              <button type="button" onclick="setTipoItem('produto', this)" class="tipo-btn flex-1 flex items-center justify-center p-4 rounded-xl border-2 transition-all shadow-sm border-slate-100 bg-slate-50 text-slate-600 hover:bg-white font-bold">
+                <span class="material-symbols-outlined mr-2">inventory_2</span>
+                Produto
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-8 relative">
+              <select id="itemSelect" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all appearance-none">
+                <option value="">Selecione...</option>
+              </select>
+              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Item</label>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <span class="material-symbols-outlined">expand_more</span>
+              </div>
+            </div>
+            <div class="md:col-span-2 relative">
+              <input type="number" id="itemQuantidade" class="peer w-full h-12 px-4 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all" value="1" min="1">
+              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Qtd</label>
+            </div>
+            <div class="md:col-span-2">
+              <button type="button" id="addItemBtn" class="w-full h-12 bg-clinic-500 text-white rounded-xl font-bold hover:bg-clinic-600 shadow-md transition-all flex items-center justify-center">
+                <span class="material-symbols-outlined">add_shopping_cart</span>
+              </button>
+            </div>
+          </div>
+          <!-- Seleciona Parceiro -->
+            <div class="relative mb-6">
+              <select id="parceiroSelect" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all appearance-none">
+                <option value="">Nenhum</option>
+                <% (parceiros || []).forEach(function(p){ %>
+                  <option value="<%= p.idParceiro %>" data-credito="<%= p.credito || 0 %>"><%= p.nome %></option>
+                <% }) %>
+              </select>
+              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Parceiro</label>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <span class="material-symbols-outlined">expand_more</span>
+              </div>
+            </div>
+
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+            <table class="w-full text-left border-collapse" id="cartTable">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase">Descrição</th>
+                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-center">Tipo</th>
+                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-center">Qtd</th>
+                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-right">Unit R$</th>
+                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-right">Total R$</th>
+                  <th class="px-4 py-3 w-10"></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100"></tbody>
+            </table>
+            <div id="emptyCartMsg" class="p-8 text-center text-slate-400">
+              <span class="material-symbols-outlined text-4xl block mb-2">shopping_basket</span>
+              Seu carrinho está vazio
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 space-y-6">
+          <div id="imagePreview" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl h-48 flex items-center justify-center overflow-hidden relative group">
+            <img id="produtoImage" src="" class="max-w-full max-h-full object-contain p-4 hidden transition-transform group-hover:scale-105" />
+            <div id="noImageText" class="text-slate-400 text-center p-4">
+              <span class="material-symbols-outlined text-4xl block mb-2">image</span>
+              <p class="text-xs font-bold uppercase tracking-widest">Visualização</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+            <div class="pt-4 space-y-2">
+              <div class="flex justify-between items-center text-slate-600">
+                <span class="text-sm font-bold uppercase">Subtotal</span>
+                <span class="font-mono font-bold">R$ <span id="brutoDisplay">0.00</span></span>
+              </div>
+              <div class="flex justify-between items-center text-clinic-600">
+                <span class="text-sm font-bold uppercase">Desconto</span>
+                <input type="number" id="descontoDisplay" step="0.01" class="w-24 text-right bg-transparent border-b-2 border-clinic-200 focus:border-clinic-500 outline-none font-mono font-bold" value="<%= valorDesconto || '0.00' %>">
+              </div>
+              <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-lg font-black text-slate-800 uppercase">Total Final</span>
+                <span class="text-2xl font-black text-clinic-600 font-mono">R$ <span id="finalDisplay">0.00</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Forma de Pagamento</label>
+            <input type="hidden" name="formaPagamento" id="formaPagamentoValue" value="<%= (typeof formasPagamento !== 'undefined' && formasPagamento.length > 0) ? formasPagamento[0] : '' %>">
+            <div class="grid grid-cols-2 gap-2">
+              <% (typeof formasPagamento !== 'undefined' ? formasPagamento : []).forEach(function(f, idx){ 
+                let icon = 'payments';
+                if(f.toLowerCase().includes('pix')) icon = 'qr_code_2';
+                if(f.toLowerCase().includes('cartão')) icon = 'credit_card';
+                const activeClass = idx === 0 ? 'border-clinic-500 bg-clinic-50 text-clinic-700' : 'border-slate-100 bg-slate-50 text-slate-600';
+              %>
+                <button type="button" onclick="setFormaPagamento('<%= f %>', this)" class="pagamento-btn flex items-center p-3 rounded-xl border-2 transition-all text-xs font-bold <%= activeClass %>">
+                  <span class="material-symbols-outlined text-lg mr-2"><%= icon %></span>
+                  <%= f %>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full py-4 bg-clinic-500 text-white rounded-xl font-black text-lg hover:bg-clinic-600 shadow-xl transition-all flex items-center justify-center disabled:bg-slate-300" disabled>
+            FINALIZAR VENDA
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
-  const produtos = <%-JSON.stringify(produtos || [])%>;
-  const servicos = <%-JSON.stringify(servicos || [])%>;
-  const parceiros = <%-JSON.stringify(parceiros || [])%>;
+  // Dados vindos do Backend
+  const produtos = <%- JSON.stringify(produtos || []) %>;
+  const servicos = <%- JSON.stringify(servicos || []) %>;
+  let cart = [];
+
+  // --- FUNÇÕES GLOBAIS (Devem ficar fora do DOMContentLoaded para o 'onclick' funcionar) ---
+
+  function setTipoItem(valor, elemento) {
+    document.getElementById('tipoItemValue').value = valor;
+    document.querySelectorAll('.tipo-btn').forEach(btn => {
+      btn.classList.replace('border-clinic-500', 'border-slate-100');
+      btn.classList.replace('bg-clinic-50', 'bg-slate-50');
+      btn.classList.replace('text-clinic-700', 'text-slate-600');
+    });
+    elemento.classList.replace('border-slate-100', 'border-clinic-500');
+    elemento.classList.replace('bg-slate-50', 'bg-clinic-50');
+    elemento.classList.replace('text-slate-600', 'text-clinic-700');
+    
+    // Recarrega a lista de itens (função definida abaixo)
+    if (typeof window.populateItemSelect === "function") window.populateItemSelect();
+  }
+
+  function setFormaPagamento(valor, elemento) {
+    document.getElementById('formaPagamentoValue').value = valor;
+    document.querySelectorAll('.pagamento-btn').forEach(btn => {
+      btn.classList.remove('border-clinic-500', 'bg-clinic-50', 'text-clinic-700');
+      btn.classList.add('border-slate-100', 'bg-slate-50', 'text-slate-600');
+    });
+    elemento.classList.replace('border-slate-100', 'border-clinic-500');
+    elemento.classList.replace('bg-slate-50', 'bg-clinic-50');
+    elemento.classList.replace('text-slate-600', 'text-clinic-700');
+  }
+
+  // --- LÓGICA DO CARRINHO ---
 
   document.addEventListener('DOMContentLoaded', () => {
-    const tipoItem = document.getElementById('tipoItem');
     const itemSelect = document.getElementById('itemSelect');
     const itemQuantidade = document.getElementById('itemQuantidade');
     const addItemBtn = document.getElementById('addItemBtn');
     const cartTableBody = document.querySelector('#cartTable tbody');
+    const emptyCartMsg = document.getElementById('emptyCartMsg');
     const brutoDisplay = document.getElementById('brutoDisplay');
     const descontoDisplay = document.getElementById('descontoDisplay');
     const finalDisplay = document.getElementById('finalDisplay');
     const itemsField = document.getElementById('itemsField');
     const valorBrutoField = document.getElementById('valorBrutoField');
     const valorFinalField = document.getElementById('valorFinalField');
+    const submitBtn = document.getElementById('submitBtn');
+//acho que é aqui
+    const parceiroSelect = document.getElementById('parceiroSelect');
     const parceiroIdField = document.getElementById('parceiroIdField');
-    const dataPagamentoInput = document.getElementById('dataPagamento');
 
-    let cart = [];
-
-    function populateItemSelect() {
-      const list = tipoItem.value === 'produto' ? produtos : servicos;
-      itemSelect.innerHTML = '<option value="">Selecione...</option>';
-      list.forEach(it => {
-        const val = tipoItem.value === 'produto' ? it.idProduto : it.idServico;
-        const valor = it.valor;
-        const descricao = it.descricao;
-        const imagem = it.imagem || '';
-        const opt = document.createElement('option');
-        opt.value = val;
-        opt.dataset.valor = valor;
-        opt.dataset.imagem = imagem;
-        opt.textContent = `${descricao} - R$ ${valor}`;
-        itemSelect.appendChild(opt);
+    if (parceiroSelect) {
+      parceiroSelect.addEventListener('change', () => {
+        const selected = parceiroSelect.options[parceiroSelect.selectedIndex];
+        
+        // Pega o valor do crédito do atributo data que colocamos no HTML
+        const credito = parseFloat(selected.dataset.credito || 0) || 0;
+        
+        // Atualiza o ID do parceiro para o envio do formulário
+        parceiroIdField.value = selected.value || '';
+        
+        // Define o valor do desconto e recalcula o total final
+        descontoDisplay.value = credito.toFixed(2);
+        
+        // Chama a função de recalcular que já criamos
+        recalc();
       });
     }
+    //definiçoes de parceiro fim
+    
+    window.populateItemSelect = function() {
+      const currentTipo = document.getElementById('tipoItemValue').value;
+      const list = currentTipo === 'produto' ? produtos : servicos;
+      
+      itemSelect.innerHTML = '<option value="">Selecione...</option>';
+      list.forEach(it => {
+        const id = currentTipo === 'produto' ? it.idProduto : it.idServico;
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.dataset.valor = it.valor;
+        opt.dataset.imagem = it.imagem || '';
+        opt.textContent = `${it.descricao} - R$ ${parseFloat(it.valor).toFixed(2)}`;
+        itemSelect.appendChild(opt);
+      });
+      showPreview();
+    };
 
-    function showPreviewForSelected() {
+    function showPreview() {
       const sel = itemSelect.options[itemSelect.selectedIndex];
-      const imgEl = document.getElementById('produtoImage');
-      const noImgText = document.getElementById('noImageText');
-      if (!sel) return;
-      const imagem = sel.dataset.imagem;
-      if (imagem) {
-        imgEl.src = imagem;
-        imgEl.style.display = '';
-        noImgText.style.display = 'none';
+      const img = document.getElementById('produtoImage');
+      const txt = document.getElementById('noImageText');
+      if (sel && sel.dataset.imagem && sel.dataset.imagem !== 'null') {
+        img.src = sel.dataset.imagem;
+        img.classList.remove('hidden');
+        txt.classList.add('hidden');
       } else {
-        imgEl.src = '';
-        imgEl.style.display = 'none';
-        noImgText.style.display = '';
+        img.classList.add('hidden');
+        txt.classList.remove('hidden');
       }
     }
 
     function recalc() {
-      const bruto = cart.reduce((s, it) => s + (parseFloat(it.valorUnitario) * it.quantidade), 0);
+      const bruto = cart.reduce((total, item) => total + (item.valorUnitario * item.quantidade), 0);
       const desconto = parseFloat(descontoDisplay.value) || 0;
-      const finalV = bruto - desconto;
+      const final = Math.max(0, bruto - desconto);
+
       brutoDisplay.textContent = bruto.toFixed(2);
-      finalDisplay.textContent = finalV.toFixed(2);
+      finalDisplay.textContent = final.toFixed(2);
+      
       itemsField.value = JSON.stringify(cart);
       valorBrutoField.value = bruto.toFixed(2);
-      valorFinalField.value = finalV.toFixed(2);
+      valorFinalField.value = final.toFixed(2);
+      submitBtn.disabled = cart.length === 0;
     }
-
-    tipoItem.addEventListener('change', () => { populateItemSelect(); showPreviewForSelected(); });
-    itemSelect.addEventListener('change', showPreviewForSelected);
-
-    const parceiroSelect = document.getElementById('parceiroSelect');
-    parceiroSelect && parceiroSelect.addEventListener('change', (e) => {
-      const selected = parceiroSelect.options[parceiroSelect.selectedIndex];
-      const credito = parseFloat(selected.dataset.credito || 0) || 0;
-      parceiroIdField.value = selected.value || '';
-      // Aplicar desconto do campo Crédito do parceiro e editável
-      descontoDisplay.value = credito.toFixed(2);
-      recalc();
-    });
 
     addItemBtn.addEventListener('click', () => {
-      const selectedVal = itemSelect.value;
-      if (!selectedVal) { if (window.showMessage) showMessage('error','Selecione um item.'); return; }
       const selectedOption = itemSelect.options[itemSelect.selectedIndex];
-      const valorUnit = parseFloat(selectedOption.dataset.valor || 0);
-      const qtd = parseInt(itemQuantidade.value, 10) || 1;
-      const tipo = tipoItem.value;
+      if (!selectedOption.value) return;
 
-      const item = {
-        descricao: selectedOption.textContent,
-        quantidade: qtd,
-        valorUnitario: valorUnit,
-        produtoId: tipo === 'produto' ? selectedVal : undefined,
-        servicoId: tipo === 'servico' ? selectedVal : undefined,
-        tipo,
-      };
+      const tipo = document.getElementById('tipoItemValue').value;
+      cart.push({
+        descricao: selectedOption.textContent.split(' - ')[0],
+        quantidade: parseInt(itemQuantidade.value),
+        valorUnitario: parseFloat(selectedOption.dataset.valor),
+        tipo: tipo,
+        id: selectedOption.value
+      });
 
-      cart.push(item);
       renderCart();
       recalc();
-      // show image for product just added
-      showPreviewForSelected();
+      itemSelect.selectedIndex = 0;
+      showPreview();
     });
 
-    function removeItem(index) {
-      cart.splice(index, 1);
+    window.removeCartItem = (idx) => {
+      cart.splice(idx, 1);
       renderCart();
       recalc();
-    }
+    };
 
     function renderCart() {
       cartTableBody.innerHTML = '';
+      emptyCartMsg.classList.toggle('hidden', cart.length > 0);
       cart.forEach((it, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${it.descricao}</td>
-          <td>${it.tipo}</td>
-          <td>${it.quantidade}</td>
-          <td>${parseFloat(it.valorUnitario).toFixed(2)}</td>
-          <td>${(it.quantidade * parseFloat(it.valorUnitario)).toFixed(2)}</td>
-          <td><button type="button" class="btn btn-sm btn-danger remove-btn" data-idx="${idx}">x</button></td>
-        `;
-        cartTableBody.appendChild(tr);
-      });
-      cartTableBody.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => removeItem(parseInt(e.target.dataset.idx, 10)));
+        cartTableBody.innerHTML += `
+          <tr>
+            <td class="px-4 py-3">${it.descricao}</td>
+            <td class="text-center"><span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${it.tipo === 'produto' ? 'bg-amber-100' : 'bg-blue-100'}">${it.tipo}</span></td>
+            <td class="text-center">${it.quantidade}</td>
+            <td class="text-right">${it.valorUnitario.toFixed(2)}</td>
+            <td class="text-right">${(it.quantidade * it.valorUnitario).toFixed(2)}</td>
+            <td class="text-right"><button type="button" onclick="removeCartItem(${idx})">X</button></td>
+          </tr>`;
       });
     }
 
+    itemSelect.addEventListener('change', showPreview);
     descontoDisplay.addEventListener('input', recalc);
-
-    // Inicializa select
-    populateItemSelect();
-    // Preenche data do pagamento com hoje por padrão
-    if (dataPagamentoInput && !dataPagamentoInput.value) {
-      dataPagamentoInput.value = new Date().toISOString().slice(0,10);
-    }
-    recalc();
+    window.populateItemSelect();
   });
 </script>

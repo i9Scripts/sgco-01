@@ -1,84 +1,128 @@
-<div>
-  <form action="/diagnosticos" method="post">
-    <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
-    <% if (typeof selectedPaciente !== 'undefined' && selectedPaciente) { %>
-        <input type="hidden" name="pacienteId" value="<%= selectedPaciente.idPaciente %>" />
-        <div class="alert alert-secondary">
-          <h5 class="mb-1"><i class="ri-user-line"></i> Paciente:</h5>
-          <p class="mb-0">
-            <strong>Nome:</strong> <%= selectedPaciente.nome %> | 
-            <strong>Ficha:</strong> <%= selectedPaciente.nFicha || 'N/D' %>
-          </p>
-        </div>
+<div class="max-w-6xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <form action="/diagnosticos" method="post" class="p-6 sm:p-8 space-y-8">
+      <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
       
-    <% } %>
-      <div class="col-md-3 mb-3">
-        <select id="profissionalId" name="profissionalId" class="form-control" required>
-          <% profissionais.forEach(profissional => { %>
-            <option value="<%= profissional.idProfissional %>" <%= diagnostico && diagnostico.profissionalId === profissional.idProfissional ? 'selected' : '' %>><%= profissional.nome %></option>
-          <% }) %>
-        </select>
-        <label for="profissionalId">Profissional</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="avFinalOD" name="avFinalOD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="8"  />
-        <label for="avFinalOD">AV Final OD</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="esfOD" name="esfOD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6"/>
-        <label for="esfOD">ESF OD</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="cilOD" name="cilOD" value="<%= diagnostico ? diagnostico.cilOD : '' %>" maxlength="6" />
-        <label for="cilOD">CIL OD</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="eixoOD" name="eixoOD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="4"  />
-        <label for="eixoOD">EIXO OD</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="avFinalOE" name="avFinalOE" value="<%= diagnostico ? diagnostico.avFinalOE : '' %>" maxlength="8"  />
-        <label for="avFinalOE">AV Final OE</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6"/>
-        <label for="esfOE">ESF OE</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="cilOE" name="cilOE" value="<%= diagnostico ? diagnostico.cilOE : '' %>" maxlength="6"  />
-        <label for="cilOE">CIL OE</label>
-      </div>
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="4"  />
-        <label for="eixoOE">EIXO OE</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-2 mb-3">
-        <input type="text" class="form-control" id="adicao" name="adicao" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" />
-        <label for="adicao">Adição</label>
-      </div>
-      <div class="row form-group">
-        <div class="col-md-6 mb-3">
-          <textarea class="form-control" id="descricao" name="descricao" rows="6" style="min-height:150px;" maxlength="200" ><%= diagnostico ? diagnostico.descricao : '' %></textarea>
-          <label for="descricao">Observação que vai aparecer na receita</label>
+      <% if (typeof selectedPaciente !== 'undefined' && selectedPaciente) { %>
+        <input type="hidden" name="pacienteId" value="<%= selectedPaciente.idPaciente %>" />
+        
+        <!-- Cabeçalho / Resumo do Paciente -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center space-x-4">
+          <div class="bg-clinic-100 p-3 rounded-full text-clinic-600">
+            <span class="material-symbols-outlined text-3xl">person</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Paciente Selecionado</h3>
+            <p class="text-lg font-extrabold text-slate-800">
+              <%= selectedPaciente.nome %> 
+              <span class="mx-2 text-slate-300">|</span> 
+              <span class="text-slate-600">Ficha: <%= selectedPaciente.nFicha || 'N/D' %></span>
+            </p>
+          </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <textarea class="form-control" id="minhasOBS" name="minhasOBS" rows="6" style="min-height:150px;" maxlength="200" ><%= diagnostico ? diagnostico.minhasOBS : '' %></textarea>
-            <label for="minhasOBS">Minhas Observações</label>
+      <% } %>
+
+      <!-- Seleção de Profissional -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-4 relative">
+          <select id="profissionalId" name="profissionalId" class="peer w-full h-10 px-4 pt-1 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all appearance-none" required>
+            <% profissionais.forEach(profissional => { %>
+              <option value="<%= profissional.idProfissional %>" <%= (diagnostico && diagnostico.profissionalId === profissional.idProfissional) ? 'selected' : '' %>><%= profissional.nome %></option>
+            <% }) %>
+          </select>
+          <label for="profissionalId" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 rounded-full border border-clinic-500 md:border-none">
+            Profissional Responsável
+          </label>
+          <div class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
+            <span class="material-symbols-outlined">expand_more</span>
+          </div>
         </div>
       </div>
-    <div class="fixed-buttons">
-      <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar diagnóstico">
-        <span class="material-symbols-outlined icon-btn">save</span> Salvar
-      </button>
-      <a href="/diagnosticos" class="btn btn-secondary">Cancelar</a>
-      <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
-    </div>
+
+      <!-- Seção Olho Direito (OD) -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-black text-clinic-600 uppercase tracking-widest flex items-center">
+          <span class="material-symbols-outlined mr-2">visibility</span> Olho Direito (OD)
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avFinalOD" name="avFinalOD" placeholder="AV Final OD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="8" />
+            <label for="avFinalOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">AV Final OD</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="esfOD" name="esfOD" placeholder="ESF OD" value="<%= diagnostico ? diagnostico.esfOD : '' %>" maxlength="6" />
+            <label for="esfOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">ESF OD</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="cilOD" name="cilOD" placeholder="CIL OD" value="<%= diagnostico ? diagnostico.cilOD : '' %>" maxlength="6" />
+            <label for="cilOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">CIL OD</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="eixoOD" name="eixoOD" placeholder="EIXO OD" value="<%= diagnostico ? diagnostico.eixoOD : '' %>" maxlength="4" />
+            <label for="eixoOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">EIXO OD</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção Olho Esquerdo (OE) -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-black text-clinic-600 uppercase tracking-widest flex items-center">
+          <span class="material-symbols-outlined mr-2">visibility</span> Olho Esquerdo (OE)
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avFinalOE" name="avFinalOE" placeholder="AV Final OE" value="<%= diagnostico ? diagnostico.avFinalOE : '' %>" maxlength="8" />
+            <label for="avFinalOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">AV Final OE</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="esfOE" name="esfOE" placeholder="ESF OE" value="<%= diagnostico ? diagnostico.esfOE : '' %>" maxlength="6" />
+            <label for="esfOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">ESF OE</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="cilOE" name="cilOE" placeholder="CIL OE" value="<%= diagnostico ? diagnostico.cilOE : '' %>" maxlength="6" />
+            <label for="cilOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">CIL OE</label>
+          </div>
+          <div class="relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="eixoOE" name="eixoOE" placeholder="EIXO OE" value="<%= diagnostico ? diagnostico.eixoOE : '' %>" maxlength="4" />
+            <label for="eixoOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">EIXO OE</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adição e Observações -->
+      <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-3 relative">
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="adicao" name="adicao" placeholder="Adição" value="<%= diagnostico ? diagnostico.adicao : '' %>" maxlength="6" />
+            <label for="adicao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Adição</label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="relative">
+            <textarea class="peer w-full min-h-[120px] p-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="descricao" name="descricao" placeholder="Observação da Receita" maxlength="200" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+            <label for="descricao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Observação que vai aparecer na receita</label>
+          </div>
+          <div class="relative">
+            <textarea class="peer w-full min-h-[120px] p-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="minhasOBS" name="minhasOBS" placeholder="Minhas Observações" maxlength="200"><%= diagnostico ? diagnostico.minhasOBS : '' %></textarea>
+            <label for="minhasOBS" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Minhas Observações (Privado)</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
+        <a href="/profissionais/dashboard" class="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors text-center">
+          Voltar ao Dashboard
+        </a>
+        <a href="/diagnosticos" class="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors text-center">
+          Cancelar
+        </a>
+        <button type="submit" class="px-8 py-2.5 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all flex items-center justify-center">
+          <span class="material-symbols-outlined mr-2">save</span> Salvar Diagnóstico
+        </button>
+      </div>
+    </form>
     <script src="/js/mascaraLens.js"></script>
-  </form>
+  </div>
 </div>

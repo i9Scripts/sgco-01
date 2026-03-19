@@ -1,43 +1,95 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h2 class="mb-3">Login</h2>
-      
-      <form action="/login" method="post">
-        <div class="row form-group">
-          <div class="mb-6">
-            <input type="email" id="email" name="email" class="form-control" required />
-            <label for="email">Email</label>
-          </div>
-          <div class="mb-6 input-row">
-            <input type="password" id="password" name="password" class="form-control" required />
-            <button  type="button" class="btn btn-primary btn-round" id="togglePassword" aria-label="Mostrar senha" title="Mostrar senha">
-              <span class="material-symbols-outlined icon-btn" id="toggleIcon">visibility</span>
-            </button>
-          </div>
-          <label for="password" class="login-label">Senha</label>
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+  <div class="max-w-md w-full">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+      <!-- Header do Card -->
+      <div class="bg-clinic-500 p-6 text-center">
+        <h2 class="text-2xl font-bold text-white">Acessar Sistema</h2>
+        <p class="text-clinic-100 text-sm mt-1">Bem-vindo ao OptoSystem</p>
+      </div>
+
+      <form action="/login" method="post" class="p-8 space-y-6">
+        <!-- Email -->
+        <div class="relative">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="peer w-full h-12 px-4 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all placeholder-transparent"
+            placeholder="E-mail"
+            required
+            autofocus
+          />
+          <label
+            for="email"
+            class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full"
+          >
+            E-mail
+          </label>
         </div>
-        <div class="d-flex justify-content-between align-items-center">
-          <button class="btn btn-primary" type="submit">Entrar</button>
-          <a href="/users/new.ejs" class="btn btn-outline-light">Criar conta</a>
+
+        <!-- Senha -->
+        <div class="relative">
+          <div class="flex items-center">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="peer w-full h-12 px-4 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all placeholder-transparent"
+              placeholder="Senha"
+              required
+            />
+            <button
+              type="button"
+              class="absolute right-3 text-slate-400 hover:text-clinic-600 transition-colors"
+              id="togglePassword"
+              aria-label="Mostrar senha"
+              title="Mostrar senha"
+            >
+              <span class="material-symbols-outlined" id="toggleIcon">visibility</span>
+            </button>
+            <label
+              for="password"
+              class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full"
+            >
+              Senha
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button
+            class="w-full py-3 bg-clinic-500 text-white rounded-xl font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-200 transition-all flex items-center justify-center group"
+            type="submit"
+          >
+            <span>Entrar</span>
+            <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">login</span>
+          </button>
+        </div>
+
+        <div class="text-center pt-4 border-t border-slate-100">
+          <p class="text-slate-500 text-sm">
+            Ainda não tem uma conta?
+            <a href="/users/new" class="text-clinic-600 font-bold hover:text-clinic-700 transition-colors">Criar conta</a>
+          </p>
         </div>
       </form>
-      <script>
-        (function(){
-          const pwd = document.getElementById('password');
-          const btn = document.getElementById('togglePassword');
-          if (!pwd || !btn) return;
-          const icon = document.getElementById('toggleIcon');
-          btn.addEventListener('click', function(){
-            const show = pwd.type === 'password';
-            pwd.type = show ? 'text' : 'password';
-            if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
-            btn.setAttribute('aria-pressed', show ? 'true' : 'false');
-            btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
-            btn.title = show ? 'Ocultar senha' : 'Mostrar senha';
-          });
-        })();
-      </script>
     </div>
   </div>
 </div>
+
+<script>
+  (function () {
+    const pwd = document.getElementById('password');
+    const btn = document.getElementById('togglePassword');
+    if (!pwd || !btn) return;
+    const icon = document.getElementById('toggleIcon');
+    btn.addEventListener('click', function () {
+      const show = pwd.type === 'password';
+      pwd.type = show ? 'text' : 'password';
+      if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+      btn.title = show ? 'Ocultar senha' : 'Mostrar senha';
+    });
+  })();
+</script>
