@@ -1,15 +1,56 @@
+<div class="max-w-2xl mx-auto py-12">
+  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transition-all">
+    <!-- Cabeçalho Decorativo -->
+    <div class="h-2 bg-gradient-to-r from-clinic-400 to-clinic-600"></div>
+    
+    <div class="p-8 sm:p-12 text-center">
+      <!-- Ícone -->
+      <div class="w-20 h-20 bg-clinic-50 rounded-full flex items-center justify-center mx-auto mb-6 text-clinic-600">
+        <span class="material-symbols-outlined text-4xl">timer</span>
+      </div>
 
-<div class="container mt-5">
-
-    <div class="text-center">
-        <h1 class="mb-4"><%= pageTitle %></h1>
-        <p class="lead">Deseja adicionar o paciente <strong><%= paciente.nome %></strong> à fila de espera?</p>
+      <!-- Título -->
+      <h1 class="text-2xl font-black text-slate-800 mb-4 tracking-tight">
+        <%= pageTitle %>
+      </h1>
+      
+      <!-- Mensagem -->
+      <div class="space-y-4 mb-10">
+        <p class="text-slate-600 font-medium">
+          Deseja adicionar este paciente à fila de espera para atendimento imediato?
+        </p>
         
-        <div class="d-flex justify-content-center gap-3 mt-4">
-            <button id="btn-sim" class="btn btn-primary btn-lg">Sim</button>
-            <button id="btn-nao" class="btn btn-secondary btn-lg">Não</button>
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 inline-block mx-auto">
+          <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Paciente</p>
+          <p class="text-xl font-black text-clinic-700">
+            <%= paciente.nome %>
+          </p>
+          <% if (paciente.nFicha) { %>
+            <p class="text-xs font-bold text-slate-400 mt-1">Ficha nº <%= paciente.nFicha %></p>
+          <% } %>
         </div>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button 
+          id="btn-nao" 
+          class="w-full sm:w-auto px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined">close</span>
+          Agora não
+        </button>
+        
+        <button 
+          id="btn-sim" 
+          class="w-full sm:w-auto px-10 py-3 bg-clinic-500 text-white rounded-xl font-black hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all flex items-center justify-center gap-2 group"
+        >
+          <span class="material-symbols-outlined group-hover:scale-110 transition-transform">check</span>
+          Sim, adicionar à fila
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
@@ -19,8 +60,9 @@
         const pacienteId = '<%= paciente.idPaciente %>';
 
         btnSim.addEventListener('click', () => {
-            // Disable buttons to prevent multiple clicks
+            // Desativa os botões para evitar múltiplos cliques
             btnSim.disabled = true;
+            btnSim.classList.add('opacity-50', 'cursor-not-allowed');
             btnNao.disabled = true;
             
             fetch(`/pacientes/${pacienteId}/adicionar-fila`, {
@@ -33,7 +75,6 @@
                 if (!response.ok) {
                     throw new Error('A resposta do servidor não foi OK');
                 }
-                // Check if the response is JSON, otherwise treat as empty
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     return response.json();
@@ -42,17 +83,21 @@
                 }
             })
             .then(data => {
-                // The flash message should be set by the server on the PUT request
-                // and will be displayed on the redirected page.
+                // Redireciona para a página inicial (dashboard) onde a mensagem de sucesso será exibida
                 window.location.href = '/';
             })
             .catch(error => {
                 console.error('Erro ao adicionar paciente à fila:', error);
-                // Re-enable buttons if there was an error
+                // Reativa os botões em caso de erro
                 btnSim.disabled = false;
+                btnSim.classList.remove('opacity-50', 'cursor-not-allowed');
                 btnNao.disabled = false;
-                // Show error in footer
-                if (window.showMessage) showMessage('error','Ocorreu um erro ao adicionar o paciente à fila. Tente novamente.');
+                // Exibe erro se a função global de mensagens estiver disponível
+                if (window.showMessage) {
+                    showMessage('error','Ocorreu um erro ao adicionar o paciente à fila. Tente novamente.');
+                } else {
+                    alert('Erro ao adicionar paciente à fila.');
+                }
             });
         });
 
@@ -61,4 +106,3 @@
         });
     });
 </script>
-

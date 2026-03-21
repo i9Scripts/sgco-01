@@ -1,47 +1,111 @@
-<div>
-  <!-- Formulário de busca -->
-  <form action="/diagnosticos/search" method="get" class="mb-3">
-    <div class="input-group">
-      <input type="text" name="query" class="form-control" placeholder="Buscar por nome do paciente" />
-      <button class="btn btn-secondary" type="submit">Buscar</button>
+<div class="max-w-6xl mx-auto space-y-6">
+  <!-- Cabeçalho e Busca -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex-1 max-w-2xl">
+      <form action="/diagnosticos/search" method="get" class="relative group">
+        <input
+          type="text"
+          name="query"
+          placeholder="Buscar por nome do paciente..."
+          class="w-full h-12 pl-12 pr-4 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all shadow-sm"
+        />
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-clinic-500 transition-colors">
+          search
+        </span>
+        <button type="submit" class="hidden">Buscar</button>
+      </form>
     </div>
-  </form>
-  <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Nº da Ficha</th>
-        <th>Paciente</th>
-        <th>Profissional</th>
-        <th>Observações</th>
-        <th>Ações</th> 
-      </tr>
-    </thead>
-    <tbody>
-      <% if (diagnosticos && diagnosticos.length > 0) { %>
-        <% diagnosticos.forEach(diagnostico => { %>
-        <tr>
-          <td><%= diagnostico.paciente.nFicha %></td>
-          <td><%= diagnostico.paciente.nome %></td>
-          <td><%= diagnostico.profissional.nome %></td>
-          <td class="col-descricao"><%= diagnostico.minhasOBS %></td>
-          <td>
-            <a href="/diagnosticos/new?idPaciente=<%= (diagnostico.paciente && diagnostico.paciente.idPaciente) ? diagnostico.paciente.idPaciente : diagnostico.pacienteId %>" class="btn btn-round btn-primary" title="Outra Receita">
-              <i class="bi bi-prescription2"></i> 
-            </a>
-            <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>" class="btn btn-round btn-info" title="Ver Receita"><span class="material-symbols-outlined icon-btn">visibility</span></a>
-            <a href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit" class="btn btn-round btn-warning" title="Editar diagnostico"><span class="material-symbols-outlined icon-btn">edit</span></a>
-            <!-- <form action="/diagnosticos/<%= diagnostico.idDiagnostico %>?_method=DELETE" method="post" style="display:inline;">
-              <button type="submit" class="btn btn-round btn-danger" onclick="return confirm('Tem certeza que deseja excluir este diagnóstico?')" title="Excluir Diagnostico"><span class="material-symbols-outlined icon-btn">delete</span></button>
-            </form> -->
-          </td>
-        </tr>
-        <% }) %>
-      <% } else { %>
-        <tr>
-          <td colspan="4" class="text-center">Nenhum diagnóstico encontrado.</td>
-        </tr>
-      <% } %>
-    </tbody>
-  </table>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="/profissionais/dashboard"
+        class="h-12 px-6 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all flex items-center justify-center whitespace-nowrap"
+      >
+        <span class="material-symbols-outlined mr-2">dashboard</span>
+        Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Lista de Diagnósticos -->
+  <div class="bg-white/80 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <% if (diagnosticos && diagnosticos.length > 0) { %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Ficha</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Paciente</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Profissional</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Observações</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <% diagnosticos.forEach(diagnostico => { %>
+          <tr class="hover:bg-slate-50/50 transition-colors">
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-slate-100 text-slate-600 border border-slate-200">
+                <%= diagnostico.paciente.nFicha %>
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm font-bold text-slate-800"><%= diagnostico.paciente.nome %></p>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm text-slate-600 font-medium"><%= diagnostico.profissional.nome %></p>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm text-slate-500 truncate max-w-xs"><%= diagnostico.minhasOBS || '---' %></p>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <!-- Nova Receita -->
+                <a
+                  href="/diagnosticos/new?idPaciente=<%= (diagnostico.paciente && diagnostico.paciente.idPaciente) ? diagnostico.paciente.idPaciente : diagnostico.pacienteId %>"
+                  class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                  title="Outra Receita"
+                >
+                  <i class="bi bi-prescription2 text-[20px]"></i>
+                </a>
+                <!-- Visualizar -->
+                <a
+                  href="/diagnosticos/<%= diagnostico.idDiagnostico %>"
+                  class="p-2 text-clinic-600 hover:bg-clinic-50 rounded-lg transition-all"
+                  title="Ver Receita"
+                >
+                  <span class="material-symbols-outlined text-[20px]">visibility</span>
+                </a>
+                <!-- Editar -->
+                <a
+                  href="/diagnosticos/<%= diagnostico.idDiagnostico %>/edit"
+                  class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                  title="Editar Diagnóstico"
+                >
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <% } else { %>
+    <div class="p-12 text-center">
+      <div class="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-3xl text-slate-300">description</span>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800">Nenhum diagnóstico encontrado</h3>
+      <p class="text-slate-500 text-sm mb-6">Tente ajustar sua busca ou inicie um novo atendimento.</p>
+      <a
+        href="/profissionais/dashboard"
+        class="inline-flex items-center px-6 py-2.5 bg-clinic-500 text-white rounded-xl font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all"
+      >
+        <span class="material-symbols-outlined mr-2">play_arrow</span>
+        Ir para Atendimentos
+      </a>
+    </div>
+    <% } %>
+  </div>
 </div>
