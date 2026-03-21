@@ -46,7 +46,7 @@
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div class="relative">
-            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avFinalOD" name="avFinalOD" placeholder="AV Final OD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" maxlength="8" />
+            <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avFinalOD" name="avFinalOD" placeholder="AV Final OD" value="<%= diagnostico ? diagnostico.avFinalOD : '' %>" autofocus maxlength="8" />
             <label for="avFinalOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">AV Final OD</label>
           </div>
           <div class="relative">
@@ -100,7 +100,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="relative">
-            <textarea class="peer w-full min-h-[120px] p-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="descricao" name="descricao" placeholder="Observação da Receita" maxlength="200" required><%= diagnostico ? diagnostico.descricao : '' %></textarea>
+            <textarea class="peer w-full min-h-[120px] p-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="descricao" name="descricao" placeholder="Observação da Receita" maxlength="200"><%= diagnostico ? diagnostico.descricao : '' %></textarea>
             <label for="descricao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Observação que vai aparecer na receita</label>
           </div>
           <div class="relative">

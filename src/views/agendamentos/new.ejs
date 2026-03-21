@@ -1,96 +1,96 @@
-<form action="/agendamentos" method="POST">
+<form action="/agendamentos" method="POST" class="space-y-6 p-2">
+  <div class="bg-medical-navy/70 rounded-xl p-3 border border-slate-100 mb-6">
+    <div class="flex items-center space-x-3 mb-4">
+      <input type="checkbox" class="w-4 h-4 text-clinic-600 rounded focus:ring-clinic-500 border-slate-300 transition-all" id="pacienteNaoCadastrado" name="pacienteNaoCadastrado" <%= (locals.formData && formData.nome) ? 'checked' : '' %>>
+      <label class="text-sm text-white/70 font-semibold text-slate-700 select-none cursor-pointer" for="pacienteNaoCadastrado">Paciente não cadastrado</label>
+    </div> 
 
-  <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="pacienteNaoCadastrado" <%= formData.nome ? 'checked' : '' %>>
-    <label class="form-check-label" for="pacienteNaoCadastrado">Paciente não cadastrado</label>
-  </div> 
+    <!-- Div para paciente JÁ CADASTRADO -->
+    <div id="divPacienteCadastrado" class="space-y-1">
+      <label for="pacienteId" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Selecionar Paciente</label>
+      <select class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="pacienteId" name="pacienteId">
+        <option value="" disabled selected>Selecione um paciente</option>
+        <% pacientes.forEach(paciente => { %>
+          <option value="<%= paciente.idPaciente %>" <%= (locals.formData && formData.pacienteId == paciente.idPaciente) ? 'selected' : '' %>><%= paciente.nome %></option>
+        <% }); %>
+      </select>
+    </div>
 
-  <div class="mb-3" id="divPacienteCadastrado">
-    <label for="pacienteId" class="form-label">Paciente</label>
-    <select class="form-select" id="pacienteId" name="pacienteId" <%= formData.nome ? 'disabled' : '' %> >
-      <option value="" disabled <%= !formData.pacienteId ? 'selected' : '' %>>Selecione um paciente</option>
-      <% pacientes.forEach(paciente => { %>
-        <option value="<%= paciente.idPaciente %>" <%= formData.pacienteId == paciente.idPaciente ? 'selected' : '' %>><%= paciente.nome %></option>
-      <% }); %>
-    </select>
+    <!-- Div para paciente NÃO CADASTRADO -->
+    <div id="divNomePacienteNaoCadastrado" class="space-y-1 mt-4" style="display: none;">
+      <label for="nome" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Nome Completo</label>
+      <input type="text" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="nome" name="nome" value="<%= (locals.formData && formData.nome) || '' %>" placeholder="Digite o nome do paciente">
+    </div>
   </div>
 
-  <div class="mb-3" id="nomePacienteNaoCadastrado" <%= formData.nome ? 'display: block;' : 'display: none;' %>">
-    <label for="nome" class="form-label">Nome do Paciente</label>
-    <input type="text" class="form-control" id="nome" name="nome" value="<%= formData.nome || '' %>" <%= formData.nome ? 'required' : '' %>>
-  </div>
-
-  <div class="mb-3">
-    <label for="parceiroId" class="form-label">Convênio / Parceiro</label>
-    <select class="form-select" id="parceiroId" name="parceiroId">
-      <option value="" <%= !formData.parceiroId ? 'selected' : '' %>>Particular</option>
+  <div class="bg-medical-navy/70 rounded-xl p-3 space-y-1">
+    <label for="parceiroId" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Convênio / Parceiro</label>
+    <select class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="parceiroId" name="parceiroId">
+      <option value="">Particular (Sem convênio)</option>
       <% parceiros.forEach(parceiro => { %>
-        <option value="<%= parceiro.idParceiro %>" <%= formData.parceiroId == parceiro.idParceiro ? 'selected' : '' %>><%= parceiro.nome %></option>
+        <option value="<%= parceiro.idParceiro %>" <%= (locals.formData && formData.parceiroId == parceiro.idParceiro) ? 'selected' : '' %>><%= parceiro.nome %></option>
       <% }); %>
     </select>
   </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <label for="data" class="form-label">Data</label>
-      <input type="date" class="form-control" id="data" name="data" value="<%= formData.data || '' %>" required />
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-medical-navy/70 rounded-xl p-3">
+    <div class="space-y-1">
+      <label for="data" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Data</label>
+      <input type="date" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="data" name="data" value="<%= (locals.formData && formData.data) || '' %>" required />
     </div>
-    <div class="col-md-6 mb-3">
-      <label for="hora" class="form-label">Hora</label>
-      <input type="time" class="form-control" id="hora" name="hora" value="<%= formData.hora || '' %>" required />
+    <div class="space-y-1">
+      <label for="hora" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Hora</label>
+      <input type="time" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="hora" name="hora" value="<%= (locals.formData && formData.hora) || '' %>" required />
     </div>
   </div>
 
-  <div class="mb-3">
-    <label for="observacao" class="form-label">Observação</label>
-    <textarea class="form-control" id="observacao" name="observacao" rows="3"><%= formData.observacao || '' %></textarea>
+  <div class="bg-medical-navy/70 rounded-xl p-3 space-y-1">
+    <label for="observacao" class="text-xs text-white/70 font-bold text-slate-500 uppercase tracking-wider">Observação</label>
+    <textarea class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-clinic-500 focus:border-transparent transition-all" id="observacao" name="observacao" rows="3" placeholder="Informações adicionais..."><%= (locals.formData && formData.observacao) || '' %></textarea>
   </div>
 
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-      Fechar
+  <div class="flex justify-end items-center space-x-3 pt-6 border-t border-slate-100 bg-medical-navy/70 rounded-xl p-3">
+    <button type="button" class="px-6 py-2.5 text-sm text-white/70 font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all" data-bs-dismiss="modal">
+      Cancelar
     </button>
-    <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+    <button type="submit" class="px-6 py-2.5 bg-clinic-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-clinic-600/20 hover:scale-105 active:scale-95 transition-all">
+      Salvar Agendamento
+    </button>
   </div>
 </form>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const pacienteNaoCadastradoCheckbox = document.getElementById('pacienteNaoCadastrado');
-    const divPacienteCadastrado = document.getElementById('divPacienteCadastrado');
-    const pacienteIdSelect = document.getElementById('pacienteId');
-    const nomePacienteNaoCadastradoDiv = document.getElementById('nomePacienteNaoCadastrado');
-    const nomeInput = document.getElementById('nome');
+  // Usando um escopo imediato para evitar conflitos, mas garantindo que o DOM está pronto para o modal
+  (function () {
+    const checkbox = document.getElementById('pacienteNaoCadastrado');
+    const divCadastrado = document.getElementById('divPacienteCadastrado');
+    const divNaoCadastrado = document.getElementById('divNomePacienteNaoCadastrado');
+    const selectPaciente = document.getElementById('pacienteId');
+    const inputNome = document.getElementById('nome');
 
-    // Initial state based on formData
-    if (pacienteNaoCadastradoCheckbox.checked) {
-      divPacienteCadastrado.style.display = 'none';
-      pacienteIdSelect.disabled = true;
-      pacienteIdSelect.required = false;
-      nomePacienteNaoCadastradoDiv.style.display = 'block';
-      nomeInput.required = true;
-    } else {
-      divPacienteCadastrado.style.display = 'block';
-      pacienteIdSelect.disabled = false;
-      pacienteIdSelect.required = true;
-      nomePacienteNaoCadastradoDiv.style.display = 'none';
-      nomeInput.required = false;
+    if (!checkbox) return;
+
+    function alternarCampos() {
+      if (checkbox.checked) {
+        divCadastrado.style.display = 'none';
+        divNaoCadastrado.style.display = 'block';
+        selectPaciente.required = false;
+        inputNome.required = true;
+        // Limpar seleção do paciente se estiver marcando como não cadastrado
+        selectPaciente.value = "";
+      } else {
+        divCadastrado.style.display = 'block';
+        divNaoCadastrado.style.display = 'none';
+        selectPaciente.required = true;
+        inputNome.required = false;
+        // Limpar nome se estiver voltando para paciente cadastrado
+        inputNome.value = "";
+      }
     }
 
-    pacienteNaoCadastradoCheckbox.addEventListener('change', function () {
-      if (this.checked) {
-        divPacienteCadastrado.style.display = 'none';
-        pacienteIdSelect.disabled = true;
-        pacienteIdSelect.required = false;
-        nomePacienteNaoCadastradoDiv.style.display = 'block';
-        nomeInput.required = true;
-      } else {
-        divPacienteCadastrado.style.display = 'block';
-        pacienteIdSelect.disabled = false;
-        pacienteIdSelect.required = true;
-        nomePacienteNaoCadastradoDiv.style.display = 'none';
-        nomeInput.required = false;
-      }
-    });
-  });
+    checkbox.addEventListener('change', alternarCampos);
+    
+    // Estado inicial
+    alternarCampos();
+  })();
 </script>

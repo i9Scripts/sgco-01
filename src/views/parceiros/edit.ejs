@@ -1,35 +1,100 @@
-<form action="/parceiros/<%= parceiro.idParceiro %>?_method=PUT" method="post">
-  <div class="row form-group">
-    <div class="col-md-6 mb-3">
-      <input type="text" id="nome" name="nome" class="form-control" value="<%= parceiro.nome %>" autofocus tabindex="1" maxlength="60" required />
-      <label for="nome">Nome</label>
-    </div>
-    <div class="col-md-4 mb-3">
-      <input type="text" id="telefone" name="telefone" class="form-control" value="<%= parceiro.telefone %>" tabindex="2" maxlength="15" required />
-      <label for="telefone">Telefone</label>
-    </div>
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <form class="p-6 sm:p-8 space-y-8" action="/parceiros/<%= parceiro.idParceiro %>?_method=PUT" method="post">
+      
+      <div class="space-y-6">
+        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span class="material-symbols-outlined text-clinic-600">edit</span>
+          Editar Parceiro
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-8 relative">
+            <input 
+              type="text" 
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="nome" 
+              name="nome" 
+              value="<%= parceiro.nome %>" 
+              placeholder="Nome do Parceiro"
+              autofocus 
+              required 
+              maxlength="60" 
+            />
+            <label for="nome" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Nome do Parceiro
+            </label>
+          </div>
+          <div class="md:col-span-4 relative">
+            <input 
+              type="text" 
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="telefone" 
+              name="telefone" 
+              value="<%= parceiro.telefone %>" 
+              placeholder="Telefone"
+              required 
+              maxlength="15" 
+            />
+            <label for="telefone" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Telefone
+            </label>
+          </div>
+        </div>
+
+        <div class="relative">
+          <input 
+            type="text" 
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+            id="endereco" 
+            name="endereco" 
+            value="<%= parceiro.endereco %>" 
+            placeholder="Endereço"
+            maxlength="60" 
+          />
+          <label for="endereco" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+            Endereço
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="relative">
+            <input 
+              type="text" 
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="contato" 
+              name="contato" 
+              value="<%= parceiro.contato %>" 
+              placeholder="Pessoa de Contato"
+              maxlength="30" 
+            />
+            <label for="contato" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Pessoa de Contato
+            </label>
+          </div>
+          <div class="relative">
+            <input 
+              type="number" 
+              step="0.01" 
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="credito" 
+              name="credito" 
+              value="<%= parceiro.credito %>" 
+              placeholder="Crédito"
+            />
+            <label for="credito" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Crédito
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 flex justify-end">
+        <button class="px-8 py-3 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all flex items-center gap-2" type="submit">
+          <span class="material-symbols-outlined">save</span> 
+          Salvar Alterações
+        </button>
+      </div>
+    </form>
   </div>
-    
-  <div class="form-group">
-    <div class="col-md-10 mb-3">
-      <input type="text" id="endereco" name="endereco" class="form-control" value="<%= parceiro.endereco %>" tabindex="3" maxlength="60" />
-      <label for="endereco">Endereço</label>
-    </div>
-  </div>
-  <div class="row form-group">
-    <div class="col-md-5 mb-3">
-      <input type="text" id="contato" name="contato" class="form-control" value="<%= parceiro.contato %>" tabindex="4" maxlength="30" />
-      <label for="contato">Contato</label>
-    </div>
-    <div class="col-md-5 mb-3">
-      <input type="number" id="credito" name="credito" class="form-control" step="0.01" value="<%= parceiro.credito %>" tabindex="5" />
-      <label for="credito">Crédito</label>
-    </div>
-  </div>
-  
-  <div class="fixed-buttons">
-    <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar alterações">
-      <span class="material-symbols-outlined icon-btn">save</span> Salvar
-    </button>
-  </div>
-</form>
+</div>

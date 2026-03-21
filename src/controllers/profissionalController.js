@@ -220,45 +220,6 @@ export const profissionalController = {
     }
   },
 
-  // // Atender paciente (remover da fila e redirecionar)
-  // async atenderPaciente(req, res) {
-  //   const { idPaciente } = req.params;
-  //   const idConsultorio = req.session.idConsultorio;
-
-  //   try {
-  //     if (!idConsultorio) {
-  //       req.flash('error', 'Nenhum consultório selecionado.');
-  //       return res.redirect('/consultorios/new');
-  //     }
-
-  //     const paciente = await prisma.paciente.findFirst({
-  //       where: {
-  //         idPaciente: parseInt(idPaciente),
-  //         consultorioId: idConsultorio,
-  //       },
-  //     });
-
-  //     if (!paciente) {
-  //       req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
-  //       return res.redirect('/profissionais/dashboard');
-  //     }
-
-  //     await prisma.paciente.update({
-  //       where: { idPaciente: parseInt(idPaciente) },
-  //       data: { naFila: false }, // Remove o paciente da fila
-  //     });
-
-  //     req.flash('success', `Paciente ${paciente.nome} removido da fila. Prossiga com o atendimento.`);
-  //     // Redireciona para o perfil do paciente ou para a anamnese
-  //     return res.redirect(`/pacientes/${paciente.idPaciente}`);
-  //   } catch (error) {
-  //     console.error('Erro ao atender paciente:', error);
-  //     req.flash('error', 'Erro ao processar atendimento do paciente. Tente novamente.');
-  //     return res.redirect('/profissionais/dashboard');
-  //   }
-  // },
-
-  // Dashboard do profissional: acessa CRUD e visualiza fila
   async dashboard(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
@@ -267,15 +228,53 @@ export const profissionalController = {
         return res.redirect('/consultorios/new');
       }
 
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      const amanha = new Date(hoje);
+      amanha.setDate(amanha.getDate() + 1);
+
+      // Buscar agendamentos de hoje
+      const agendamentosHoje = await prisma.agendamento.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          dataHora: {
+            gte: hoje,
+            lt: amanha,
+          },
+        },
+        include: {
+          paciente: true,
+        },
+        orderBy: {
+          dataHora: 'asc',
+        },
+      });
+
+      // Buscar atendimentos realizados hoje (Consultas finalizadas)
+      const atendimentosHoje = await prisma.consulta.count({
+        where: {
+          consultorioId: idConsultorio,
+          createdAt: {
+            gte: hoje,
+            lt: amanha,
+          },
+          statusConsulta: 'Finalizada',
+        },
+      });
+
       // pacientesNaFila e pacientesReservados são carregados pelo middleware `carregarFilaDeEspera`
       const pacientesNaFila = res.locals.pacientesNaFila || [];
       const pacientesReservados = res.locals.pacientesReservados || [];
 
       return res.render('profissionais/dashboard', {
-        pageTitle: 'Profissional',
-        pageIcon: 'ri-dashboard-line',
+        pageTitle: 'Painel do Profissional',
+        pageIcon: 'material-symbols-outlined',
+        iconName: 'health_and_safety',
         pacientesNaFila,
         pacientesReservados,
+        agendamentosHoje,
+        atendimentosHoje,
+        usuario: req.session.usuario,
       });
     } catch (error) {
       console.error('Erro ao abrir dashboard do profissional:', error);

@@ -3,7 +3,7 @@
     <!-- Modern Header -->
     <header class="bg-medical-navy h-16 border-b flex items-center justify-between px-8 shadow-sm">
         <div class="flex items-center space-x-4">
-            <i class="<%= pageIcon %> text-white text-clinic-600 text-xl"></i>
+            <i class="<%= pageIcon %> text-white text-clinic-600 text-xl"><%= locals.iconName ? iconName : '' %></i>
             <h1 class="text-white font-semibold text-lg flex items-center"><%= pageTitle %></h1>
         </div>
         

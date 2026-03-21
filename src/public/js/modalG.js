@@ -1,138 +1,129 @@
 /**
- * Creates and displays a generic, dynamic Bootstrap 5 modal.
- *
- * @param {object} options - The options for the modal.
- * @param {string} options.title - The title of the modal.
- * @param {string} options.body - The HTML content for the modal body.
- * @param {string} [options.footer] - The HTML content for the modal footer. If not provided, a default close button will be used.
- * @param {string} [options.size] - The size of the modal (e.g., 'modal-sm', 'modal-lg', 'modal-xl'). Defaults to standard size.
+ * Cria e exibe um modal dinâmico do Bootstrap 5.
  */
 function showModal({ title, body, footer, size = '' }) {
-  // Remove any existing modals to avoid conflicts
   const existingModal = document.getElementById('dynamicModal');
   if (existingModal) {
     existingModal.remove();
   }
 
-  // Create modal element
   const modalElement = document.createElement('div');
-  modalElement.classList.add('modal', 'fade');
+  modalElement.className = 'modal fade';
   modalElement.id = 'dynamicModal';
   modalElement.tabIndex = -1;
-  modalElement.setAttribute('aria-labelledby', 'dynamicModalLabel');
   modalElement.setAttribute('aria-hidden', 'true');
 
-  // Define default footer if not provided
-  const modalFooter =
-    footer || '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>';
+  const modalFooter = footer || '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>';
 
   modalElement.innerHTML = `
-        <div class="modal-dialog ${size}">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dynamicModalLabel">${title}</h5>
+        <div class="modal-dialog ${size} modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-3">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title font-weight-bold text-primary" id="dynamicModalLabel">${title}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body py-4">
                     ${body}
                 </div>
-                <div class="modal-footer">
-                    ${modalFooter}
-                </div>
+                ${footer !== '' ? `<div class="modal-footer border-top-0 pt-0">${modalFooter}</div>` : ''}
             </div>
         </div>
     `;
 
-  // Append to body and show
   document.body.appendChild(modalElement);
   const modal = new bootstrap.Modal(modalElement);
 
-  // Clean up after the modal is hidden
   modalElement.addEventListener('hidden.bs.modal', function () {
     modalElement.remove();
   });
 
   modal.show();
+  return modal;
 }
 
 /**
- * Legacy function to open a modal by fetching content from a URL.
- * It now uses the new showModal function internally.
- *
- * @param {string} url - The URL to fetch the modal content from.
- * @param {string} titulo - The title for the modal.
+ * Abre o modal buscando conteúdo de uma URL, removendo layouts se necessário.
  */
-function abrirModalGenerico(url, titulo) {
+function abrirModalGenerico(url, titulo, tamanho = 'modal-lg') {
   showModal({
     title: titulo,
-    body: '<p>Carregando...</p>',
-    footer: '', // No footer until content is loaded
+    body: `
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2 text-muted">Carregando formulário...</p>
+      </div>
+    `,
+    footer: '',
+    size: tamanho
   });
 
   const modalBody = document.querySelector('#dynamicModal .modal-body');
 
-  fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Erro ao carregar o conteúdo do modal.');
-      }
+  fetch(url, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao carregar o conteúdo.');
       return response.text();
     })
-    .then((html) => {
-      if (modalBody) {
-        modalBody.innerHTML = html;
+    .then(html => {
+      if (!modalBody) return;
+
+      // Lógica de limpeza: Se vier a página inteira, tenta pegar só o <main> ou <form>
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Procura por elementos de conteúdo principal
+      const content = doc.querySelector('main') || doc.querySelector('form') || doc.body;
+      
+      // Remove elementos indesejados caso tenham vindo no parse
+      const aside = content.querySelector('aside');
+      if (aside) aside.remove();
+      const header = content.querySelector('header');
+      if (header) header.remove();
+
+      modalBody.innerHTML = content.innerHTML;
+      
+      // Inicializa eventos no novo conteúdo (máscaras, etc)
+      if (typeof inicializarEventos === 'function') {
+        inicializarEventos();
       }
-      // Re-initialize any necessary event listeners for the new content
-      inicializarEventos();
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
       if (modalBody) {
-        modalBody.innerHTML = '<p>Erro ao carregar o conteúdo. Tente novamente mais tarde.</p>';
+        modalBody.innerHTML = `
+          <div class="alert alert-danger mb-0">
+            <i class="ri-error-warning-line me-2"></i>
+            Não foi possível carrergar o conteúdo. Por favor, tente novamente.
+          </div>
+        `;
       }
     });
 }
 
+/**
+ * Reinicializa máscaras e eventos (compatível com o novo conteúdo carregado)
+ */
 function inicializarEventos() {
-  // Reaplica máscaras
-  document.querySelectorAll('input[name="dataNasc"]').forEach((campo) => {
-    campo.addEventListener('input', () => {
-      mascaraData(campo);
+    // Máscaras (se as funções existirem no escopo global)
+    const inputs = {
+        'dataNasc': typeof mascaraData === 'function' ? mascaraData : null,
+        'cpf': typeof mascaraCpf === 'function' ? mascaraCpf : null,
+        'celular': typeof mascaraCelular === 'function' ? mascaraCelular : null,
+        'cep': typeof mascaraCep === 'function' ? mascaraCep : null
+    };
+
+    Object.keys(inputs).forEach(name => {
+        const func = inputs[name];
+        if (func) {
+            document.querySelectorAll(`input[name="${name}"], input[id="${name}"]`).forEach(input => {
+                input.addEventListener('input', () => func(input));
+            });
+        }
     });
-  });
-
-  document.querySelectorAll('input[name="cpf"]').forEach((campo) => {
-    campo.addEventListener('input', () => {
-      mascaraCpf(campo);
-    });
-  });
-
-  document.querySelectorAll('input[name="celular"]').forEach((campo) => {
-    campo.addEventListener('input', () => {
-      mascaraCelular(campo);
-    });
-  });
-
-  // Outros eventos podem ser adicionados aqui
-}
-
-// The old fecharModalGenerico is no longer needed as Bootstrap's own dismiss functionality is used.
-// You can remove it if it's not being called directly from anywhere else.
-function fecharModalGenerico() {
-  const modal = document.getElementById('modalGenerico');
-  modal.style.display = 'none';
-  // Fecha o modal ao clicar fora dele
-  window.onclick = function (event) {
-    const modal = document.getElementById('modalGenerico');
-    if (event.target === modal) {
-      fecharModalGenerico();
-    }
-  };
-
-  // Fecha o modal ao pressionar a tecla "Escape"
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') {
-      fecharModalGenerico();
-    }
-  });
 }

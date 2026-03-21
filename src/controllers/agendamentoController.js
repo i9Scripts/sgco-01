@@ -10,6 +10,11 @@ export const agendamentoController = {
         return res.redirect('/consultorios/selecionar');
       }
 
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      const amanha = new Date(hoje);
+      amanha.setDate(amanha.getDate() + 1);
+
       const agendamentos = await prisma.agendamento.findMany({
         where: {
           consultorioId: idConsultorio,
@@ -22,10 +27,32 @@ export const agendamentoController = {
           dataHora: 'asc',
         },
       });
+
+      const totalAgendamentos = await prisma.agendamento.count({
+        where: { consultorioId: idConsultorio }
+      });
+
+      const consultasRealizadas = await prisma.consulta.count({
+        where: {
+          consultorioId: idConsultorio,
+          statusConsulta: 'Finalizada'
+        }
+      });
+
+      const profissionais = await prisma.profissional.findMany({
+        where: { consultorioId: idConsultorio },
+        take: 5
+      });
+
       res.render('agendamentos/index', {
-        pageTitle: 'Agenda de Atendimentos',
-        pageIcon: 'bi bi-calendar-event',
+        pageTitle: 'Gestão de Consultas',
+        pageIcon: 'material-symbols-outlined',
+        iconName: 'calendar_month',
         agendamentos,
+        totalAgendamentos,
+        consultasRealizadas,
+        profissionais,
+        hoje: new Date()
       });
     } catch (error) {
       console.error(error);

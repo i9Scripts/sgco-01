@@ -1,58 +1,223 @@
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 bg-white/80 p-6 rounded-[1.5rem]">
+    <div>
+        <h2 class="font-headline text-3xl font-extrabold text-medical-navy tracking-tight">Gestão de Consultas</h2>
+        <p class="text-slate-500 mt-1 font-body">Visualize e organize a agenda clínica em tempo real.</p>
+    </div>
 
-    <button
-      class="btn btn-primary"
-      onclick="abrirModalGenerico('/agendamentos/new', 'Novo Agendamento')"
-    >
-      <i class="ri-add-line"></i> Novo Agendamento
-    </button>
-  </div>
- 
-  <% if (agendamentos && agendamentos.length > 0) { %>
-  <!-- Tabela -->
-  <div class="table-responsive">
-    <table class="table table-hover table-striped">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Horário</th>
-          <th>Nome do Paciente</th>
-          <th>Convênio</th>
-          <th>Observações</th>
-          <th>Status</th> 
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% agendamentos.forEach(agendamento => { %>
-          <tr>
-            <td><small><%= new Date(agendamento.dataHora).toLocaleDateString('pt-BR', {weekday: 'long', day:
-              '2-digit', month: 'long'}) %></small></td>
-            <td><strong><%= new Date(agendamento.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></strong></td>
-            <td><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></td>
-            <td><%= agendamento.parceiro ? agendamento.parceiro.nome : 'Particular' %></td>
-            <td><%= agendamento.observacao || 'N/A' %></td>
-            <td><%= agendamento.status %></td> 
-            <td>
-              <button class="btn btn-sm btn-warning" title="Editar Agendamento" onclick="abrirModalGenerico('/agendamentos/<%= agendamento.id %>/edit', 'Editar Agendamento')">
-                <span class="material-symbols-outlined icon-btn">edit</span>
-              </button>
-              <form action="/agendamentos/<%= agendamento.id %>?_method=DELETE" method="post" class="d-inline" title="Excluir Agendamento">
-                <button type="submit" class="btn btn-round btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
-                  <span class="material-symbols-outlined icon-btn">delete</span>
-                </button>
-              </form>
-            </td>
-          </tr>
-        <% }); %>
-      </tbody>
-    </table>
-  </div>
-  <% } else { %>
-  <div class="alert alert-info">Nenhum agendamento encontrado.</div>
-  <% } %>
+        <a href="/agendamentos/new" class="flex items-center space-x-2 bg-clinic-500 text-white font-bold px-6 py-4 rounded-2xl shadow-xl shadow-clinic-500/30 hover:shadow-2xl transition-all active:scale-95">
+            <span class="material-symbols-outlined">add_circle</span>
+            <span>Novo Agendamento</span>
+        </a>
 </div>
 
+<!-- Stats Summary Bar (Bento Pattern) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-[1.5rem] flex items-center justify-between shadow-sm border border-slate-100">
+        <div>
+            <p class="text-slate-500 font-semibold uppercase tracking-wider text-[11px] mb-1">Total de Agendamentos</p>
+            <h3 class="font-headline text-3xl font-bold text-medical-navy"><%= totalAgendamentos %></h3>
+        </div>
+        <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-600">
+            <span class="material-symbols-outlined text-3xl">event_note</span>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[1.5rem] flex items-center justify-between shadow-sm border border-slate-100">
+        <div>
+            <p class="text-slate-500 font-semibold uppercase tracking-wider text-[11px] mb-1">Consultas Realizadas</p>
+            <h3 class="font-headline text-3xl font-bold text-medical-navy"><%= consultasRealizadas %></h3>
+        </div>
+        <div class="w-14 h-14 bg-clinic-100 rounded-2xl flex items-center justify-center text-clinic-600">
+            <span class="material-symbols-outlined text-3xl">task_alt</span>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[1.5rem] flex items-center justify-between shadow-sm border border-slate-100">
+        <div>
+            <p class="text-slate-500 font-semibold uppercase tracking-wider text-[11px] mb-1">Agendados Hoje</p>
+            <div class="flex items-baseline space-x-2">
+                <h3 class="font-headline text-3xl font-bold text-medical-navy">
+                    <%= agendamentos.filter(a => new Date(a.dataHora).toDateString() === hoje.toDateString()).length %>
+                </h3>
+            </div>
+        </div>
+        <div class="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-medical-teal">
+            <span class="material-symbols-outlined text-3xl">analytics</span>
+        </div>
+    </div>
+</div>
 
-<%- include('../partials/_modal') %>
+<!--*** Main Interactive Area ***-->
+<div class="flex flex-col lg:flex-row gap-8">
+    <!-- Left: Calendar Widget & Professionals -->
+    <div class="w-full lg:w-80 shrink-0 space-y-6">
+        <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="font-headline font-bold text-slate-800">
+                    <%= hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) %>
+                </h4>
+                <div class="flex space-x-1">
+                    <button class="p-1.5 hover:bg-slate-200 rounded-lg transition-colors"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+                    <button class="p-1.5 hover:bg-slate-200 rounded-lg transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+                </div>
+            </div>
+            <div class="grid grid-cols-7 gap-y-4 text-center">
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Dom</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Seg</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Ter</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Qua</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Qui</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Sex</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Sáb</span>
+                
+                <!-- Simple Calendar Mockup for current month -->
+                <% 
+                    const firstDay = new Date(hoje.getFullYear(), hoje.getMonth(), 1).getDay();
+                    const lastDate = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+                    for(let i=0; i<firstDay; i++) { %>
+                        <span class="p-2"></span>
+                    <% } 
+                    for(let d=1; d<=lastDate; d++) { 
+                        const isToday = d === hoje.getDate();
+                    %>
+                        <button class="p-2 text-xs font-medium <%= isToday ? 'bg-clinic-500 text-white rounded-xl font-bold shadow-md shadow-clinic-500/30' : 'text-slate-600 hover:bg-slate-200 rounded-xl' %>">
+                            <%= d %>
+                        </button>
+                    <% } %>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-slate-200">
+                <h5 class="text-xs font-bold text-medical-navy uppercase tracking-widest mb-4">Profissionais</h5>
+                <div class="space-y-4">
+                    <% profissionais.forEach(p => { %>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-clinic-100 flex items-center justify-center text-clinic-600 font-bold text-[10px]">
+                                <%= p.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-slate-800"><%= p.nome %></p>
+                                <p class="text-[10px] text-slate-500"><%= p.especialidade %></p>
+                            </div>
+                            <span class="w-2 h-2 bg-clinic-500 rounded-full"></span>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--*** Main Interactive Area FIM ***-->
+    <!-- Right: Appointments List -->
+    <div class="flex-1">
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h3 class="font-headline text-2xl font-extrabold text-medical-navy">Consultas Agendadas</h3>
+                    <p class="text-sm text-slate-500 font-medium">
+                        <%= hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }) %>
+                    </p>
+                </div>
+                <div class="flex bg-slate-100 p-1.5 rounded-2xl">
+                    <button class="px-5 py-2 text-sm font-bold bg-white text-clinic-600 rounded-xl shadow-sm">Lista</button>
+                    <button class="px-5 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Calendário</button>
+                </div>
+            </div>
+
+            <% if (agendamentos && agendamentos.length > 0) { %>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left">
+                                <th class="pb-6 pl-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Horário</th>
+                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Paciente</th>
+                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Convênio</th>
+                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="pb-6 pr-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y-8 divide-white">
+                            <% agendamentos.forEach(agendamento => { 
+                                const dataAgend = new Date(agendamento.dataHora);
+                                const isFinalizado = agendamento.status === 'Finalizada';
+                            %>
+                                <tr class="bg-slate-50 hover:bg-slate-100 transition-colors rounded-3xl overflow-hidden group <%= isFinalizado ? 'opacity-60' : '' %>">
+                                    <td class="py-5 pl-6">
+                                        <div class="flex flex-col">
+                                            <span class="font-headline font-extrabold text-medical-navy">
+                                                <%= dataAgend.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %>
+                                            </span>
+                                            <span class="text-[10px] text-slate-400">
+                                                <%= dataAgend.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) %>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="py-5">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center text-clinic-600 font-bold text-xs">
+                                                <%= (agendamento.paciente ? agendamento.paciente.nome : agendamento.nome).split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
+                                            </div>
+                                            <span class="font-bold text-sm text-slate-800">
+                                                <%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="py-5">
+                                        <span class="text-sm text-slate-600 font-medium">
+                                            <%= agendamento.parceiro ? agendamento.parceiro.nome : 'Particular' %>
+                                        </span>
+                                    </td>
+                                    <td class="py-5">
+                                        <% 
+                                            let statusClass = "bg-slate-200 text-slate-700";
+                                            if (agendamento.status === 'Agendado') statusClass = "bg-clinic-100 text-clinic-700";
+                                            if (agendamento.status === 'Finalizada') statusClass = "bg-teal-100 text-teal-700";
+                                            if (agendamento.status === 'Cancelado') statusClass = "bg-red-100 text-red-700";
+                                        %>
+                                        <span class="<%= statusClass %> px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider">
+                                            <%= agendamento.status %>
+                                        </span>
+                                    </td>
+                                    <td class="py-5 pr-6 text-right">
+                                        <div class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                            <!-- Botão Editar -->
+                                            <button onclick="abrirModalGenerico('/agendamentos/<%= agendamento.id %>/edit', 'Editar Agendamento')" class="p-2 text-slate-400 hover:text-clinic-600 bg-white rounded-lg transition-all shadow-sm" title="Editar Agendamento">
+                                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                                            </button>
+
+                                            <!-- Botão Cancelar (Excluir) -->
+                                            <form action="/agendamentos/<%= agendamento.id %>?_method=DELETE" method="post" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 bg-white rounded-lg transition-all shadow-sm" title="Cancelar Agendamento">
+                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="py-12 text-center">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                        <span class="material-symbols-outlined text-4xl">calendar_today</span>
+                    </div>
+                    <p class="text-slate-500">Nenhum agendamento encontrado.</p>
+                </div>
+            <% } %>
+
+            <!-- Footer Pagination / Actions -->
+            <div class="mt-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-xs font-semibold text-slate-400 tracking-wider uppercase">
+                    Total de <%= agendamentos.length %> agendamentos listados
+                </p>
+                <div class="flex space-x-3">
+                    <button class="px-6 py-2 border border-slate-200 text-slate-600 font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors">Relatórios</button>
+                    <button class="px-6 py-2 bg-medical-navy text-white font-bold text-sm rounded-xl hover:bg-slate-800 transition-all">Exportar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .font-headline { font-family: 'Manrope', sans-serif; }
+</style>

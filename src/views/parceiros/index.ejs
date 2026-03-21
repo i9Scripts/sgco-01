@@ -1,49 +1,81 @@
-<div>
-  <!-- Lista de parceiros -->
-  <% if (parceiros && parceiros.length > 0) { %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% parceiros.forEach(parceiro => { %>
-      <tr>
-        <td><%= parceiro.idParceiro %></td>
-        <td><%= parceiro.nome %></td>
-        <td><%= parceiro.telefone %></td>
-        <td>
-          <!-- Botão para adicionar novo parceiro -->
-          <button class="btn btn-round btn-sm btn-primary btn-hover-outline" onclick="abrirModalGenerico('/parceiros/new', 'Novo Parceiro')" title="Adicionar Novo Parceiro">
-            <span class="material-symbols-outlined icon-btn">person_add</span>
-          </button>
-          <!-- Botão para visualizar parceiro -->
-          <button class="btn btn-round btn-sm btn-info" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>', 'Dados do Parceiro')" title="Ver Parceiro">
-            <span class="material-symbols-outlined icon-btn">visibility</span>
-          </button>
-          <!-- Botão para editar parceiro -->
-          <button class="btn btn-round btn-sm btn-warning" onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>/edit', 'Editar os Dados')" title="Editar Parceiro">
-            <span class="material-symbols-outlined icon-btn">edit</span>
-          </button>
-          <!-- Botão para excluir parceiro -->
-          <form action="/parceiros/<%= parceiro.idParceiro %>?_method=DELETE" method="post" class="d-inline">
-            <button class="btn btn-sm btn-danger" type="submit" title="Excluir Parceiro">
-              <span class="material-symbols-outlined icon-btn">delete</span>
-            </button>
-          </form>
-        </td>
-      </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  <% } else { %>
-  <p class="text-white">Nenhum Parceiro encontrado.</p>
+<div class="max-w-6xl mx-auto space-y-6">
+  <!-- Cabeçalho e Ações -->
+  <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+      <span class="material-symbols-outlined text-clinic-600">handshake</span>
+      Parceiros
+    </h2>
+    <a href="/parceiros/new" class="px-6 py-2.5 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-all flex items-center gap-2 shadow-md shadow-clinic-100">
+      <span class="material-symbols-outlined">person_add</span>
+      Novo Parceiro
+    </a>
+  </div>
 
-  <% } %>
+  <!-- Lista de parceiros -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <% if (parceiros && parceiros.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nome</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Telefone</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% parceiros.forEach(parceiro => { %>
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-6 py-4 text-sm font-medium text-slate-600">#<%= parceiro.idParceiro %></td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-xs">
+                      <%= parceiro.nome.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="text-sm font-bold text-slate-800"><%= parceiro.nome %></span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-600">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-slate-400">call</span>
+                    <%= parceiro.telefone %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex justify-end gap-2">
+                    <button onclick="abrirModalGenerico('/parceiros/<%= parceiro.idParceiro %>', 'Dados do Parceiro')" 
+                            class="p-2 text-clinic-600 hover:bg-clinic-50 rounded-lg transition-colors" 
+                            title="Ver Parceiro">
+                      <span class="material-symbols-outlined text-[20px]">visibility</span>
+                    </button>
+                    <a href="/parceiros/<%= parceiro.idParceiro %>/edit" 
+                       class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" 
+                       title="Editar Parceiro">
+                      <span class="material-symbols-outlined text-[20px]">edit</span>
+                    </a>
+                    <form action="/parceiros/<%= parceiro.idParceiro %>?_method=DELETE" method="post" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este parceiro?')">
+                      <button type="submit" class="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Excluir Parceiro">
+                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="p-12 text-center">
+        <span class="material-symbols-outlined text-5xl text-slate-300 mb-4">handshake</span>
+        <p class="text-slate-500 font-medium">Nenhum parceiro encontrado.</p>
+        <a href="/parceiros/new" class="mt-4 inline-flex items-center text-clinic-600 font-bold hover:underline gap-1">
+          <span class="material-symbols-outlined text-sm">add</span>
+          Cadastrar o primeiro parceiro
+        </a>
+      </div>
+    <% } %>
+  </div>
 </div>
-<!-- Modal genérico -->
-<div><%- include('../partials/_modal') %></div>
+<%- include('../partials/_modal') %>

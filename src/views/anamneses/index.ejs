@@ -1,62 +1,83 @@
-<div>
-    <!-- Formulário de busca -->
-  <form action="/anamneses/search" method="get" class="mb-3">
-    <div class="input-group">
-      <input type="text" name="query" class="form-control" placeholder="Buscar por nome do paciente" />
-      <button class="btn btn-secondary" type="submit">Buscar</button>
-    </div>
-  </form>
+<div class="max-w-7xl mx-auto space-y-6">
+  <!-- Formulário de busca -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+    <form action="/anamneses/search" method="get" class="flex flex-col md:flex-row gap-4">
+      <div class="flex-1 relative">
+        <input 
+          type="text" 
+          name="query" 
+          class="w-full h-11 pl-11 pr-4 text-sm font-medium border-2 border-slate-200 rounded-lg focus:border-clinic-500 focus:ring-0 outline-none transition-all" 
+          placeholder="Buscar por nome do paciente..." 
+        />
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400">search</span>
+      </div>
+      <button class="h-11 px-6 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-colors flex items-center justify-center gap-2" type="submit">
+        <span class="material-symbols-outlined">filter_list</span>
+        Buscar
+      </button>
+    </form>
+  </div>
+
   <!-- Lista de anamneses -->
-  <% if (anamneses && anamneses.length > 0) { %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Paciente</th>
-        <th>Último Exame</th>
-        <th>Motivo</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% anamneses.forEach(anamnese => { %>
-      <tr>
-        <td><%= anamnese.idAnam %></td>
-        <td><%= anamnese.dataCreatedAt %></td>
-        <td><%= anamnese.paciente.nome %></td>
-        <td><%= anamnese.ultimoExame || 'Não informado' %></td>
-        <td><%= anamnese.motivo %></td>
-        <td>
-          <!-- Botão para adicionar nova anamnese para o paciente desta anamnese -->
-          <a href="/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>" class="btn btn-round btn-sm btn-success" title="Nova Anamnese">
-            <span class="material-symbols-outlined icon-btn">add</span>
-          </a>
-          <!-- Botão para visualizar anamnese -->
-          <button
-            class="btn btn-round btn-sm btn-info"
-            onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Dados da Anamnese')"
-            title="Ver anamnese"
-          >
-            <span class="material-symbols-outlined icon-btn">visibility</span>
-          </button>
-          <!-- Botão para editar anamnese -->
-          <!-- <button
-            class="btn btn-round btn-sm btn-warning"
-            onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Dados')"
-            title="Editar anamnese"
-          >
-            <span class="material-symbols-outlined icon-btn">edit</span>
-          </button> -->
-          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-round btn-sm btn-warning" title="Editar Anamnese">
-            <span class="material-symbols-outlined icon-btn">edit</span>
-          </a>
-        </td>
-      </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  <% } else { %>
-  <p class="text-white">Nenhuma Anamnese encontrada.</p>
-  <% } %>
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <% if (anamneses && anamneses.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Data</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Paciente</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Último Exame</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Motivo</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% anamneses.forEach(anamnese => { %>
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-6 py-4 text-sm font-medium text-slate-600">#<%= anamnese.idAnam %></td>
+                <td class="px-6 py-4 text-sm text-slate-600"><%= anamnese.dataCreatedAt %></td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-clinic-50 flex items-center justify-center text-clinic-600 font-bold text-xs">
+                      <%= anamnese.paciente.nome.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="text-sm font-bold text-slate-800"><%= anamnese.paciente.nome %></span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-500"><%= anamnese.ultimoExame || 'Não informado' %></td>
+                <td class="px-6 py-4 text-sm text-slate-600 truncate max-w-xs"><%= anamnese.motivo %></td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex justify-end gap-2">
+                    <a href="/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>" 
+                       class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" 
+                       title="Nova Anamnese">
+                      <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    </a>
+                    <button onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Dados da Anamnese')" 
+                            class="p-2 text-clinic-600 hover:bg-clinic-50 rounded-lg transition-colors" 
+                            title="Ver anamnese">
+                      <span class="material-symbols-outlined text-[20px]">visibility</span>
+                    </button>
+                    <a href="/anamneses/<%= anamnese.idAnam %>/edit" 
+                       class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" 
+                       title="Editar Anamnese">
+                      <span class="material-symbols-outlined text-[20px]">edit</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="p-12 text-center">
+        <span class="material-symbols-outlined text-5xl text-slate-300 mb-4">clinical_notes</span>
+        <p class="text-slate-500 font-medium">Nenhuma anamnese encontrada.</p>
+      </div>
+    <% } %>
+  </div>
 </div>
-<div><%- include('../partials/_modal') %></div>
+<%- include('../partials/_modal') %>

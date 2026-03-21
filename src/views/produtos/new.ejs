@@ -1,62 +1,92 @@
-<form action="/produtos" method="post" enctype="multipart/form-data">
-  <div class="row form-group">
-    <div class="col-md-6 mb-3">
-      <input
-        type="text"
-        class="form-control"
-        id="descricao"
-        name="descricao"
-        value="<%= formData && formData.descricao %>"
-        required
-        maxlength="100"
-        autofocus
-      />
-      <label for="descricao">Descrição do Produto/Serviço</label>
-    </div>
-  </div>
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <form class="p-6 sm:p-8 space-y-8" action="/produtos" method="post" enctype="multipart/form-data">
+      
+      <div class="space-y-6">
+        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span class="material-symbols-outlined text-clinic-600">add_shopping_cart</span>
+          Novo Produto
+        </h3>
 
-  <div class="row form-group">
-    <div class="col-md-3 mb-3">
-      <input
-        type="number"
-        class="form-control"
-        id="valor"
-        name="valor"
-        value="<%= formData && formData.valor %>"
-        required
-        step="0.01"
-        min="0"
-      />
-      <label for="valor">Valor (R$)</label>
-    </div>
-    <div class="col-md-3 mb-3">
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade"
-        name="quantidade"
-        value="<%= formData && formData.quantidade %>"
-        required
-        step="1"
-        min="0"
-      />
-      <label for="quantidade">Quantidade em Estoque</label>
-    </div>
-  </div>
+        <div class="relative">
+          <input 
+            type="text" 
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+            id="descricao" 
+            name="descricao" 
+            value="<%= formData && formData.descricao %>" 
+            placeholder="Descrição do Produto"
+            autofocus 
+            required 
+            maxlength="100" 
+          />
+          <label for="descricao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+            Descrição do Produto
+          </label>
+        </div>
 
-  <div class="row form-group">
-    <div class="col-md-6 mb-3">
-      <label for="imagem">Imagem (opcional)</label>
-      <input type="file" class="form-control" id="imagem" name="imagem" accept="image/*" />
-    </div>
-  </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="relative">
+            <input 
+              type="number" 
+              step="0.01" 
+              min="0"
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="valor" 
+              name="valor" 
+              value="<%= formData && formData.valor %>" 
+              placeholder="Valor (R$)"
+              required
+            />
+            <label for="valor" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Valor Unitário (R$)
+            </label>
+          </div>
+          <div class="relative">
+            <input 
+              type="number" 
+              step="1" 
+              min="0"
+              class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" 
+              id="quantidade" 
+              name="quantidade" 
+              value="<%= formData && formData.quantidade %>" 
+              placeholder="Quantidade em Estoque"
+              required
+            />
+            <label for="quantidade" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
+              Quantidade em Estoque
+            </label>
+          </div>
+        </div>
 
-  <div class="fixed-buttons">
-    <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar novo produto">
-      <span class="material-symbols-outlined icon-btn">save</span> Salvar
-    </button>
-    <a href="/produtos" class="btn btn-secondary btn-hover-outline" title="Cancelar e voltar">
-      <span class="material-symbols-outlined icon-btn">cancel</span> Cancelar
-    </a>
+        <div class="space-y-2">
+          <label for="imagem" class="text-xs font-extrabold text-slate-700 uppercase tracking-wider ml-1">Imagem do Produto (opcional)</label>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg hover:border-clinic-400 transition-colors">
+            <div class="space-y-1 text-center">
+              <span class="material-symbols-outlined text-4xl text-slate-400">image</span>
+              <div class="flex text-sm text-slate-600">
+                <label for="imagem" class="relative cursor-pointer bg-white rounded-md font-bold text-clinic-600 hover:text-clinic-500 focus-within:outline-none">
+                  <span>Fazer upload de um arquivo</span>
+                  <input id="imagem" name="imagem" type="file" class="sr-only" accept="image/*">
+                </label>
+              </div>
+              <p class="text-xs text-slate-500">PNG, JPG, GIF até 10MB</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 flex justify-end gap-4">
+        <a href="/produtos" class="px-8 py-3 bg-slate-100 text-slate-700 rounded-lg font-bold hover:bg-slate-200 transition-all flex items-center gap-2">
+          <span class="material-symbols-outlined">cancel</span>
+          Cancelar
+        </a>
+        <button class="px-8 py-3 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all flex items-center gap-2" type="submit">
+          <span class="material-symbols-outlined">save</span> 
+          Salvar Produto
+        </button>
+      </div>
+    </form>
   </div>
-</form>
+</div>

@@ -62,6 +62,14 @@ app.use(flash());
 // Middleware para carregar os dados do consultório na sessão
 app.use(loadConsultorioToSession);
 
+// Middleware para desabilitar layout em requisições AJAX (Modais)
+app.use((req, res, next) => {
+  if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
+    res.locals.layout = false;
+  }
+  next();
+});
+
 // Configuração do mecanismo de visualização EJS
 app.set('view engine', 'ejs');
 app.set('views', join(process.cwd(), 'src/views'));

@@ -1,151 +1,260 @@
-<div>
-  <form class="ajax-remote" action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
-    <input type="hidden" name="idPaciente" value="<%= anamnese.pacienteId %>" />
-    <input type="hidden" name="idConsultorio" value="<%= anamnese.consultorioId %>" />
-    <!-- Resumo do paciente -->
-    <div class="form-group mb-2 alert alert-secondary mb-4">
-      <h5 class="mb-1">
-        <i class="ri-user-line"></i> Paciente selecionado:
-      </h5>
-      <p class="mb-0">
-        <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-        <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
-        <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
-      </p>
-    </div>
+<div class="max-w-6xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <form class="p-6 sm:p-8 space-y-8 ajax-remote" action="/anamneses/<%= anamnese.idAnam %>?_method=PUT" method="post">
+      <input type="hidden" name="idPaciente" value="<%= anamnese.pacienteId %>" />
+      <input type="hidden" name="idConsultorio" value="<%= anamnese.consultorioId %>" />
 
+      <!-- Cabeçalho / Resumo do Paciente -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center space-x-4">
+        <div class="bg-clinic-100 p-3 rounded-full text-clinic-600">
+          <span class="material-symbols-outlined text-3xl">person</span>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Paciente Selecionado</h3>
+          <p class="text-lg font-extrabold text-slate-800">
+            <%= paciente?.nome || 'N/D' %> 
+            <span class="mx-2 text-slate-300">|</span> 
+            <span class="text-slate-600"><%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos</span>
+          </p>
+        </div>
+      </div>
 
-    <!-- Campos do formulário -->
-    <div class="row form-group">
-      <div class="col-md-9 mb-3">
-        <input type="text" class="form-control" id="motivo" name="motivo" value="<%= anamnese.motivo %>" required maxlength="100" />
-        <label id="motivo">Motivo</label>
+      <!-- Motivo e Último Exame -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-9 relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="motivo"
+            name="motivo"
+            value="<%= anamnese.motivo %>"
+            placeholder="Motivo"
+            autofocus
+            required
+            maxlength="100"
+          />
+          <label for="motivo" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Motivo da Consulta
+          </label>
+        </div>
+        <div class="md:col-span-3 relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="ultimoExame"
+            name="ultimoExame"
+            value="<%= anamnese.ultimoExame %>"
+            placeholder="Último Exame"
+            maxlength="20"
+          />
+          <label for="ultimoExame" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Último Exame
+          </label>
+        </div>
       </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="ultimoExame" name="ultimoExame" value="<%= anamnese.ultimoExame %>" maxlength="20" />
-        <label id="ultimoExame">Último Exame</label>
-      </div>
-    </div>
 
-    <div class="row form-group">
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="sintomas" name="sintomas" value="<%= anamnese.sintomas %>" maxlength="50" />
-        <label id="sintomas">Sintomas</label>
+      <!-- Sintomas e Traumas -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-6 relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="sintomas"
+            name="sintomas"
+            value="<%= anamnese.sintomas %>"
+            placeholder="Sintomas"
+            maxlength="50"
+          />
+          <label for="sintomas" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Sintomas
+          </label>
+        </div>
+        <div class="md:col-span-6 relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="trauma"
+            name="trauma"
+            value="<%= anamnese.trauma %>"
+            placeholder="Trauma, Cirurgia ou Doença Ocular"
+            maxlength="50"
+          />
+          <label for="trauma" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Trauma, Cirurgia ou Doença Ocular
+          </label>
+        </div>
       </div>
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="trauma" name="trauma" value="<%= anamnese.trauma %>" maxlength="50" />
-        <label id="trauma">Trauma, Cirurgia ou Doença Ocular</label>
+
+      <!-- Condições Sistêmicas (Selects) -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div class="relative">
+          <select class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-800 outline-none transition-all" id="usuarioOculos" name="usuarioOculos">
+            <option value="true" <%= anamnese.usuarioOculos ? 'selected' : '' %>>Sim</option>
+            <option value="false" <%= !anamnese.usuarioOculos ? 'selected' : '' %>>Não</option>
+          </select>
+          <label for="usuarioOculos" class="absolute left-3 -top-2.5 px-2 bg-white peer-focus:text-xs peer-focus:text-clinic-600 text-xs font-extrabold text-slate-700 rounded-full">
+            Usa Óculos?
+          </label>
+        </div>
+        <div class="relative">
+          <select class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-800 outline-none transition-all" id="usuarioLC" name="usuarioLC">
+            <option value="true" <%= anamnese.usuarioLC ? 'selected' : '' %>>Sim</option>
+            <option value="false" <%= !anamnese.usuarioLC ? 'selected' : '' %>>Não</option>
+          </select>
+          <label for="usuarioLC" class="absolute left-3 -top-2.5 px-2 bg-white  peer-focus:text-xs peer-focus:text-clinic-600 text-xs font-extrabold text-slate-700 rounded-full">
+            Usa LC?
+          </label>
+        </div>
+        <div class="relative">
+          <select class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-800 outline-none transition-all" id="dm" name="dm">
+            <option value="true" <%= anamnese.dm ? 'selected' : '' %>>Sim</option>
+            <option value="false" <%= !anamnese.dm ? 'selected' : '' %>>Não</option>
+          </select>
+          <label for="dm" class="absolute left-3 -top-2.5 px-2 bg-white peer-focus:text-xs peer-focus:text-clinic-600 text-xs font-extrabold text-slate-700 rounded-full">
+            Diabetes?
+          </label>
+        </div>
+        <div class="relative">
+          <select class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-800 outline-none transition-all" id="has" name="has">
+            <option value="true" <%= anamnese.has ? 'selected' : '' %>>Sim</option>
+            <option value="false" <%= !anamnese.has ? 'selected' : '' %>>Não</option>
+          </select>
+          <label for="has" class="absolute left-3 -top-2.5 px-2 bg-white peer-focus:text-xs peer-focus:text-clinic-600 text-xs font-extrabold text-slate-700 rounded-full">
+            Pressão Alta?
+          </label>
+        </div>
+        <div class="relative">
+          <select class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-800 outline-none transition-all" id="glauc" name="glauc">
+            <option value="true" <%= anamnese.glauc ? 'selected' : '' %>>Sim</option>
+            <option value="false" <%= !anamnese.glauc ? 'selected' : '' %>>Não</option>
+          </select>
+          <label for="glauc" class="absolute left-3 -top-2.5 px-2 bg-white peer-focus:text-xs peer-focus:text-clinic-600 text-xs font-extrabold text-slate-700 rounded-full">
+            Glaucoma?
+          </label>
+        </div>
       </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-2 mb-3">
-        <select class="form-control" id="usuarioOculos" name="usuarioOculos">
-          <option value="true" <%= anamnese.usuarioOculos ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.usuarioOculos ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="usuarioOculos">Usa Óculos?</label>
+
+      <!-- Histórico Familiar -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="dmFam"
+            name="dmFam"
+            value="<%= anamnese.dmFam %>"
+            placeholder="Diabetes na Família"
+            maxlength="50"
+          />
+          <label for="dmFam" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Diabetes na Família
+          </label>
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="hasFam"
+            name="hasFam"
+            value="<%= anamnese.hasFam %>"
+            placeholder="Pressão Alta na Família"
+            maxlength="50"
+          />
+          <label for="hasFam" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Pressão Alta na Família
+          </label>
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="glaucFam"
+            name="glaucFam"
+            value="<%= anamnese.glaucFam %>"
+            placeholder="Glaucoma na Família"
+            maxlength="50"
+          />
+          <label for="glaucFam" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Glaucoma na Família
+          </label>
+        </div>
       </div>
-      <div class="col-md-2 mb-3">
-        <select class="form-control" id="usuarioLC" name="usuarioLC">
-          <option value="true" <%= anamnese.usuarioLC ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.usuarioLC ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="usuarioLC">Usou Lente de Contato?</label>
+
+      <!-- Remédios -->
+      <div class="relative">
+        <input
+          type="text"
+          class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+          id="remedio"
+          name="remedio"
+          value="<%= anamnese.remedio %>"
+          placeholder="Remédio"
+          maxlength="50"
+        />
+        <label for="remedio" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+          Uso de Medicamentos
+        </label>
       </div>
-      <div class="col-md-2 mb-3">
-        <select class="form-control" id="dm" name="dm">
-          <option value="true" <%= anamnese.dm ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.dm ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="dm">Tem Diabetes?</label>
+
+      <!-- Lensometria OD -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="esfOD" name="esfOD" value="<%= anamnese.esfOD %>" placeholder="Esf OD" maxlength="6" />
+          <label for="esfOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OD Esf.</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="cilOD" name="cilOD" value="<%= anamnese.cilOD %>" placeholder="Cil OD" maxlength="6" />
+          <label for="cilOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OD Cil.</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="eixoOD" name="eixoOD" value="<%= anamnese.eixoOD %>" placeholder="Eixo OD" maxlength="4" />
+          <label for="eixoOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OD Eixo</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avSCOD" name="avSCOD" value="<%= anamnese.avSCOD %>" placeholder="AV SC OD" maxlength="8" />
+          <label for="avSCOD" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">AV sem Corr. OD</label>
+        </div>
       </div>
-      <div class="col-md-2 mb-3">
-        <select class="form-control" id="has" name="has">
-          <option value="true" <%= anamnese.has ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.has ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="has">Tem Pressão Alta?</label>
+
+      <!-- Lensometria OE -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="esfOE" name="esfOE" value="<%= anamnese.esfOE %>" placeholder="Esf OE" maxlength="6" />
+          <label for="esfOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OE Esf.</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="cilOE" name="cilOE" value="<%= anamnese.cilOE %>" placeholder="Cil OE" maxlength="6" />
+          <label for="cilOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OE Cil.</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="eixoOE" name="eixoOE" value="<%= anamnese.eixoOE %>" placeholder="Eixo OE" maxlength="4" />
+          <label for="eixoOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Lens. OE Eixo</label>
+        </div>
+        <div class="relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="avSCOE" name="avSCOE" value="<%= anamnese.avSCOE %>" placeholder="AV SC OE" maxlength="8" />
+          <label for="avSCOE" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">AV sem Corr. OE</label>
+        </div>
       </div>
-    <div class="col-md-4 mb-3">
-        <select class="form-control" id="glauc" name="glauc">
-          <option value="true" <%= anamnese.glauc ? 'selected' : '' %>>Sim</option>
-          <option value="false" <%= !anamnese.glauc ? 'selected' : '' %>>Não</option>
-        </select>
-        <label id="glauc">Tem Glaucoma?</label>
-    </div>
+
+      <!-- Adição e Observações -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-3 relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="adicao" name="adicao" value="<%= anamnese.adicao %>" placeholder="Adição" maxlength="6" />
+          <label for="adicao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Adição</label>
+        </div>
+        <div class="md:col-span-9 relative">
+          <input type="text" class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent" id="obsGerais" name="obsGerais" value="<%= anamnese.obsGerais %>" placeholder="Observações Gerais" maxlength="255" />
+          <label for="obsGerais" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">Observações Gerais</label>
+        </div>
+      </div>
+
+      <div class="pt-6 flex justify-end space-x-4">
+        <button class="px-8 py-3 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 shadow-md transition-all flex items-center" type="submit">
+          <span class="material-symbols-outlined mr-2">save</span> Salvar Alterações
+        </button>
+      </div>
+    </form>
+    <script src="/js/mascaraLens.js"></script>
+    <script src="/js/calcularIdade.js"></script>
   </div>
-    <div class="row form-group">
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="dmFam" name="dmFam" value="<%= anamnese.dmFam %>" maxlength="50" />
-        <label id="dmFam">Diabetes na Família</label>
-      </div>
-        <div class="col-md-4 mb-3">
-          <input type="text" class="form-control" id="hasFam" name="hasFam" value="<%= anamnese.hasFam %>" maxlength="50" />
-          <label id="hasFam">Pressão Alta na Família</label>
-      </div>
-      <div class="col-md-4 mb-3">
-        <input type="text" class="form-control" id="glaucFam" name="glaucFam" value="<%= anamnese.glaucFam %>" maxlength="50" />
-        <label id="glaucFam">Glaucoma na Família</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="remedio" name="remedio" value="<%= anamnese.remedio %>" maxlength="50" />
-        <label id="remedio">Remédio</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="lesEsfOD" name="esfOD" value="<%= anamnese.esfOD %>" maxlength="6" />
-        <label id="esfOD">Lesometria OD Esférico</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="lesCilOD" name="cilOD" value="<%= anamnese.cilOD %>" maxlength="6" />
-        <label id="cilOD">Lesometria OD Cilíndrico</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="lesEixoOD" name="eixoOD" value="<%= anamnese.eixoOD %>" maxlength="4" />
-        <label id="eixoOD">Lesometria OD Eixo</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="avSCOD" name="avSCOD" value="<%= anamnese.avSCOD %>" maxlength="8" />
-        <label id="avSCOD">AV sem correção OD</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="esfOE" name="esfOE" value="<%= anamnese.esfOE %>" maxlength="6" />
-        <label id="esfOE">Lesometria OE Esférico</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="cilOE" name="cilOE" value="<%= anamnese.cilOE %>" maxlength="6" />
-        <label id="cilOE">Lesometria OE Cilíndrico</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="eixoOE" name="eixoOE" value="<%= anamnese.eixoOE %>" maxlength="4" />
-        <label id="eixoOE">Lesometria OE Eixo</label>
-      </div>
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="avSCOE" name="avSCOE" value="<%= anamnese.avSCOE %>" maxlength="8" />
-        <label id="avSCOE">AV sem correção OE</label>
-      </div>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-3 mb-3">
-        <input type="text" class="form-control" id="adicao" name="adicao" value="<%= anamnese.adicao %>" maxlength="6" />
-        <label id="adicao">Lesometria Adição</label>
-      </div>
-      <div class="col-md-12 mb-3">
-        <input type="text" class="form-control" id="obsGerais" name="obsGerais" value="<%= anamnese.obsGerais %>" maxlength="255" />
-        <label id="obsGerais">Observações Gerais</label>
-      </div>
-    </div>
-    <div class="fixed-buttons">
-      <button class="btn btn-success btn-hover-outline" type="submit" title="Salvar alterações">
-        <span class="material-symbols-outlined icon-btn">save</span> Salvar
-      </button>
-    </div>
-  </form>
 </div>
-<script src="/js/mascaraLens.js"></script>
-<script src="/js/calcularIdade.js"></script>

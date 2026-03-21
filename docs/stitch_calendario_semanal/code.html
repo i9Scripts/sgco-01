@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#d8dedd",
+              "on-primary-fixed": "#003840",
+              "surface-container-high": "#dee3e2",
+              "inverse-primary": "#50e1f9",
+              "primary": "#006573",
+              "outline": "#747877",
+              "background": "#f4f7f6",
+              "surface-bright": "#f4f7f6",
+              "on-secondary": "#f0f2ff",
+              "surface": "#f4f7f6",
+              "secondary-fixed": "#c1d1fa",
+              "surface-variant": "#d8dedd",
+              "secondary-dim": "#3f4f71",
+              "primary-dim": "#005864",
+              "error-container": "#fb5151",
+              "on-surface": "#2b2f2f",
+              "on-error": "#ffefee",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#4b5b7e",
+              "on-secondary-fixed-variant": "#405073",
+              "on-tertiary-fixed-variant": "#003973",
+              "on-tertiary-fixed": "#001737",
+              "inverse-surface": "#0b0f0f",
+              "surface-dim": "#cfd6d5",
+              "primary-fixed": "#50e1f9",
+              "tertiary-fixed": "#83b1ff",
+              "tertiary": "#005ab1",
+              "tertiary-dim": "#004f9c",
+              "surface-tint": "#006573",
+              "on-error-container": "#570008",
+              "on-surface-variant": "#585c5c",
+              "surface-container-low": "#eef1f0",
+              "on-primary": "#daf8ff",
+              "error-dim": "#9f0519",
+              "error": "#b31b25",
+              "on-tertiary-container": "#003063",
+              "surface-container": "#e5e9e8",
+              "on-background": "#2b2f2f",
+              "outline-variant": "#aaaead",
+              "on-primary-fixed-variant": "#005763",
+              "primary-container": "#50e1f9",
+              "on-tertiary": "#eff2ff",
+              "secondary-container": "#c1d1fa",
+              "secondary-fixed-dim": "#b3c4ec",
+              "on-secondary-fixed": "#233454",
+              "tertiary-fixed-dim": "#69a4ff",
+              "tertiary-container": "#83b1ff",
+              "on-primary-container": "#004d58",
+              "on-secondary-container": "#374769",
+              "primary-fixed-dim": "#3cd2eb",
+              "inverse-on-surface": "#9a9e9d"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container">
+<!-- SideNavBar Shell -->
+<aside class="bg-[#233454] h-screen w-64 fixed left-0 top-0 overflow-y-auto flex flex-col py-6 shadow-2xl shadow-[#1a2b4b]/10 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold text-white tracking-tight font-headline">Lumina Optometry</h1>
+<p class="font-manrope text-sm font-medium tracking-wide text-[#50e1f9]">Clinical Excellence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 mx-4 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 mx-4 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                Patients
+            </a>
+<a class="bg-[#006573] text-white rounded-r-full mr-4 px-4 py-3 flex items-center gap-3 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                Appointments
+            </a>
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 mx-4 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Financial
+            </a>
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 mx-4 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+                POS
+            </a>
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 mx-4 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                Inventory
+            </a>
+</nav>
+<div class="mt-auto px-4 space-y-1 border-t border-white/10 pt-6">
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="text-slate-300 hover:text-white px-4 py-3 transition-colors flex items-center gap-3 font-manrope text-sm font-medium tracking-wide hover:bg-[#006573]/50 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-[#f4f7f6]/80 backdrop-blur-md sticky top-0 z-40 w-full h-16 px-8 flex justify-between items-center">
+<div class="flex items-center gap-8 flex-1">
+<span class="font-manrope text-lg font-extrabold text-[#006573]">Lumina Clinical</span>
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-fixed" placeholder="Buscar paciente ou exame..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="flex items-center gap-6 font-inter text-sm font-semibold">
+<a class="text-[#4b5b7e] hover:text-[#006573]" href="#">Day</a>
+<a class="text-[#006573] border-b-2 border-[#50e1f9] pb-1" href="#">Week</a>
+<a class="text-[#4b5b7e] hover:text-[#006573]" href="#">Month</a>
+</nav>
+<div class="flex items-center gap-3 ml-4">
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-semibold text-sm hover:opacity-90 active:opacity-80 transition-all">New Exam</button>
+<button class="p-2 text-[#4b5b7e] hover:bg-[#eef1f0] rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Professional clinical headshot portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9OPHZCvW03MCvbn9_QPiTEla4sONTxC1QCB4nGXuY0uA6c3lVnJwz6oe-wpUibfA6kJ3x62XPvA8qVzITShuvj9hBHDjxQT0KoU9ZS1F8vVr_CC9M7oBlQIUs03zoviipiogtLT2SmfGj7TEGltEA0bj_zpTaQY9KoglJRLMOOv76KyYIbzEscg5TtRJdSmhjAO8d1FChj3U2H1ZWLr7BhAv8Q7fXW2vW6eSHJwEhPnQDQzbFsLToYKXJL8_GXP4vw75hQnxqznnY"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Calendar Dashboard Content -->
+<div class="p-8 space-y-8 max-w-[1600px] mx-auto w-full">
+<!-- Calendar Header Navigation -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Janeiro, 2024</h2>
+<p class="text-on-surface-variant font-medium">Cronograma Semanal de Atendimento</p>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-1.5 rounded-full">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-4 py-1.5 font-bold text-sm text-primary hover:bg-primary-container/20 rounded-full">Hoje</button>
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-1">
+<button class="px-5 py-2 text-sm font-semibold text-on-surface-variant rounded-full">Dia</button>
+<button class="px-5 py-2 text-sm font-bold text-on-primary-fixed bg-primary-container rounded-full shadow-sm">Semana</button>
+<button class="px-5 py-2 text-sm font-semibold text-on-surface-variant rounded-full">Mês</button>
+</div>
+</div>
+</div>
+<!-- Dashboard Layout: Stats Sidebar + Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Weekly Stats Panel -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-2xl shadow-[#1a2b4b]/05">
+<h3 class="font-headline font-bold text-lg mb-6 text-[#233454]">Resumo Semanal</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs font-bold text-outline-variant uppercase tracking-widest mb-1">Total de Consultas</p>
+<p class="text-3xl font-headline font-extrabold text-[#006573]">148</p>
+</div>
+<div class="bg-primary-container/20 p-3 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs font-bold text-outline-variant uppercase tracking-widest mb-1">Taxa de Conclusão</p>
+<p class="text-3xl font-headline font-extrabold text-[#006573]">92%</p>
+</div>
+<div class="bg-primary-container/20 p-3 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-[#233454] p-6 rounded-xl text-white">
+<h4 class="font-bold text-sm mb-4">Ações Rápidas</h4>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-[#006573] p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 hover:bg-[#005864] transition-colors">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+                                Urgência
+                            </button>
+<button class="bg-[#4b5b7e] p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 hover:bg-[#3f4f71] transition-colors">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+                                Imprimir
+                            </button>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl">
+<h4 class="font-bold text-xs text-on-surface-variant uppercase tracking-widest mb-4">Legenda de Status</h4>
+<div class="space-y-3">
+<div class="flex items-center gap-3 text-sm font-medium">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span>Confirmado</span>
+</div>
+<div class="flex items-center gap-3 text-sm font-medium">
+<span class="w-3 h-3 rounded-full bg-outline-variant"></span>
+<span>Em Espera</span>
+</div>
+<div class="flex items-center gap-3 text-sm font-medium">
+<span class="w-3 h-3 rounded-full bg-error-container"></span>
+<span>Cancelado</span>
+</div>
+<div class="flex items-center gap-3 text-sm font-medium">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Concluído</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Calendar Grid Stage -->
+<div class="col-span-12 lg:col-span-9 bg-surface-container-lowest rounded-[2rem] shadow-2xl shadow-[#1a2b4b]/05 overflow-hidden">
+<div class="grid grid-cols-8 border-b border-surface-container-low">
+<div class="p-4 bg-surface-container-low/30"></div>
+<!-- Days of week -->
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">SEG</p>
+<p class="text-xl font-headline font-extrabold">22</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low bg-primary-container/10">
+<p class="text-xs font-bold text-primary uppercase tracking-tighter">TER</p>
+<p class="text-xl font-headline font-extrabold text-primary">23</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">QUA</p>
+<p class="text-xl font-headline font-extrabold">24</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">QUI</p>
+<p class="text-xl font-headline font-extrabold">25</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">SEX</p>
+<p class="text-xl font-headline font-extrabold">26</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">SÁB</p>
+<p class="text-xl font-headline font-extrabold">27</p>
+</div>
+<div class="p-6 text-center border-l border-surface-container-low">
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">DOM</p>
+<p class="text-xl font-headline font-extrabold">28</p>
+</div>
+</div>
+<div class="grid grid-cols-8 relative h-[800px] overflow-y-auto hide-scrollbar">
+<!-- Time Column -->
+<div class="col-span-1 border-r border-surface-container-low">
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">08:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">09:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">10:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">11:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">12:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">13:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">14:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">15:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">16:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant border-b border-surface-container-low/50">17:00</div>
+<div class="h-24 p-4 text-right text-xs font-bold text-outline-variant">18:00</div>
+</div>
+<!-- Grid Days Columns -->
+<!-- SEG -->
+<div class="relative border-r border-surface-container-low/50">
+<!-- Appointment 1 -->
+<div class="absolute top-[96px] left-2 right-2 h-20 bg-primary-container rounded-xl p-3 shadow-md z-10 border-l-4 border-on-primary-fixed-variant">
+<p class="text-[10px] font-extrabold text-on-primary-fixed uppercase mb-1">Exame de Vista</p>
+<p class="text-xs font-bold text-on-primary-fixed truncate">Ana Paula Oliveira</p>
+<p class="text-[10px] text-on-primary-fixed-variant">Dra. Helena Silva</p>
+</div>
+</div>
+<!-- TER (Highlighted) -->
+<div class="relative border-r border-surface-container-low/50 bg-primary-container/5">
+<!-- Appointment 2 -->
+<div class="absolute top-[192px] left-2 right-2 h-24 bg-primary rounded-xl p-3 shadow-md z-10 border-l-4 border-primary-fixed">
+<p class="text-[10px] font-extrabold text-on-primary uppercase mb-1">Topografia</p>
+<p class="text-xs font-bold text-on-primary truncate">Marcos Vinícius</p>
+<p class="text-[10px] text-on-primary/80">Dr. Ricardo Alves</p>
+<span class="absolute bottom-2 right-2 material-symbols-outlined text-sm text-on-primary/60" data-icon="verified">verified</span>
+</div>
+<!-- Appointment 3 -->
+<div class="absolute top-[384px] left-2 right-2 h-20 bg-surface-container-highest rounded-xl p-3 shadow-sm z-10 border-l-4 border-outline">
+<p class="text-[10px] font-extrabold text-on-surface-variant uppercase mb-1">Retorno</p>
+<p class="text-xs font-bold text-on-surface-variant truncate">Catarina Santos</p>
+<p class="text-[10px] text-on-surface-variant">Dra. Helena Silva</p>
+</div>
+</div>
+<!-- QUA -->
+<div class="relative border-r border-surface-container-low/50">
+<!-- Appointment 4 -->
+<div class="absolute top-[96px] left-2 right-2 h-32 bg-error-container rounded-xl p-3 shadow-md z-10 border-l-4 border-on-error-container">
+<p class="text-[10px] font-extrabold text-on-error-container uppercase mb-1">Mapeamento</p>
+<p class="text-xs font-bold text-on-error-container truncate">Roberto Carlos</p>
+<p class="text-[10px] text-on-error-container/80">Dr. Ricardo Alves</p>
+<div class="mt-2 py-0.5 px-2 bg-white/20 rounded-full inline-block">
+<p class="text-[9px] font-bold text-on-error-container">CANCELADO</p>
+</div>
+</div>
+</div>
+<!-- QUI -->
+<div class="relative border-r border-surface-container-low/50">
+<div class="absolute top-[288px] left-2 right-2 h-20 bg-primary-container rounded-xl p-3 shadow-md z-10 border-l-4 border-on-primary-fixed-variant">
+<p class="text-[10px] font-extrabold text-on-primary-fixed uppercase mb-1">Exame de Vista</p>
+<p class="text-xs font-bold text-on-primary-fixed truncate">Juliana Mendes</p>
+<p class="text-[10px] text-on-primary-fixed-variant">Dra. Helena Silva</p>
+</div>
+</div>
+<!-- SEX -->
+<div class="relative border-r border-surface-container-low/50">
+<div class="absolute top-[0px] left-2 right-2 h-24 bg-primary-container rounded-xl p-3 shadow-md z-10 border-l-4 border-on-primary-fixed-variant">
+<p class="text-[10px] font-extrabold text-on-primary-fixed uppercase mb-1">Topografia</p>
+<p class="text-xs font-bold text-on-primary-fixed truncate">Fernando Lima</p>
+<p class="text-[10px] text-on-primary-fixed-variant">Dr. Ricardo Alves</p>
+</div>
+</div>
+<!-- SÁB -->
+<div class="relative border-r border-surface-container-low/50 bg-surface-container-low/20">
+<div class="absolute top-[96px] left-2 right-2 h-20 bg-primary-container rounded-xl p-3 shadow-md z-10 border-l-4 border-on-primary-fixed-variant">
+<p class="text-[10px] font-extrabold text-on-primary-fixed uppercase mb-1">Pediátrico</p>
+<p class="text-xs font-bold text-on-primary-fixed truncate">Sofia Rocha</p>
+<p class="text-[10px] text-on-primary-fixed-variant">Dra. Helena Silva</p>
+</div>
+</div>
+<!-- DOM -->
+<div class="relative bg-surface-container-low/40">
+<div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+<span class="material-symbols-outlined text-6xl text-outline-variant" data-icon="event_busy">event_busy</span>
+</div>
+</div>
+<!-- Horizontal Grid Lines -->
+<div class="absolute inset-0 pointer-events-none">
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+<div class="h-24 border-b border-surface-container-low/50"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Float Action for Quick New Entry -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</main>
+</body></html>
