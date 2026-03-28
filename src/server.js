@@ -202,6 +202,7 @@ app.get('/fila/partial', (req, res) => {
 registerWeather(app);
 // Registrar rota de notícias
 registerNews(app);
+
 // Rota 404 - Página não encontrada
 app.use((req, res) => {
   res.status(404).render('404', {

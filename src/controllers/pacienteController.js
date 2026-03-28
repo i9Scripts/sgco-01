@@ -33,6 +33,16 @@ export const pacienteController = {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
+
+      // Buscar o maior nFicha atual do consultório para sugerir o próximo
+      const maxPaciente = await prisma.paciente.findFirst({
+        where: { consultorioId: idConsultorio },
+        orderBy: { nFicha: 'desc' },
+        select: { nFicha: true },
+      });
+
+      const proximaFicha = (maxPaciente && maxPaciente.nFicha ? maxPaciente.nFicha : 0) + 1;
+
       const parceiros = await prisma.parceiro.findMany({
         where: { consultorioId: idConsultorio },
       });
@@ -40,7 +50,7 @@ export const pacienteController = {
       res.render('pacientes/new', {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
-        formData: {},
+        formData: { nFicha: proximaFicha }, // Pré-preenche com a próxima ficha
         parceiros,
       });
     } catch (error) {
@@ -118,6 +128,26 @@ export const pacienteController = {
           'Consultório selecionado não existe no banco. Se necessário, recrie ou selecione outro consultório.'
         );
         return res.redirect('/consultorios');
+      }
+
+      // Validação de nFicha único por consultório
+      if (nFicha) {
+        const fichaExistente = await prisma.paciente.findFirst({
+          where: {
+            consultorioId: idConsultorio,
+            nFicha: parseInt(nFicha),
+          },
+        });
+
+        if (fichaExistente) {
+          req.flash('error', `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.nome}.`);
+          return res.render('pacientes/new', {
+            pageTitle: 'Novo Paciente',
+            pageIcon: 'ri-folder-user-line',
+            formData: req.body,
+            parceiros: await prisma.parceiro.findMany({ where: { consultorioId: idConsultorio } }),
+          });
+        }
       }
 
       const novoPaciente = await prisma.paciente.create({
@@ -289,6 +319,36 @@ export const pacienteController = {
       console.error('Erro ao buscar pacientes:', error);
       req.flash('error', 'Erro ao buscar pacientes. Tente novamente.');
       return res.redirect('/pacientes');
+    }
+  },
+
+  async checkFicha(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const nFicha = parseInt(req.params.nFicha);
+
+      if (!idConsultorio || isNaN(nFicha)) {
+        return res.json({ available: true });
+      }
+
+      const paciente = await prisma.paciente.findFirst({
+        where: {
+          consultorioId: idConsultorio,
+          nFicha: nFicha,
+        },
+        select: {
+          nome: true,
+        },
+      });
+
+      if (paciente) {
+        return res.json({ available: false, nome: paciente.nome });
+      }
+
+      return res.json({ available: true });
+    } catch (error) {
+      console.error('Erro ao validar ficha:', error);
+      return res.status(500).json({ error: 'Erro interno' });
     }
   },
   // Atualizar paciente
@@ -467,7 +527,7 @@ export const pacienteController = {
 
       await prisma.paciente.update({
         where: { idPaciente: parseInt(idPaciente) },
-        data: { naFila: true },
+        data: { naFila: false },
       });
 
       req.flash('success', 'Paciente marcado como atendido e removido da fila.');

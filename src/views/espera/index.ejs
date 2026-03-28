@@ -1,126 +1,305 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/espera.css" />
-  <link rel="stylesheet" href="/css/weather-icons-wind.css" />
-  <!-- weather icons (completo) para as classes .wi-day-* -->
-  <link rel="stylesheet" href="/css/weather-icons.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <title>Painel de Espera - OptoSystem</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clinic: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                300: '#7dd3fc',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                700: '#0369a1',
+                800: '#075985',
+                900: '#0c4a6e',
+              },
+              'medical-navy': '#0f172a',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              headline: ['Manrope', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
 
-    <title>Área de Espera - Consultório</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Manrope:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!-- Weather Icons removido para usar Material Symbols -->
+
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+      }
+      body {
+        cursor: none; /* Esconde o cursor para modo TV */
+        overflow: hidden;
+      }
+      /* Animação para o letreiro de notícias */
+      @keyframes marquee {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+      }
+      .animate-marquee {
+        display: inline-block;
+        white-space: nowrap;
+        animation: marquee 90s linear infinite;
+      }
+      /* Ajuste para vídeo responsivo */
+      .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        height: 0;
+      }
+      .video-wrapper iframe, .video-wrapper #player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+    </style>
   </head>
 
-  <body>
-    <!-- Header com nome da clínica -->
-    <header>
-      <img class="logotipo" src="/img/LogotipoAC.png" alt="Logo do Consultório" />
-      <h1>Ana Cristina Optometrista</h1>
+  <body class="h-full bg-medical-navy text-slate-200 font-sans antialiased flex flex-col p-4 gap-4 overflow-hidden">
+    
+    <!-- TOP BAR: Logo, Clinic Name and Clock -->
+    <header class="h-[10vh] flex items-center justify-between bg-white/5 backdrop-blur-md rounded-2xl px-8 border border-white/10 shrink-0">
+      <div class="flex items-center gap-6">
+        <div class="bg-white p-2 rounded-xl shadow-lg">
+          <img src="/img/LogotipoAC.png" alt="Logo" class="h-12 w-auto object-contain" onerror="this.src='https://ui-avatars.com/api/?name=Opto+System&background=0ea5e9&color=fff'" />
+        </div>
+        <div>
+          <h1 class="font-headline text-3xl font-extrabold text-white tracking-tight">Ana Cristina Optometrista</h1>
+          <p class="text-clinic-400 font-bold  tracking-[0.2em] text-[10px]">Saúde Visual Avançada</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-8">
+        <div class="text-right border-r border-white/10 pr-8">
+          <p id="current-date" class="text-xs font-bold text-slate-400  tracking-widest"></p>
+          <p id="current-time" class="text-4xl font-black text-white font-mono"></p>
+        </div>
+        <div class="bg-clinic-600/20 px-4 py-2 rounded-xl border border-clinic-500/30 flex items-center gap-3">
+          <span class="material-symbols-outlined text-clinic-400 animate-pulse">sensors</span>
+          <span class="text-xs font-black text-clinic-100  tracking-tighter">Painel Online</span>
+        </div>
+      </div>
     </header>
 
-    <!-- Corpo da página com vídeo do YouTube -->
-    <div class="video-container">
-      <div id="player"></div>
-    </div>
-    <!-- Mensagens Pacientes na fila-->
-  <div class="floating-message">
-      <div id="patient-name" class="container">
-          <% if (pacientes && pacientes.length) { %>
-            <% pacientes.forEach(paciente => { %>
-              <p><i class="fa-solid fa-hourglass-half"></i> <span><%= paciente.nome %></span></p>
-                  <% }) %>
-              <% } else { %>
-                  <li>Nenhum paciente na fila de espera.</li>
-              <% } %>
-      </div>
-    </div>
-    <!-- Carrocel Vertical -->
-    <div class="carrocel_V">
-        <div><%- include('../espera/carrocel-vertical.ejs') %></div>
-    </div>
-    <!-- Sessão CLima e notícias -->
-      <div id="api-content">
-        <h3>O Clima</h3>
-        <img src="/fonts/weathericons-regular-webfont.svg" alt="Paciente" width="50" height="50" />
-        <p><strong>Temperatura:</strong></p>
-        <p><strong>Descrição:</strong></p>
-        <p><strong>Umidade:</strong></p>
-        <p><strong>Indice UV</strong></p>
-      </div>
-    <div class="api-section">
-      <div class="api-noticias">
-        <h3>Últimas Notícias</h3>
-      </div>
-    </div>
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex gap-4 min-h-0">
+      
+      <!-- LEFT COLUMN: Entertainment (Video) -->
+      <section class="flex-[2.5] flex flex-col gap-4 min-w-0">
+        <div class="flex-1 bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/5 relative">
+          <div id="player" class="w-full h-full"></div>
+          <!-- Overlay de Mensagem Aleatória -->
+          <div class="absolute bottom-4 left-6 right-6 bg-medical-navy/50 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-center justify-between pointer-events-none">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-clinic-400 animate-bounce">campaign</span>
+              <p id="random-tip" class="text-sm font-bold text-white tracking-tight"></p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- Footer -->
-    <footer>
-      <div id="message">Mensagem aleatória: Aguarde, você será atendido em breve!</div>
+      <!-- RIGHT COLUMN: Queue, Trivia, Weather -->
+      <aside class="flex-1 flex flex-col gap-4 min-w-[380px]">
+        
+        <!-- WAITING LIST -->
+        <div class="flex-[1.8] bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-xl">
+          <div class="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+            <h2 class="font-headline text-xxs font-extrabold text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-400">group</span>
+              Ordem de Atendimento
+            </h2>
+            <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-black px-2 py-1 rounded-full border border-emerald-500/30 " id="queue-count">
+              <%= pacientes ? pacientes.length : 0 %> Em Espera
+            </span>
+          </div>
+          
+          <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar" id="patient-list">
+            <% if (pacientes && pacientes.length > 0) { %>
+              <% pacientes.forEach((paciente, idx) => { %>
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4 transition-all hover:bg-white/10">
+                  <div class="w-10 h-10 rounded-lg bg-clinic-600/30 flex items-center justify-center font-black text-clinic-400 border border-clinic-500/20">
+                    <%= idx + 1 %>
+                  </div>
+                  <div class="flex-1 truncate">
+                    <p class="text-xl font-bold text-white truncate "><%= paciente.nome %></p>
+                    <p class="text-[12px] font-bold text-slate-500  tracking-widest">Aguarde ser chamado...</p>
+                  </div>
+                  <% if(idx === 0) { %>
+                    <span class="material-symbols-outlined text-emerald-400 animate-pulse">keyboard_double_arrow_right</span>
+                  <% } %>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="h-full flex flex-col items-center justify-center text-slate-500 opacity-50 space-y-4">
+                <span class="material-symbols-outlined text-6xl">person_off</span>
+                <p class="font-bold  tracking-widest text-sm">Aguardando paciente . . .</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- TRIVIA CAROUSEL -->
+        <div class="h-[15vh] bg-clinic-600 border border-clinic-500 rounded-2xl p-5 relative overflow-hidden flex flex-col justify-center shadow-lg">
+          <div class="absolute -right-4 -top-4 opacity-10">
+            <span class="material-symbols-outlined text-8xl">quiz</span>
+          </div>
+          <div id="trivia-container" class="relative z-10">
+            <p class="text-[12px] font-black text-clinic-200 tracking-[0.3em] mb-1">Curiosidade Ocular</p>
+            <h3 id="trivia-title" class="text-white font-extrabold text-clinic-200 text-base leading-tight mb-1 transition-all duration-500"></h3>
+            <p id="trivia-text" class="text-[12px] font-bold text-clinic-100 transition-all duration-500"></p>
+          </div>
+        </div>
+
+        <!-- WEATHER WIDGET (Simplified font) -->
+        <div id="api-content" class="h-[12vh] bg-medical-navy border border-white/10 rounded-2xl p-5 flex items-center justify-between shadow-inner">
+          <!-- Este bloco é populado pelo weatherClient.js -->
+          <div class="flex items-center gap-4">
+            <div class="weather-icon w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
+               <span id="weather-icon" class="material-symbols-outlined text-4xl text-clinic-400">sunny</span>
+            </div>
+            <div class="weather-info">
+              <p class="text-2xl font-black text-white leading-none">--°C</p>
+              <p class="text-[9px] font-bold text-slate-400  tracking-widest mt-1">Clima local</p>
+            </div>
+          </div>
+          <div class="text-right flex flex-col gap-1">
+             <p class="text-[10px] text-slate-400 font-bold "><span class="material-symbols-outlined text-[12px] align-middle mr-1">water_drop</span> <span id="weather-humidity">--%</span></p>
+             <p class="text-[10px] text-slate-400 font-bold "><span class="material-symbols-outlined text-[12px] align-middle mr-1">wb_sunny</span> UV <span id="weather-uv">--</span></p>
+          </div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- FOOTER: News Letreiro -->
+    <footer class="h-[6vh] bg-medical-navy border border-white/10 rounded-2xl flex items-center overflow-hidden shrink-0 shadow-2xl">
+      <div class="bg-clinic-600 h-full px-6 flex items-center gap-2 shrink-0 z-10 shadow-[5px_0_15px_rgba(0,0,0,0.3)]">
+        <span class="material-symbols-outlined text-white">news</span>
+        <span class="text-sm font-black text-white  tracking-widest">Notícias</span>
+      </div>
+      <div class="flex-1 relative overflow-hidden bg-white/5">
+        <div id="news-ticker" class="animate-marquee whitespace-nowrap py-2 text-lg font-bold text-slate-300">
+          Bem-vindo ao nosso consultório • Tecnologia e cuidado para sua visão • OptoSystem v2.0 • Novidades e informações em tempo real no rodapé • 
+        </div>
+      </div>
     </footer>
 
     <!-- SCRIPTS -->
-     <!-- Mensagens Aleatórias -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Clock & Date Logic -->
     <script>
-      const messages = [
-        'Aguarde, você será atendido em breve!',
-        'O atendimento será realizado por ordem de chegada, porém quem agendou tem prioridade.',
-        'Por favor, mantenha o celular no modo silencioso.',
-        'Em breve, será chamado pelo seu nome.',
-      ];
-
-      const messageElement = document.getElementById('message');
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      messageElement.textContent = randomMessage;
-
-      // Muda a mensagem a cada 8 segundos
-      setInterval(() => {
-        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-        messageElement.textContent = randomMessage;
-      }, 8000);
+      function updateTime() {
+        const now = new Date();
+        const timeEl = document.getElementById('current-time');
+        const dateEl = document.getElementById('current-date');
+        if(timeEl) timeEl.textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if(dateEl) dateEl.textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+      }
+      setInterval(updateTime, 1000);
+      updateTime();
     </script>
-    <!-- Scripts para a integração com o YouTube -->
+
+    <!-- Random Messages (Tips) -->
     <script>
-      // Carrega a API do IFrame do YouTube
+      const tips = [
+        'Aguarde, você será atendido em breve!',
+        'Agendados tem prioridade no atendimento.',
+        'Por favor, silencie seu celular.',
+        'Chamaremos você pelo nome completo.',
+        'Controlar a Diabetes é fundamental para sua saúde.',
+        'Alimentação equilibrada, faz seu olho agradecer.',
+        'Sua Saúde Visual é Nosso Foco.'
+      ];
+      function updateTip() {
+        const tipEl = document.getElementById('random-tip');
+        if(tipEl) tipEl.textContent = tips[Math.floor(Math.random() * tips.length)];
+      }
+      setInterval(updateTip, 12000);
+      updateTip();
+    </script>
+
+    <!-- Trivia Logic -->
+    <script>
+      const triviaItems = [
+        { q: 'Por que os olhos piscam?', a: 'Para lubrificar e limpar a superfície ocular.' },
+        { q: 'Cor mais rara dos olhos?', a: 'Verde, presente em apenas 2% da população.' },
+        { q: 'Olhos maiores que o cérebro?', a: 'O avestruz! Seus olhos têm 5cm de diâmetro.' },
+        { q: 'Músculo mais ativo do corpo?', a: 'Os oculares! Movem-se mais de 100 mil vezes ao dia.' },
+        { q: 'Parte do corpo sem sangue?', a: 'A córnea. Ela recebe oxigênio direto do ar.' },
+        { q: 'Visão não é com os olhos?', a: 'Exato! O cérebro que interpreta as imagens.' }
+      ];
+      let triviaIdx = 0;
+      function updateTrivia() {
+        const titleEl = document.getElementById('trivia-title');
+        const textEl = document.getElementById('trivia-text');
+        if(!titleEl || !textEl) return;
+        titleEl.style.opacity = 0;
+        textEl.style.opacity = 0;
+        setTimeout(() => {
+          titleEl.textContent = triviaItems[triviaIdx].q;
+          textEl.textContent = triviaItems[triviaIdx].a;
+          titleEl.style.opacity = 1;
+          textEl.style.opacity = 1;
+          triviaIdx = (triviaIdx + 1) % triviaItems.length;
+        }, 500);
+      }
+      setInterval(updateTrivia, 15000);
+      updateTrivia();
+    </script>
+
+    <!-- YouTube API Logic -->
+    <script>
       var tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      // Lista de ID dos vídeos que serão reproduzidos em sequência
       var playlist = ['pFznByHYWvs', 'cBfTTFhHNxw', '7gFYxURb9lk', 'wbO0_0fLCOY'];
       var currentVideoIndex = 0;
       var player;
 
-      // Função chamada automaticamente pela API quando ela estiver pronta
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-          height: '360',
-          width: '640',
           videoId: playlist[currentVideoIndex],
-          events: {
-            onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange,
-          },
-          playerVars: {
-            autoplay: 1,
-            controls: 1,
-            rel: 0,
-          },
+          playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'mute': 1 },
+          events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
         });
       }
-
-      function onPlayerReady(event) {
-        event.target.playVideo();
-      }
-
-      // Quando o vídeo terminar, passa para o próximo vídeo da lista
+      function onPlayerReady(event) { event.target.playVideo(); }
       function onPlayerStateChange(event) {
         if (event.data === YT.PlayerState.ENDED) {
           currentVideoIndex = (currentVideoIndex + 1) % playlist.length;
@@ -128,33 +307,79 @@
         }
       }
     </script>
-    <!-- SOCKET IO -->
-    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- Socket.IO Real-time Queue Update (WITHOUT REFRESH) -->
     <script>
       const socket = io();
-
-      // Atualizar lista de pacientes
-      socket.on('atualizarPacientes', (pacientes) => {
-        const container = document.querySelector('.container');
-        container.innerHTML = '<h1>Área de Espera</h1>';
-        if (pacientes.length > 0) {
-          pacientes.forEach((paciente) => {
-            const div = document.createElement('div');
-            div.classList.add('paciente');
-            div.textContent = paciente.nome;
-            container.appendChild(div);
+      // O evento 'atualizar_lista' é disparado pelo servidor quando a fila muda
+      socket.on('atualizar_lista', (data) => {
+        // Buscamos os dados atualizados via fetch para não precisar recarregar a página toda
+        fetch('/espera')
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Atualiza apenas a lista de pacientes
+            const newList = doc.getElementById('patient-list').innerHTML;
+            document.getElementById('patient-list').innerHTML = newList;
+            
+            // Atualiza o contador
+            const newCount = doc.getElementById('queue-count').textContent;
+            document.getElementById('queue-count').textContent = newCount;
           });
-        } else {
-          container.innerHTML += '<p>Nenhum paciente na sala de espera.</p>';
-        }
       });
     </script>
 
-    <!-- API do Clima (cliente separado) -->
-    <script src="/js/weatherClient.js"></script>
-    <!-- Cliente de Notícias -->
-    <script src="/js/newsClient.js"></script>
-    <!-- Socket.io -->
-     <script src="/socket.io/socket.io.js"></script>
+    <!-- Weather Logic override to fit design -->
+    <script>
+      (function() {
+        async function loadWeather() {
+          try {
+            const resp = await fetch('/weather');
+            const data = await resp.json();
+            const cur = data.currently || {};
+            
+            document.querySelector('#api-content p.text-2xl').textContent = `${cur.temperature || '--'}°C`;
+            document.getElementById('weather-humidity').textContent = `${cur.humidity || '--'}%`;
+            document.getElementById('weather-uv').textContent = cur.uvIndex || '--';
+            
+            const iconEl = document.getElementById('weather-icon');
+            const icons = {
+              clear: 'sunny',
+              partly_cloudy: 'partly_cloudy_day',
+              cloudy: 'cloud',
+              rain: 'rainy',
+              snow: 'ac_unit'
+            };
+            if(iconEl && icons[cur.icon]) {
+              iconEl.textContent = icons[cur.icon];
+            }
+          } catch(e) { console.error(e); }
+        }
+        loadWeather();
+        setInterval(loadWeather, 30 * 60 * 1000);
+      })();
+    </script>
+
+    <!-- News Logic for Ticker -->
+    <script>
+      (function() {
+        async function loadNews() {
+          try {
+            const resp = await fetch('/news');
+            const json = await resp.json();
+            const items = json.results || [];
+            if(items.length > 0) {
+              const ticker = document.getElementById('news-ticker');
+              ticker.textContent = items.map(it => `${it.title} (${it.source})`).join(' • ') + ' • ';
+            }
+          } catch(e) { console.error(e); }
+        }
+        loadNews();
+        setInterval(loadNews, 15 * 60 * 1000);
+      })();
+    </script>
+
   </body>
 </html>

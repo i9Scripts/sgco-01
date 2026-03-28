@@ -14,6 +14,7 @@ router.post('/', pacienteController.createPaciente); // POST /pacientes
 
 // Busca antes da rota dinâmica
 router.get('/search', pacienteController.searchPacientes); // GET /pacientes/search
+router.get('/check-ficha/:nFicha', pacienteController.checkFicha); // GET /pacientes/check-ficha/123
 router.get('/:idPaciente/ficha', pacienteController.PacienteFicha);
 router.get('/:idPaciente/selecionar', pacienteController.selecionarPaciente);
 // Rota para a ficha do paciente (relatório)

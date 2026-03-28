@@ -1,22 +1,94 @@
-<div class="card">
-  <div class="card-header">
-    <h3><%= produto.descricao %></h3>
-    <div class="card-body">
-      <% if (produto.imagem) { %>
-        <img src="<%= produto.imagem %>" alt="<%= produto.descricao %>" style="max-width:200px;" />
-      <% } %>
-      <p><strong>Valor:</strong> R$ <%= produto.valor %></p>
-      <p><strong>Quantidade em estoque:</strong> <%= produto.quantidade %></p>
+<div class="max-w-5xl mx-auto space-y-6">
+  <!-- Cabeçalho / Resumo do Produto -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+      <div class="bg-amber-100 p-3 rounded-full text-amber-600">
+        <span class="material-symbols-outlined text-3xl">inventory_2</span>
+      </div>
+      <div>
+        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Dados do Produto</h3>
+        <p class="text-xl font-extrabold text-slate-800">
+          <%= produto.descricao %> 
+          <span class="mx-2 text-slate-300">|</span> 
+          <span class="text-slate-600 text-lg font-mono">R$ <%= parseFloat(produto.valor).toFixed(2) %></span>
+        </p>
+      </div>
     </div>
-    <div class="card-actions">
-      <a href="/produtos/<%= produto.idProduto %>/edit" class="btn btn-sm btn-warning">
-        <span class="material-symbols-outlined icon-btn">edit</span>
-      </a>
-      <form action="/produtos/<%= produto.idProduto %>?_method=DELETE" method="post" style="display:inline-block;">
-        <button class="btn btn-sm btn-danger" onclick="return confirm('Confirma exclusão?')">
-          <span class="material-symbols-outlined icon-btn">delete</span>
-        </button>
-      </form>
+
+    <div class="p-6 sm:p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <!-- Imagem do Produto -->
+        <div class="md:col-span-4">
+          <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl h-64 flex items-center justify-center overflow-hidden relative group">
+            <% if (produto.imagem) { %>
+              <img src="<%= produto.imagem %>" alt="<%= produto.descricao %>" class="max-w-full max-h-full object-contain p-4 transition-transform group-hover:scale-105" />
+            <% } else { %>
+              <div class="text-slate-400 text-center p-4">
+                <span class="material-symbols-outlined text-5xl block mb-2">image_not_supported</span>
+                <p class="text-xs font-bold uppercase tracking-widest">Sem Imagem</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Detalhes e Estoque -->
+        <div class="md:col-span-8 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+                <span class="material-symbols-outlined mr-2 text-sm">info</span> Informações
+              </h4>
+              <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Valor de Venda</p>
+                  <p class="text-lg font-black text-clinic-600 font-mono">R$ <%= parseFloat(produto.valor).toFixed(2) %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Quantidade em Estoque</p>
+                  <div class="flex items-center">
+                    <span class="text-lg font-bold text-slate-700 mr-2"><%= produto.quantidade %></span>
+                    <% if (produto.quantidade <= 5) { %>
+                      <span class="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-black uppercase rounded">Estoque Baixo</span>
+                    <% } else { %>
+                      <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase rounded">Em Dia</span>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+                <span class="material-symbols-outlined mr-2 text-sm">settings</span> Sistema
+              </h4>
+              <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">ID Interno</p>
+                  <p class="text-sm font-bold text-slate-700">#<%= produto.idProduto %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Cadastrado em</p>
+                  <p class="text-xs font-bold text-slate-600"><%= produto.createdAt ? produto.createdAt.toLocaleDateString('pt-BR') : '---' %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-100 flex justify-end space-x-4">
+        <a href="/produtos/<%= produto.idProduto %>/edit" class="px-6 py-2 bg-amber-50 text-amber-700 rounded-lg font-bold hover:bg-amber-100 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">edit</span> Editar
+        </a>
+        <form action="/produtos/<%= produto.idProduto %>?_method=DELETE" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?')" class="inline">
+          <button type="submit" class="px-6 py-2 bg-red-50 text-red-700 rounded-lg font-bold hover:bg-red-100 transition-all flex items-center">
+            <span class="material-symbols-outlined mr-2 text-lg">delete</span> Excluir
+          </button>
+        </form>
+        <a href="/produtos" class="px-6 py-2 border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">arrow_back</span> Voltar
+        </a>
+      </div>
     </div>
   </div>
 </div>

@@ -1,47 +1,158 @@
-<div class="alert alert-secondary mb-4 card mb-4 shadow-sm">
-  <div class="card-body">
-    <p>
-      <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
-      <strong>Data de Atendimento:</strong> <%= paciente?.dataAtend || 'N/D' %> |
-    </p>
-    <hr>
-    <p>
-      <strong>ID:</strong> <%= anamnese.idAnam %> |
-      <strong>Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-      <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
-      <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
-    </p>
-    <hr>
-    <div class="row">
-      <div class="col-md-6">
-        <p><strong>Motivo:</strong> <%= anamnese.motivo || 'Não informado' %></p>
-        <p><strong>Último Exame:</strong> <%= anamnese.ultimoExame || 'Não informado' %></p>
-        <p><strong>Usuário de Óculos:</strong> <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %></p>
-        <p><strong>Usuário de Lentes de Contato:</strong> <%= anamnese.usuarioLC ? 'Sim' : 'Não' %></p>
-        <p><strong>Trauma, Cirurgia ou Doença Ocular:</strong> <%= anamnese.trauma || 'Não informado' %></p>
-        <p><strong>Sintomas:</strong> <%= anamnese.sintomas || 'Não informado' %></p>
-        <p><strong>Remédios:</strong> <%= anamnese.remedio || 'Não informado' %></p>
-        <p><strong>Observações Gerais:</strong> <%= anamnese.obsGerais || 'Não informado' %></p>
+<div class="max-w-5xl mx-auto space-y-6">
+  <!-- Cabeçalho / Resumo do Paciente -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+      <div class="bg-emerald-100 p-3 rounded-full text-emerald-600">
+        <span class="material-symbols-outlined text-3xl">history_edu</span>
       </div>
-      <div class="col-md-6">
-        <p><strong>DM:</strong> <%= anamnese.dm ? 'Sim' : 'Não' %> | <strong>HAS:</strong> <%= anamnese.has ? 'Sim' : 'Não' %> | <strong>Glaucoma:</strong> <%= anamnese.glauc ? 'Sim' : 'Não' %></p>
-        <p><strong>DM Familiar:</strong> <%= anamnese.dmFam || 'Não informado' %> | <strong>HAS Familiar:</strong> <%= anamnese.hasFam || 'Não informado' %> | <strong>Glaucoma Familiar:</strong> <%= anamnese.glaucFam || 'Não informado' %></p>
-        <div class="row">
-          <hr>
-          <p>LESOMETRIA</p>
-          <p><strong>OD ESF :</strong> <%= anamnese.esfOD || '00,00' %> | <strong>Cil :</strong> <%= anamnese.cilOD || '00,00' %> | <strong>Eixo :</strong> <%= anamnese.eixoOD || '00,00' %> | <strong>AV SC :</strong> <%= anamnese.avSCOD || '___/___' %></p>
+      <div>
+        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Anamnese do Paciente</h3>
+        <p class="text-xl font-extrabold text-slate-800">
+          <%= paciente?.nome || 'N/D' %> 
+          <span class="mx-2 text-slate-300">|</span> 
+          <span class="text-slate-600 text-lg">Ficha: <%= paciente?.nFicha || 'N/D' %></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="p-6 sm:p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Histórico e Sintomas -->
+        <div class="space-y-6">
+          <div class="space-y-4">
+            <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+              <span class="material-symbols-outlined mr-2 text-sm">notes</span> Motivo e Histórico
+            </h4>
+            <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Motivo da Consulta</p>
+                <p class="text-sm text-slate-700 font-medium"><%= anamnese.motivo || 'Não informado' %></p>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Último Exame</p>
+                <p class="text-sm text-slate-700 font-medium"><%= anamnese.ultimoExame || 'Não informado' %></p>
+              </div>
+              <div class="flex gap-4">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Usa Óculos?</p>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold <%= anamnese.usuarioOculos ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' %>">
+                    <%= anamnese.usuarioOculos ? 'Sim' : 'Não' %>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Usa Lentes?</p>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold <%= anamnese.usuarioLC ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' %>">
+                    <%= anamnese.usuarioLC ? 'Sim' : 'Não' %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+              <span class="material-symbols-outlined mr-2 text-sm">medical_information</span> Condições e Sintomas
+            </h4>
+            <div class="space-y-3">
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Trauma/Cirurgia/Doença</p>
+                <p class="text-sm text-slate-700"><%= anamnese.trauma || 'Nenhum' %></p>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Sintomas</p>
+                <p class="text-sm text-slate-700"><%= anamnese.sintomas || 'Nenhum' %></p>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Medicamentos em uso</p>
+                <p class="text-sm text-slate-700"><%= anamnese.remedio || 'Nenhum' %></p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="row">
-          <p><strong>OE ESF : </strong> <%= anamnese.esfOE || '00,00' %> | <strong>CIL : </strong> <%= anamnese.cilOE || '00,00' %> | <strong>Eixo : </strong> <%= anamnese.eixoOE || '00,00' %> | <strong>AV SC :</strong> <%= anamnese.avSCOE || '___/___' %></p>
-          <p><strong>Adição:</strong> <%= anamnese.adicao || '00,00' %></p>
+
+        <!-- Saúde e Lensometria -->
+        <div class="space-y-6">
+          <div class="space-y-4">
+            <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+              <span class="material-symbols-outlined mr-2 text-sm">monitor_heart</span> Saúde Geral e Familiar
+            </h4>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-2">Pessoal</p>
+                <div class="space-y-1">
+                  <p class="text-xs flex justify-between"><span>DM:</span> <b class="<%= anamnese.dm ? 'text-emerald-600' : 'text-slate-400' %>"><%= anamnese.dm ? 'Sim' : 'Não' %></b></p>
+                  <p class="text-xs flex justify-between"><span>HAS:</span> <b class="<%= anamnese.has ? 'text-emerald-600' : 'text-slate-400' %>"><%= anamnese.has ? 'Sim' : 'Não' %></b></p>
+                  <p class="text-xs flex justify-between"><span>Glaucoma:</span> <b class="<%= anamnese.glauc ? 'text-emerald-600' : 'text-slate-400' %>"><%= anamnese.glauc ? 'Sim' : 'Não' %></b></p>
+                </div>
+              </div>
+              <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-2">Familiar</p>
+                <div class="space-y-1 text-[11px]">
+                  <p class="truncate">DM: <span class="font-bold text-slate-700"><%= anamnese.dmFam || 'Não' %></span></p>
+                  <p class="truncate">HAS: <span class="font-bold text-slate-700"><%= anamnese.hasFam || 'Não' %></span></p>
+                  <p class="truncate">Glauc: <span class="font-bold text-slate-700"><%= anamnese.glaucFam || 'Não' %></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+              <span class="material-symbols-outlined mr-2 text-sm">biotech</span> Lensometria Anterior
+            </h4>
+            <div class="overflow-hidden border border-slate-200 rounded-xl">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-[10px]">
+                  <tr>
+                    <th class="px-3 py-2">Olho</th>
+                    <th class="px-3 py-2 text-center">Esf</th>
+                    <th class="px-3 py-2 text-center">Cil</th>
+                    <th class="px-3 py-2 text-center">Eixo</th>
+                    <th class="px-3 py-2 text-center">AV SC</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono font-bold text-slate-700">
+                  <tr>
+                    <td class="px-3 py-2 bg-slate-50/50">OD</td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.esfOD || '0.00' %></td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.cilOD || '0.00' %></td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.eixoOD || '0' %>°</td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.avSCOD || '---' %></td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2 bg-slate-50/50">OE</td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.esfOE || '0.00' %></td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.cilOE || '0.00' %></td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.eixoOE || '0' %>°</td>
+                    <td class="px-3 py-2 text-center"><%= anamnese.avSCOE || '---' %></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="bg-slate-50 p-2 text-center border-t border-slate-200">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">Adição: <span class="text-slate-800 text-xs"><%= anamnese.adicao || '0.00' %></span></p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <hr>
-      <p>
-        <span class="material-symbols-outlined me-2 icon-relat">event</span>
-        Criado em: <%= anamnese.createdAt.toLocaleDateString() || 'Não informado' %> |
-        Atualizado em: <%= anamnese.updatedAt.toLocaleDateString() || 'Não informado' %>
-      </p>
+
+      <!-- Rodapé do Registro -->
+      <div class="pt-6 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center text-slate-400 text-[10px] font-bold uppercase tracking-tighter">
+          <span class="material-symbols-outlined text-sm mr-1">history</span>
+          Criado em <%= anamnese.createdAt.toLocaleDateString('pt-BR') %> 
+          <span class="mx-2">|</span>
+          Atualizado em <%= anamnese.updatedAt.toLocaleDateString('pt-BR') %>
+        </div>
+        <div class="flex gap-3">
+          <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="px-6 py-2 bg-amber-50 text-amber-700 rounded-lg font-bold hover:bg-amber-100 transition-all no-underline flex items-center">
+            <span class="material-symbols-outlined mr-2 text-lg">edit</span> Editar
+          </a>
+          <a href="/pacientes" class="px-6 py-2 border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all no-underline flex items-center">
+            <span class="material-symbols-outlined mr-2 text-lg">arrow_back</span> Voltar
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

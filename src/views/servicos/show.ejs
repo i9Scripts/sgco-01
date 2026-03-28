@@ -1,14 +1,71 @@
-<div class="container">
-  <h1><i class="<%= pageIcon %>"></i> <%= pageTitle %></h1>
+<div class="max-w-5xl mx-auto space-y-6">
+  <!-- Cabeçalho / Resumo do Serviço -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+      <div class="bg-clinic-100 p-3 rounded-full text-clinic-600">
+        <span class="material-symbols-outlined text-3xl">medical_services</span>
+      </div>
+      <div>
+        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Dados do Serviço</h3>
+        <p class="text-xl font-extrabold text-slate-800">
+          <%= servico.descricao %> 
+          <span class="mx-2 text-slate-300">|</span> 
+          <span class="text-slate-600 text-lg font-mono">R$ <%= servico.valor.toFixed(2) %></span>
+        </p>
+      </div>
+    </div>
 
-  <dl class="row">
-    <dt class="col-sm-3">Descrição</dt>
-    <dd class="col-sm-9"><%= servico.descricao %></dd>
+    <div class="p-6 sm:p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Detalhes do Serviço -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+            <span class="material-symbols-outlined mr-2 text-sm">description</span> Detalhes do Serviço
+          </h4>
+          <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Descrição</p>
+              <p class="text-sm font-bold text-slate-700"><%= servico.descricao %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Valor do Serviço</p>
+              <p class="text-lg font-black text-clinic-600 font-mono">R$ <%= servico.valor.toFixed(2) %></p>
+            </div>
+          </div>
+        </div>
 
-    <dt class="col-sm-3">Valor</dt>
-    <dd class="col-sm-9">R$ <%= servico.valor.toFixed(2) %></dd>
-  </dl>
+        <!-- Sistema -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+            <span class="material-symbols-outlined mr-2 text-sm">settings</span> Registro
+          </h4>
+          <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">ID Interno</p>
+              <p class="text-sm font-bold text-slate-700">#<%= servico.idServico %></p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200">
+              <div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Criado em</p>
+                <p class="text-[11px] font-bold text-slate-600"><%= servico.createdAt ? servico.createdAt.toLocaleDateString('pt-BR') : '---' %></p>
+              </div>
+              <div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Última Atualização</p>
+                <p class="text-[11px] font-bold text-slate-600"><%= servico.updatedAt ? servico.updatedAt.toLocaleDateString('pt-BR') : '---' %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <a href="/servicos" class="btn btn-secondary">Voltar</a>
-  <a href="/servicos/<%= servico.idServico %>/edit" class="btn btn-primary">Editar</a>
+      <div class="pt-6 border-t border-slate-100 flex justify-end space-x-4">
+        <a href="/servicos/<%= servico.idServico %>/edit" class="px-6 py-2 bg-amber-50 text-amber-700 rounded-lg font-bold hover:bg-amber-100 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">edit</span> Editar
+        </a>
+        <a href="/servicos" class="px-6 py-2 border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">arrow_back</span> Voltar
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

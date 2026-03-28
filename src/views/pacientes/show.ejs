@@ -1,34 +1,107 @@
-<div class="ver-cadastro mb-4 card mb-4 shadow-sm">
-  <p>
-    <strong>Ficha:</strong> <%= paciente?.nFicha || 'N/D' %> |
-    <strong>Data de Atendimento:</strong> <%= paciente?.dataAtend || 'N/D' %> |
-  </p>
-    <hr>
-  <p>
-    <strong>ID:</strong> <%= paciente.idPaciente %> |
-    <strong> Nome:</strong> <%= paciente?.nome || 'N/D' %> |
-  </p>
-    <hr> 
-  <p>
-    <strong>Nascimento:</strong> <%= paciente?.dataNascFormatada || 'N/D' %> |
-    <strong>Idade:</strong> <%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos |
-  </p>
-  <hr>
-  <div class="row">
-    <div class="col-md-6">
-      <p><strong>Responsável:</strong> <%= paciente.responsavel || 'Não informado' %></p>
+<div class="max-w-5xl mx-auto space-y-6">
+  <!-- Cabeçalho / Resumo do Paciente -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+      <div class="bg-clinic-100 p-3 rounded-full text-clinic-600">
+        <span class="material-symbols-outlined text-3xl">person</span>
+      </div>
+      <div>
+        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Dados do Paciente</h3>
+        <p class="text-xl font-extrabold text-slate-800">
+          <%= paciente.nome %> 
+          <span class="mx-2 text-slate-300">|</span> 
+          <span class="text-slate-600 text-lg">Ficha: <%= paciente.nFicha || 'N/D' %></span>
+        </p>
+      </div>
     </div>
-    <hr>
 
-    <p><strong>Celular:</strong> <%= paciente.celular %></p>
-    <p><strong>CEP:</strong> <%= paciente.cep || 'Não informado' %> | <strong> Endereço:</strong> <%= paciente.endereco %> <strong>, </strong> <%= paciente.numero %></p>
-    <p><strong>Bairro:</strong> <%= paciente.bairro || 'Não informado' %> | <strong> Cidade:</strong> <%= paciente.cidade || 'Não informado' %></p>
-    <p><strong>CPF:</strong> <%= paciente.cpf || 'Não informado' %> | <strong> Profissão:</strong> <%= paciente.profissao %></p>
+    <div class="p-6 sm:p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Informações Básicas -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+            <span class="material-symbols-outlined mr-2 text-sm">info</span> Informações Básicas
+          </h4>
+          <div class="space-y-3">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Data de Atendimento</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.dataAtend || 'Não informada' %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Nascimento / Idade</p>
+              <p class="text-sm font-bold text-slate-700">
+                <%= paciente.dataNascFormatada || 'N/D' %> 
+                <span class="text-slate-400 font-medium ml-1">
+                  (<%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos)
+                </span>
+              </p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">CPF</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.cpf || 'Não informado' %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Profissão</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.profissao || 'Não informada' %></p>
+            </div>
+          </div>
+        </div>
 
-    <p>
-      <span class="material-symbols-outlined me-2 icon-relat">event</span>
-      Criado em: <%= paciente.createdAt.toLocaleDateString() || 'Não informado' %> |
-      Atualizado em: <%= paciente.updatedAt.toLocaleDateString() || 'Não informado' %>
-    </p>
+        <!-- Contato e Endereço -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+            <span class="material-symbols-outlined mr-2 text-sm">location_on</span> Contato e Endereço
+          </h4>
+          <div class="space-y-3">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Celular</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.celular %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Endereço</p>
+              <p class="text-sm font-bold text-slate-700">
+                <%= paciente.endereco %>, <%= paciente.numero %>
+                <% if (paciente.complemento) { %> - <%= paciente.complemento %><% } %>
+              </p>
+              <p class="text-xs text-slate-500"><%= paciente.bairro %> - <%= paciente.cidade %> / <%= paciente.cep %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Responsável</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.responsavel || 'O próprio' %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sistema -->
+        <div class="space-y-4">
+          <h4 class="text-xs font-black text-clinic-600 uppercase tracking-widest flex items-center">
+            <span class="material-symbols-outlined mr-2 text-sm">settings</span> Registro
+          </h4>
+          <div class="space-y-3">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">ID do Sistema</p>
+              <p class="text-sm font-bold text-slate-700">#<%= paciente.idPaciente %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Criado em</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.createdAt.toLocaleDateString('pt-BR') %></p>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Última Atualização</p>
+              <p class="text-sm font-bold text-slate-700"><%= paciente.updatedAt.toLocaleDateString('pt-BR') %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-100 flex justify-end space-x-4">
+        <a href="/pacientes/<%= paciente.idPaciente %>/edit" class="px-6 py-2 bg-amber-50 text-amber-700 rounded-lg font-bold hover:bg-amber-100 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">edit</span> Editar
+        </a>
+        <a href="/pacientes" class="px-6 py-2 border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all no-underline flex items-center">
+          <span class="material-symbols-outlined mr-2 text-lg">arrow_back</span> Voltar
+        </a>
+      </div>
+    </div>
   </div>
 </div>

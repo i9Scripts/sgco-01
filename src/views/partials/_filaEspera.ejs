@@ -1,79 +1,141 @@
-<div class="table-responsive">
-    <table class="table table-hover table-striped">
+<div class="max-w-6xl mx-auto space-y-6">
+<div class="bg-white/80 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+  <% if (pacientes && pacientes.length > 0) { %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
         <thead>
-            <tr>
-                <th>Nome do Paciente</th>
-                <th>Ficha Nº</th>
-                <th>Entrada na Fila</th>
-                <th>Ações</th>
-            </tr>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Ficha</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Paciente</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Entrada</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider text-center">Ações</th>
+            <th class="px-6 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider text-center">Anamnese</th>
+          </tr>
         </thead>
-        <tbody>
-            <% if (pacientes && pacientes.length > 0) { %>
-                <% pacientes.forEach(paciente => { %>
-                    <tr>
-                        <td><%= paciente.nome %></td>
-                        <td><%= paciente.nFicha || 'N/D' %></td>
-                        <td><%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></td>
-                        <td class="d-flex gap-2">
-                            <!-- Botão para abrir o modal de visualização com a ficha do paciente -->
-                            <button class="btn btn-info btn-sm" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')">
-                                <span class="material-symbols-outlined icon-btn">visibility</span>
-                            </button>
+        <tbody class="divide-y divide-slate-100">
+          <% pacientes.forEach(paciente => { %>
+          <tr class="hover:bg-slate-50/50 transition-colors">
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-slate-100 text-slate-600 border border-slate-200">
+                <%= paciente.nFicha || '---' %>
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm font-bold text-slate-800"><%= paciente.nome %></p>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm text-slate-600 font-medium">
+                <%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
+              </p>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <!-- Visualizar -->
+                <button
+                  onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')"
+                  class="p-2 text-slate-400 hover:text-clinic-600 hover:bg-clinic-50 rounded-lg transition-all"
+                  title="Ver Paciente"
+                >
+                  <span class="material-symbols-outlined text-[20px]">visibility</span>
+                </button>
+                <!-- Editar -->
+                <button
+                  onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')"
+                  class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                  title="Editar Paciente"
+                >
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
 
-                            <!-- Botão para abrir o modal de edição do Paciente -->
-                            <button class="btn btn-warning btn-sm" title="Editar Paciente" onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit', 'Editar Paciente')">
-                                <span class="material-symbols-outlined icon-btn">edit</span>
-                            </button>
-                            </td>
-                            <td>
-                            <!-- Ações específicas do profissional ou recepcionista podem ser adicionadas aqui via lógica EJS -->
-                            <!-- Exemplo para o profissional: --> 
-                            <% if (typeof isProfissional !== 'undefined' && isProfissional) { %> 
-                                <a href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>" class="btn btn-sm btn-success ml-2" title="Fazer a Receita">
-                                <i class="bi bi-person-check-fill"></i> 
-                                </a>
-                                <a href="/<%= paciente.idPaciente %>/ficha" class="btn btn-sm btn-outline-primary ml-2" title="Imprimir Ficha" target="_blank">
-                                    <span class="material-symbols-outlined icon-btn">print</span>
-                                </a>
-                                <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
-                                    <% const anamnese = paciente.anamneses[0]; %>
-                                    <span class="badge bg-success">Registrada</span>
-                                    <!-- Botão para criar nova anamnese (permitir múltiplas) -->
-                                    <button class="btn btn-sm btn-success" title="Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')">
-                                        <span class="material-symbols-outlined icon-btn">check</span>
-                                    </button>
-                                    <!-- Botão para visualizar anamnese -->
-                                    <a href="/anamneses/<%= anamnese.idAnam %>" class="btn btn-round btn-sm btn-info" title="Editar Anamnese">
-                                        <span class="material-symbols-outlined icon-btn">visibility</span>
-                                    </a>
-                                    <!-- Botão para editar anamnese -->
-                                    <a href="/anamneses/<%= anamnese.idAnam %>/edit" class="btn btn-round btn-sm btn-warning" title="Editar Anamnese">
-                                        <span class="material-symbols-outlined icon-btn">edit</span>
-                                    </a>
-                                <% } else { %>
-                                    <span class="badge bg-secondary">Não registrada</span>
-                                    <!-- Botão para criar nova anamnese -->
-                                    <button class="btn btn-sm btn-primary" title="Criar Nova Anamnese" onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')">
-                                        <span class="material-symbols-outlined icon-btn">add</span>
-                                    </button>
-                                <% } %>
-                            <% } %>
-                        </td>
-                    </tr>
-                <% }) %>
-            <% } else { %>
-                <tr>
-                    <td colspan="4" class="text-center">Nenhum paciente na fila no momento.</td>
-                </tr>
-            <% } %>
+                <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
+                  <!-- Diagnóstico -->
+                  <a
+                    href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>"
+                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                    title="Fazer Diagnóstico"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">medical_services</span>
+                  </a>
+                  <!-- Imprimir Ficha -->
+                  <a
+                    href="/<%= paciente.idPaciente %>/ficha"
+                    target="_blank"
+                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                    title="Imprimir Ficha"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">print</span>
+                  </a>
+                <% } %>
+
+                <!-- Botão Atendido -->
+                <form action="/pacientes/<%= paciente.idPaciente %>/atendido?_method=PUT" method="post" class="inline">
+                  <button
+                    type="submit"
+                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                    title="Marcar como Atendido"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                  </button>
+                </form>
+              </div>
+            </td>
+
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <% if (paciente.anamneses && paciente.anamneses.length > 0) { const anamnese = paciente.anamneses[0]; %>
+                <span class="hidden md:inline-flex items-center px-2 py-1 rounded-md text-[10px] font-black uppercase bg-emerald-100 text-emerald-700 border border-emerald-200">
+                  Registrada
+                </span>
+                <div class="flex gap-1">
+                  <button
+                    onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')"
+                    class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+                    title="Ver Anamnese"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                  </button>
+                  <button
+                    onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')"
+                    class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+                    title="Editar Anamnese"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </button>
+                  <button
+                    onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')"
+                    class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
+                    title="Nova Anamnese"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                  </button>
+                </div>
+                <% } else { %>
+                <span class="hidden md:inline-flex items-center px-2 py-1 rounded-md text-[10px] font-black uppercase bg-slate-100 text-slate-500 border border-slate-200">
+                  Pendente
+                </span>
+                <button
+                  onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')"
+                  class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
+                  title="Criar Nova Anamnese"
+                >
+                  <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                </button>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
         </tbody>
-    </table>
+      </table>
+    </div>
+  <% } else { %>
+    <div class="p-12 text-center">
+      <div class="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-3xl text-slate-300">group_remove</span>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800">Fila vazia</h3>
+      <p class="text-slate-500 text-sm">Nenhum paciente aguardando atendimento no momento.</p>
+    </div>
+  <% } %>
 </div>
-
-<style>
-    /* Estilos adicionais para a fila, se necessário */
-    .table th, .table td {
-        vertical-align: middle;
-    }
-</style>
+</div>

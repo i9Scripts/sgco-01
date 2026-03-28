@@ -6,7 +6,10 @@
           <span class="material-symbols-outlined mr-2">point_of_sale</span>
           PDV / Checkout
         </h2>
-        <p class="text-clinic-100 text-sm">Paciente: <%= paciente.nome %></p>
+        <p class="text-clinic-100 text-sm">Paciente: <%= paciente.nome %>
+        <span class="mx-2 text-slate-300">|</span> 
+        <span class="text-clinic-100 text-sm">Ficha <%= paciente.nFicha || 'N/D' %> </span>
+        </p>
       </div>
       <div class="text-white text-right">
         <span class="text-xs uppercase opacity-80 block">Data</span>
@@ -74,7 +77,20 @@
                 <span class="material-symbols-outlined">expand_more</span>
               </div>
             </div>
-
+            <div class="space-y-4">
+            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Informações Adicionais</label>
+            <div class="space-y-4">
+              <div class="relative">
+                <input type="date" name="dataPagamento" id="dataPagamento" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all" value="<%= new Date().toISOString().split('T')[0] %>">
+                <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Data do Pagamento</label>
+              </div>
+              <div class="relative">
+                <textarea name="observacao" id="observacao" rows="2" class="peer w-full px-4 py-3 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all placeholder-transparent" placeholder="Observações"></textarea>
+                <label for="observacao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Observações</label>
+              </div>
+            </div>
+          </div>
+          <!-- tabela do itens adicionados -->
           <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
             <table class="w-full text-left border-collapse" id="cartTable">
               <thead>

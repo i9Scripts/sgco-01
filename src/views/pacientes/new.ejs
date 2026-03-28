@@ -15,11 +15,13 @@
             placeholder="Nº da Ficha"
             value="<%= formData && formData.nFicha %>"
             maxlength="20"
+            onblur="validarNFicha(this)"
             autofocus
           />
           <label for="nFicha" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
             Nº da Ficha
           </label>
+          <div id="ficha-feedback" class="hidden absolute -bottom-5 left-0 text-[10px] font-bold"></div>
         </div>
         <div class="md:col-span-3 relative">
           <input
@@ -274,4 +276,37 @@
       inputData.value = `${dia}/${mes}/${ano}`;
     }
   });
+
+  async function validarNFicha(input) {
+    const nFicha = input.value;
+    const feedback = document.getElementById('ficha-feedback');
+    
+    if (!nFicha) {
+      feedback.classList.add('hidden');
+      input.classList.remove('border-red-500', 'border-emerald-500');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/pacientes/check-ficha/${nFicha}`);
+      const data = await response.json();
+
+      feedback.classList.remove('hidden');
+      if (data.available) {
+        feedback.textContent = '✓ Disponível';
+        feedback.classList.remove('text-red-500');
+        feedback.classList.add('text-emerald-500');
+        input.classList.remove('border-red-500');
+        input.classList.add('border-emerald-500');
+      } else {
+        feedback.textContent = `⚠ Já em uso por: ${data.nome}`;
+        feedback.classList.remove('text-emerald-500');
+        feedback.classList.add('text-red-500');
+        input.classList.remove('border-emerald-500');
+        input.classList.add('border-red-500');
+      }
+    } catch (error) {
+      console.error('Erro ao validar ficha:', error);
+    }
+  }
 </script>

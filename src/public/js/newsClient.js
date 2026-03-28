@@ -18,7 +18,7 @@
     let rotatorInterval = null;
     let rotatorIndex = 0;
     let rotatorItems = [];
-    const ROTATE_MS = 15000;
+    const ROTATE_MS = 20000;
 
     function renderItem(i) {
       const it = rotatorItems[i];
