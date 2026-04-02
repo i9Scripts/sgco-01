@@ -99,25 +99,9 @@
                         </div>
                     </div>
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="/diagnosticos/new?idPaciente=<%= proximo.idPaciente %>" class="bg-white text-clinic-700 px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:bg-clinic-50 transition-colors flex items-center gap-2">
+                        <a href="/pacientes/<%= proximo.idPaciente %>/ficha" class="bg-white text-clinic-700 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-clinic-50 transition-colors flex items-center gap-2">
                             <span class="material-symbols-outlined text-lg">play_circle</span>
                             Iniciar Consulta
-                        </a>
-                        <button onclick="abrirModalGenerico('/pacientes/<%= proximo.idPaciente %>', 'Dados do Paciente')" class="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white/30 transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-lg">history</span>
-                            Abrir Prontuário
-                        </button>
-
-                        <% if (proximo.anamneses && proximo.anamneses.length > 0) { %>
-                            <a href="/anamneses/<%= proximo.anamneses[0].idAnam %>/edit" class="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white/30 transition-colors flex items-center gap-2" title="Editar última anamnese">
-                                <span class="material-symbols-outlined text-lg">edit_note</span>
-                                Editar Anamnese
-                            </a>
-                        <% } %>
-
-                        <a href="/pacientes/<%= proximo.idPaciente %>/edit" class="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white/30 transition-colors flex items-center gap-2" title="Editar dados do paciente">
-                            <span class="material-symbols-outlined text-lg">person_edit</span>
-                            Editar Paciente
                         </a>
                     </div>
                 </div>
@@ -162,7 +146,7 @@
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex justify-end gap-2">
-                                            <a href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>" class="text-clinic-600 hover:bg-clinic-100 p-2 rounded-full transition-colors" title="Iniciar Atendimento">
+                                            <a href="/pacientes/<%= paciente.idPaciente %>/ficha" class="text-clinic-600 hover:bg-clinic-100 p-2 rounded-full transition-colors" title="Iniciar Atendimento">
                                                 <span class="material-symbols-outlined">play_arrow</span>
                                             </a>
                                             <button onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')" class="text-slate-400 hover:bg-slate-100 p-2 rounded-full transition-colors">

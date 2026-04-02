@@ -7,13 +7,12 @@
         <div class="relative">
           <input 
             type="number" 
-            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-slate-300 rounded-lg bg-white focus:border-clinic-500 focus:ring-0 outline-none transition-all placeholder-transparent" 
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-slate-300 rounded-lg bg-slate-100 cursor-not-allowed text-slate-600 placeholder-transparent" 
             id="nFicha" 
             name="nFicha" 
             value="<%= paciente.nFicha %>" 
             placeholder="Nº Ficha"
-            disabled
-            autofocus 
+            readonly aria-readonly="true"
           />
           <label for="nFicha" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
             Nº Ficha

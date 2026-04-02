@@ -1,70 +1,265 @@
-  <title>Ficha do Paciente - <%= paciente?.nome || 'Paciente' %></title>
 
-  <div class="header">
-    <h1>Ficha do Paciente</h1>
-    <div class="small">Ficha em tamanho A5 - Impressão</div>
-  </div>
-
-  <div class="section">
-    <div class="row"><span class="label">Ficha:</span> <%= paciente?.nFicha || 'N/D' %></div>
-    <div class="row"><span class="label">Nome:</span> <%= paciente?.nome || 'N/D' %></div>
-    <div class="row"><span class="label">CPF:</span> <%= paciente?.cpf || 'N/D' %></div>
-    <div class="row"><span class="label">Nascimento:</span> <%= paciente?.dataNascFormatada || 'N/D' %> <span class="small">(<%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente + ' anos' : 'N/D' %>)</span></div>
-    <div class="row"><span class="label">Endereço:</span> <%= [paciente?.endereco, paciente?.numero].filter(Boolean).join(', ') || 'N/D' %></div>
-    <div class="row"><span class="label">Bairro / Cidade:</span> <%= [paciente?.bairro, paciente?.cidade].filter(Boolean).join(' / ') || 'N/D' %></div>
-    <div class="row"><span class="label">Contato:</span> <%= paciente?.celular || 'N/D' %></div>
-  </div>
-
-  <div class="section">
-    <h3 style="margin:6px 0">Anamnese</h3>
-    <% const ultimaAnamnese = anamneses && anamneses.length > 0 ? anamneses[0] : null; %>
-    <% if (ultimaAnamnese) { %>
-      <div class="row"><span class="label">Motivo:</span> <%= ultimaAnamnese.motivo || 'N/D' %></div>
-      <div class="row"><span class="label">Último Exame:</span> <%= ultimaAnamnese.ultimoExame || 'N/D' %></div>
-      <div class="row"><span class="label">Sintomas:</span> <%= ultimaAnamnese.sintomas || 'N/D' %></div>
-      <div class="row"><span class="label">Trauma/Cirurgia:</span> <%= ultimaAnamnese.trauma || 'N/D' %></div>
-      <div class="two-col">
-        <div class="col">
-          <div class="row"><span class="label">Usa Óculos:</span> <%= ultimaAnamnese.usuarioOculos ? 'Sim' : 'Não' %></div>
-          <div class="row"><span class="label">Usou LC:</span> <%= ultimaAnamnese.usuarioLC ? 'Sim' : 'Não' %></div>
-          <div class="row"><span class="label">Diabetes:</span> <%= ultimaAnamnese.dm ? 'Sim' : 'Não' %></div>
-          <div class="row"><span class="label">HAS:</span> <%= ultimaAnamnese.has ? 'Sim' : 'Não' %></div>
+<body class="bg-slate-50">
+  <div class="bg-white/80 print-container">
+    <div class="max-w-4xl mx-auto p-4">
+      <!-- Cabeçalho / Resumo do Paciente -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+        <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+          <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+            <span style="font-size: 28px;">👤</span>
+          </div>
+          <div>
+            
+            <p class="text-xl font-extrabold text-slate-800">
+              <%= paciente?.nome %>
+              <span class="mx-2 text-slate-300">|</span>
+              <span class="text-slate-600 text-lg">Ficha: <%= paciente?.nFicha || 'N/D' %></span>
+            </p>
+          </div>
         </div>
-        <div class="col">
-          <div class="row"><span class="label">Glaucoma:</span> <%= ultimaAnamnese.glauc ? 'Sim' : 'Não' %></div>
-          <div class="row"><span class="label">DM na Família:</span> <%= ultimaAnamnese.dmFam || 'N/D' %></div>
-          <div class="row"><span class="label">HAS na Família:</span> <%= ultimaAnamnese.hasFam || 'N/D' %></div>
-          <div class="row"><span class="label">Glaucoma Família:</span> <%= ultimaAnamnese.glaucFam || 'N/D' %></div>
+
+        <div class="p-6 sm:p-8 space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Informações Básicas -->
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center">ℹ️ Informações Básicas</h4>
+              <div class="space-y-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Data de Atendimento</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.dataAtend || 'Não informada' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Nascimento / Idade</p>
+                  <p class="text-sm font-bold text-slate-700">
+                    <%= paciente?.dataNascFormatada || 'N/D' %>
+                    <span class="text-slate-400 font-medium ml-1">(<%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos)</span>
+                  </p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">CPF</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.cpf || 'Não informado' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Profissão</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.profissao || 'Não informada' %></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contato e Endereço -->
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center">📍 Contato e Endereço</h4>
+              <div class="space-y-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Celular</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.celular || 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Endereço</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.endereco || 'N/D' %>, <%= paciente?.numero || '' %><% if (paciente?.complemento) { %> - <%= paciente?.complemento %><% } %></p>
+                  <p class="text-xs text-slate-500"><%= paciente?.bairro || '' %> - <%= paciente?.cidade || '' %> / <%= paciente?.cep || '' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Responsável</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.responsavel || 'O próprio' %></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sistema -->
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center">⚙️ Registro</h4>
+              <div class="space-y-3">
+                
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Criado em</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.createdAt ? new Date(paciente.createdAt).toLocaleDateString('pt-BR') : 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Última Atualização</p>
+                  <p class="text-sm font-bold text-slate-700"><%= paciente?.updatedAt ? new Date(paciente.updatedAt).toLocaleDateString('pt-BR') : 'N/D' %></p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="row"><span class="label">Remédios:</span> <%= ultimaAnamnese.remedio || 'N/D' %></div>
-
-      <h4 style="margin:8px 0">Exames / Medidas</h4>
-      <div class="two-col small">
-        <div class="col">
-          <div class="row"><span class="label">Esf OD:</span> <%= ultimaAnamnese.esfOD || 'N/D' %></div>
-          <div class="row"><span class="label">Cil OD:</span> <%= ultimaAnamnese.cilOD || 'N/D' %></div>
-          <div class="row"><span class="label">Eixo OD:</span> <%= ultimaAnamnese.eixoOD || 'N/D' %></div>
-          <div class="row"><span class="label">AV s/ correção OD:</span> <%= ultimaAnamnese.avSCOD || 'N/D' %></div>
+      <!-- Anamnese Section -->
+      <% const ultimaAnamnese = anamneses && anamneses.length > 0 ? anamneses[0] : null; %>
+      <% if (ultimaAnamnese) { %>
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+        <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+          <div class="bg-emerald-100 p-3 rounded-full text-emerald-600"><span style="font-size:28px;">📋</span></div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Última Anamnese</h3>
+            <p class="text-lg font-extrabold text-slate-800"><%= ultimaAnamnese.motivo || 'Consulta' %></p>
+          </div>
         </div>
-        <div class="col">
-          <div class="row"><span class="label">Esf OE:</span> <%= ultimaAnamnese.esfOE || 'N/D' %></div>
-          <div class="row"><span class="label">Cil OE:</span> <%= ultimaAnamnese.cilOE || 'N/D' %></div>
-          <div class="row"><span class="label">Eixo OE:</span> <%= ultimaAnamnese.eixoOE || 'N/D' %></div>
-          <div class="row"><span class="label">AV s/ correção OE:</span> <%= ultimaAnamnese.avSCOE || 'N/D' %></div>
+
+        <div class="p-6 sm:p-8 space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest">Informações Clínicas</h4>
+              <div class="space-y-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Último Exame</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.ultimoExame || 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Sintomas</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.sintomas || 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Trauma/Cirurgia</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.trauma || 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Fármacos</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.remedio || 'N/D' %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest">Histórico</h4>
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Usa Óculos</p>
+                    <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.usuarioOculos ? 'Sim' : 'Não' %></p>
+                  </div>
+                  <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Usou LC</p>
+                    <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.usuarioLC ? 'Sim' : 'Não' %></p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Observações Gerais</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.obsGerais || 'N/D' %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest">Comorbidades</h4>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Diabetes</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.dm ? 'Sim' : 'Não' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">HAS</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.has ? 'Sim' : 'Não' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Glaucoma</p>
+                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.glauc ? 'Sim' : 'Não' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Antecedentes</p>
+                  <p class="text-sm font-bold text-slate-700"><%= [ultimaAnamnese.dmFam, ultimaAnamnese.hasFam, ultimaAnamnese.glaucFam].filter(Boolean).join(', ') || 'N/D' %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest">Lesometria</h4>
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <p class="font-bold text-slate-600 mb-2">OD (Olho Direito)</p>
+                  <div class="space-y-1">
+                    <div><span class="text-slate-400">Esf:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.esfOD || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">Cil:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.cilOD || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">Eixo:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.eixoOD || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">AV s/c:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.avSCOD || 'N/D' %></span></div>
+                  </div>
+                </div>
+                <div>
+                  <p class="font-bold text-slate-600 mb-2">OE (Olho Esquerdo)</p>
+                  <div class="space-y-1">
+                    <div><span class="text-slate-400">Esf:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.esfOE || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">Cil:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.cilOE || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">Eixo:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.eixoOE || 'N/D' %></span></div>
+                    <div><span class="text-slate-400">AV s/c:</span> <span class="font-bold text-slate-700"><%= ultimaAnamnese.avSCOE || 'N/D' %></span></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Adição</p>
+                <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.adicao || 'N/D' %></p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      <% } %>
 
-      <div class="row"><span class="label">Adição:</span> <%= ultimaAnamnese.adicao || 'N/D' %></div>
-      <div class="row obs"><span class="label">Observações:</span> <div style="display:inline-block; width:72%"><%= ultimaAnamnese.obsGerais || 'N/D' %></div></div>
-    <% } else { %>
-      <div class="row">Nenhuma anamnese registrada para este paciente.</div>
+      <!-- Serviços Registrados Section -->
+      <% if (typeof servicosCobrados !== 'undefined' && servicosCobrados && servicosCobrados.length > 0) { %>
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+        <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center space-x-4">
+          <div class="bg-clinic-100 p-3 rounded-full text-clinic-600"><span style="font-size:28px;">💼</span></div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Serviços / Procedimentos Registrados</h3>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="py-3 text-xs font-black text-slate-400 uppercase">Descrição</th>
+                  <th class="py-3 text-xs font-black text-slate-400 uppercase text-center">Qtd</th>
+                  <th class="py-3 text-xs font-black text-slate-400 uppercase text-right">Valor Unit.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% servicosCobrados.forEach(servico => { %>
+                  <tr class="border-b border-slate-50 last:border-0">
+                    <td class="py-3 text-sm font-bold text-slate-700"><%= servico.descricao %></td>
+                    <td class="py-3 text-sm font-bold text-slate-700 text-center"><%= servico.quantidade %></td>
+                    <td class="py-3 text-sm font-bold text-slate-700 text-right">R$ <%= parseFloat(servico.valorUnitario).toFixed(2) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Rodapé -->
+      <div class="mt-8 text-center text-xs text-slate-500"><p>Gerado em <%= new Date().toLocaleString('pt-BR') %></p></div>
+    </div>
+  </div>
+
+  <!-- Botões de Ação (fora do print-container) -->
+  <div class="pt-6 border-t border-slate-100 flex flex-wrap justify-end gap-3 no-print bg-white p-4">
+    <a href="/pacientes/<%= paciente.idPaciente %>/imprimir_ficha" target="_blank" class="px-6 py-2 bg-medical-navy text-white rounded-lg font-bold hover:bg-slate-300 transition-all flex items-center whitespace-nowrap">
+      <span style="margin-right:8px">🖨️</span> Imprimir Ficha
+    </a>
+    <button
+        onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>/edit %>','Editar Paciente')"
+        class="inline-flex items-center px-6 py-2.5 bg-medical-navy text-white rounded-xl font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all"
+      >
+        <span style="margin-right:8px">✏️</span> Editar Paciente
+      </button>
+    <% if (ultimaAnamnese && ultimaAnamnese.idAnam) { %>
+      <button
+        onclick="abrirModalGenerico('/anamneses/<%= ultimaAnamnese.idAnam %>/edit','Novo Paciente')"
+        class="inline-flex items-center px-6 py-2.5 bg-medical-navy text-white rounded-xl font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all"
+      >
+        <span style="margin-right:8px">📝</span> Editar Anamnese
+      </button>
     <% } %>
+    
+    <button
+        onclick="abrirModalGenerico('/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>','A Receita')"
+        class="inline-flex items-center px-6 py-2.5 bg-medical-navy text-white rounded-xl font-bold hover:bg-clinic-600 shadow-lg shadow-clinic-100 transition-all" title="Fazer a Receita"
+      >
+        <span style="margin-right:8px">✅</span> Finalizar Consulta
+      </button>
   </div>
-
-  <div style="margin-top:12px; font-size:10px; color:#666">Gerado em <%= new Date().toLocaleString('pt-BR') %></div>
-
-    <style>
-    @page { size: A5; margin: 10mm; }
-  </style>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= reportTitle || 'Relatório' %> - OptoSystem</title>
+  <link rel="stylesheet" href="/css/report.css">
+</head>
+<body>
+
+  <div class="print-container">
+    <header class="print-header">
+      <div class="logo">
+        <img src="/img/logo-print.png" alt="" onerror="this.style.display='none'" />
+        <div style="font-size: 12pt; font-weight: bold;">OPTOSYSTEM</div>
+      </div>
+      <div class="header-center">
+        <div class="report-title"><%= reportTitle || 'Relatório' %></div>
+      </div>
+      <div class="report-meta" style="font-size: 10pt; font-weight: bold;">
+        <% if (typeof metaInfo !== 'undefined') { %>
+          <% for (const [key, value] of Object.entries(metaInfo)) { %>
+            <div><%= key %>: <strong><%= value %></strong></div>
+          <% } %>
+        <% } %>
+        <div>Data: <%= new Date().toLocaleDateString('pt-BR') %></div>
+      </div>
+    </header>
+
+    <main class="report-content">
+      <%- body %>
+    </main>
+
+    <footer class="footer">
+      <p>Gerado pelo OptoSystem em <%= new Date().toLocaleString('pt-BR') %></p>
+    </footer>
+  </div>
+
+  <div class="no-print">
+    <button onclick="window.print()" class="no-print-btn">
+      🖨️ IMPRIMIR
+    </button>
+  </div>
+
+  <script>
+    // Iniciar impressão automaticamente se necessário
+    // window.onload = () => window.print();
+  </script>
+</body>
+</html>

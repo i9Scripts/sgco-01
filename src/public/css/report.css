@@ -1,0 +1,167 @@
+/* Global Report Styles - OptoSystem */
+
+:root {
+  --gutter: 6mm;
+  --primary-color: #000;
+  --secondary-color: #555;
+  --border-color: #ccc;
+  --bg-light: #f0f0f0;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .print-container {
+    padding: 0 !important;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--primary-color);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  line-height: 1.3;
+}
+
+.print-container {
+  padding: 10mm;
+  max-width: 210mm;
+  margin: 0 auto;
+}
+
+/* Header */
+.print-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 4mm;
+  margin-bottom: 6mm;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.report-title {
+  font-size: 16pt;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.report-meta {
+  font-size: 9pt;
+  text-align: right;
+}
+
+/* Grid Layout */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
+}
+
+.col-12 { grid-column: span 12; }
+.col-8 { grid-column: span 8; }
+.col-6 { grid-column: span 6; }
+.col-4 { grid-column: span 4; }
+.col-3 { grid-column: span 3; }
+
+/* Sections */
+.section-box {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  margin-bottom: 8px;
+  page-break-inside: avoid;
+}
+
+.section-title {
+  background: var(--bg-light);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 9pt;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border-color);
+  margin: -8px -8px 8px -8px;
+}
+
+/* Typography */
+.label {
+  font-size: 8pt;
+  color: var(--secondary-color);
+  font-weight: bold;
+  text-transform: uppercase;
+  display: block;
+}
+
+.value {
+  font-size: 10pt;
+  font-weight: normal;
+  margin-bottom: 4px;
+}
+
+.bold-value {
+  font-weight: bold;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+table th, table td {
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  text-align: left;
+  font-size: 9pt;
+}
+
+table th {
+  background: #f9f9f9;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 8pt;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Footer */
+.footer {
+  margin-top: 20px;
+  font-size: 8pt;
+  text-align: center;
+  color: #777;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+/* Action Button */
+.no-print-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}

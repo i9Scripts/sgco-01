@@ -16,6 +16,7 @@ router.post('/', pacienteController.createPaciente); // POST /pacientes
 router.get('/search', pacienteController.searchPacientes); // GET /pacientes/search
 router.get('/check-ficha/:nFicha', pacienteController.checkFicha); // GET /pacientes/check-ficha/123
 router.get('/:idPaciente/ficha', pacienteController.PacienteFicha);
+router.get('/:idPaciente/imprimir_ficha', pacienteController.imprimirFicha);
 router.get('/:idPaciente/selecionar', pacienteController.selecionarPaciente);
 // Rota para a ficha do paciente (relatório)
 

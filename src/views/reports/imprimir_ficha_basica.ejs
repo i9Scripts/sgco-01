@@ -1,0 +1,198 @@
+<!-- Identificação do Paciente -->
+<div class="section-box">
+  <div class="section-title">Identificação do Paciente</div>
+  <div class="grid-container">
+    <div class="col-6">
+      <span class="label">Nome Completo</span>
+      <div class="value bold-value"><%= paciente?.nome %></div>
+    </div>
+    <div class="col-3">
+      <span class="label">CPF</span>
+      <div class="value"><%= paciente?.cpf || 'N/D' %></div>
+    </div>
+    <div class="col-3">
+      <span class="label">Data de Nascimento</span>
+      <div class="value"><%= paciente?.dataNascFormatada || 'N/D' %> (<%= typeof idadePaciente !== 'undefined' && idadePaciente !== null ? idadePaciente : 'N/D' %> anos)</div>
+    </div>
+    
+    <div class="col-4">
+      <span class="label">Celular</span>
+      <div class="value"><%= paciente?.celular || 'N/D' %></div>
+    </div>
+    <div class="col-4">
+      <span class="label">Profissão</span>
+      <div class="value"><%= paciente?.profissao || 'N/D' %></div>
+    </div>
+    <div class="col-4">
+      <span class="label">Responsável</span>
+      <div class="value"><%= paciente?.responsavel || 'O próprio' %></div>
+    </div>
+
+    <div class="col-12">
+      <span class="label">Endereço</span>
+      <div class="value">
+        <%= paciente?.endereco || 'N/D' %>, <%= paciente?.numero || '' %><% if (paciente?.complemento) { %> - <%= paciente?.complemento %><% } %>
+        - <%= paciente?.bairro || '' %> - <%= paciente?.cidade || '' %> / <%= paciente?.cep || '' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Serviço Cobrado (destaque) -->
+<% if (typeof servicoDestaque !== 'undefined' && servicoDestaque) { %>
+  <div class="section-box" style="border-left:4px solid #0f766e; margin-top:8px; padding-left:12px;">
+    <div class="section-title">Serviço Cobrado</div>
+    <div class="grid-container">
+      <div class="col-12">
+        <div class="value bold-value" style="font-size:1.05rem; color:#064e3b;"><%= servicoDestaque.descricao %> <% if (servicoDestaque.valorUnitario) { %> - R$ <%= parseFloat(servicoDestaque.valorUnitario).toFixed(2) %><% } %></div>
+      </div>
+    </div>
+  </div>
+<% } else if (Array.isArray(servicosCobrados) && servicosCobrados.length > 0) { %>
+  <div class="section-box" style="border-left:4px solid #0f766e; margin-top:8px; padding-left:12px;">
+    <div class="section-title">Serviços Cobrados</div>
+    <div class="grid-container">
+      <% servicosCobrados.forEach(function(s) { %>
+        <div class="col-12"><div class="value"><%= s.descricao %> - R$ <%= parseFloat(s.valorUnitario).toFixed(2) %> x <%= s.quantidade || 1 %></div></div>
+      <% }) %>
+    </div>
+  </div>
+<% } %>
+
+<% const ultimaAnamnese = anamneses && anamneses.length > 0 ? anamneses[0] : null; %>
+
+<!-- Anamnese / Histórico -->
+<div class="section-box">
+  <div class="section-title">Anamnese / Queixa Principal</div>
+  <div class="grid-container">
+    <div class="col-12">
+      <span class="label">Motivo da Consulta / Sintomas</span>
+      <div class="value"><%= ultimaAnamnese?.motivo || 'N/D' %> - <%= ultimaAnamnese?.sintomas || '' %></div>
+    </div>
+    <div class="col-6">
+      <span class="label">Trauma / Cirurgia Ocular</span>
+      <div class="value"><%= ultimaAnamnese?.trauma || 'N/D' %></div>
+    </div>
+    <div class="col-6">
+      <span class="label">Fármacos em uso</span>
+      <div class="value"><%= ultimaAnamnese?.remedio || 'N/D' %></div>
+    </div>
+    <div class="col-4">
+      <span class="label">Usa Óculos?</span>
+      <div class="value"><%= ultimaAnamnese?.usuarioOculos ? 'Sim' : 'Não' %></div>
+    </div>
+    <div class="col-4">
+      <span class="label">Usa Lentes de Contato?</span>
+      <div class="value"><%= ultimaAnamnese?.usuarioLC ? 'Sim' : 'Não' %></div>
+    </div>
+    <div class="col-4">
+      <span class="label">Último Exame</span>
+      <div class="value"><%= ultimaAnamnese?.ultimoExame || 'N/D' %></div>
+    </div>
+  </div>
+</div>
+
+<!-- Comorbidades -->
+<div class="section-box">
+  <div class="section-title">Comorbidades e Antecedentes Familiares</div>
+  <div class="grid-container">
+    <div class="col-6">
+      <span class="label">Pessoais</span>
+      <div class="value">
+        <%= [
+          ultimaAnamnese?.dm ? 'Diabetes (DM)' : null,
+          ultimaAnamnese?.has ? 'Hipertensão (HAS)' : null,
+          ultimaAnamnese?.glauc ? 'Glaucoma' : null
+        ].filter(Boolean).join(', ') || 'Nenhum informado' %>
+      </div>
+    </div>
+    <div class="col-6">
+      <span class="label">Familiares</span>
+      <div class="value">
+        <%= [
+          ultimaAnamnese?.dmFam ? 'Diabetes' : null,
+          ultimaAnamnese?.hasFam ? 'Hipertensão' : null,
+          ultimaAnamnese?.glaucFam ? 'Glaucoma' : null
+        ].filter(Boolean).join(', ') || 'Nenhum informado' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exames Oculares -->
+<div class="section-box">
+  <div class="section-title">Exames Oculares</div>
+  <div class="grid-container">
+    
+    <!-- Lesometria -->
+    <div class="col-12" style="margin-top: 10px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span class="label">Lesometria</span>
+        <span class="label" style="margin-right: 38px">AV S/C</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Olho</th>
+            <th class="text-center">Esférico</th>
+            <th class="text-center">Cilíndrico</th>
+            <th class="text-center">Eixo</th>
+            <th class="text-center">Longe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Olho Direito (OD)</td>
+            <td class="text-center"><%= ultimaAnamnese?.esfOD || '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.cilOD || '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.eixoOD || '|________|' %>°</td>
+            <td class="text-center"><strong><%= ultimaAnamnese?.avSCOD || '|________|' %></strong></td>
+          </tr>
+          <tr>
+            <td>Olho Esquerdo (OE)</td>
+            <td class="text-center"><%= ultimaAnamnese?.esfOE || '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.cilOE || '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.eixoOE || '|________|' %>°</td>
+            <td class="text-center"><strong><%= ultimaAnamnese?.avSCOE || '|________|' %></strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 8px; text-align: right;">
+        <strong>Adição:</strong> <%= ultimaAnamnese?.adicao || '|________|' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Observações -->
+<div class="section-box">
+  <div class="section-title">Observações Gerais</div>
+  <div class="value" style="min-height: 40px;">
+    <%= ultimaAnamnese?.obsGerais || 'Nenhuma observação adicional.' %>
+  </div>
+</div>
+
+<!-- Serviços Contratados -->
+<% if (typeof servicosCobrados !== 'undefined' && servicosCobrados && servicosCobrados.length > 0) { %>
+<div class="section-box">
+  <div class="section-title">Serviços / Procedimentos Registrados</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Descrição do Serviço</th>
+        <th class="text-center">Quantidade</th>
+        <th class="text-center">Valor Unitário</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% servicosCobrados.forEach(servico => { %>
+        <tr>
+          <td><%= servico.descricao %></td>
+          <td class="text-center"><%= servico.quantidade %></td>
+          <td class="text-center">R$ <%= parseFloat(servico.valorUnitario).toFixed(2) %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>

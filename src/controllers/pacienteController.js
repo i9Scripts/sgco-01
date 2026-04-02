@@ -650,16 +650,146 @@ export const pacienteController = {
       // Formatar a data de nascimento para exibição, se existir
       paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
 
+      // Busca TODOS os serviços cobrados para este paciente através de seus lançamentos financeiros
+      let servicosCobrados = [];
+      let servicoDestaque = null;
+      try {
+        const lancamentos = await prisma.lancamentoFinanceiro.findMany({
+          where: { pacienteId: idPaciente },
+          include: { 
+            items: { 
+              include: { 
+                servico: true 
+              } 
+            } 
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        // Achata todos os itens de todos os lançamentos que contêm serviços
+        lancamentos.forEach(lanc => {
+          if (lanc.items) {
+            lanc.items.forEach(it => {
+              if (it.servico) {
+                servicosCobrados.push({
+                  descricao: it.servico.descricao,
+                  valorUnitario: it.valorUnitario,
+                  quantidade: it.quantidade || 1,
+                  data: lanc.createdAt // Para saber quando foi realizado
+                });
+              }
+            });
+          }
+        });
+
+        if (servicosCobrados.length > 0) {
+          servicoDestaque = servicosCobrados[0]; // O mais recente
+        }
+      } catch (e) {
+        console.warn('Não foi possível obter serviços cobrados para ficha:', e.message || e);
+      }
+
       res.render('pacientes/ficha_a5', {
         pageTitle: `Ficha de ${paciente.nome}`,
         pageIcon: 'ri-file-text-line', // Ícone para relatórios
         paciente,
         anamneses: paciente.anamneses,
         idadePaciente,
+        servicosCobrados,
+        servicoDestaque,
       });
     } catch (error) {
       console.error('Erro ao gerar ficha do paciente:', error);
       req.flash('error', 'Erro ao gerar ficha do paciente. Tente novamente.');
+      return res.redirect(`/pacientes/${req.params.idPaciente}`);
+    }
+  },
+  async imprimirFicha(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      const idPaciente = parseInt(req.params.idPaciente);
+
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/new');
+      }
+
+      if (isNaN(idPaciente)) {
+        req.flash('error', 'ID do paciente inválido.');
+        return res.redirect('/pacientes');
+      }
+
+      const paciente = await prisma.paciente.findUnique({
+        where: { idPaciente: idPaciente },
+        include: {
+          anamneses: {
+            orderBy: { createdAt: 'desc' },
+          },
+        },
+      });
+
+      if (!paciente || paciente.consultorioId !== idConsultorio) {
+        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        return res.redirect('/pacientes');
+      }
+
+      paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
+      const idadePaciente = paciente.dataNasc ? dayjs().diff(dayjs(paciente.dataNasc), 'year') : 'N/D';
+      
+      // Busca TODOS os serviços cobrados para este paciente através de seus lançamentos financeiros
+      let servicosCobrados = [];
+      let servicoDestaque = null;
+      try {
+        const lancamentos = await prisma.lancamentoFinanceiro.findMany({
+          where: { pacienteId: idPaciente },
+          include: { 
+            items: { 
+              include: { 
+                servico: true 
+              } 
+            } 
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        // Achata todos os itens de todos os lançamentos que contêm serviços
+        lancamentos.forEach(lanc => {
+          if (lanc.items) {
+            lanc.items.forEach(it => {
+              if (it.servico) {
+                servicosCobrados.push({
+                  descricao: it.servico.descricao,
+                  valorUnitario: it.valorUnitario,
+                  quantidade: it.quantidade || 1,
+                  data: lanc.createdAt
+                });
+              }
+            });
+          }
+        });
+
+        if (servicosCobrados.length > 0) {
+          servicoDestaque = servicosCobrados[0];
+        }
+      } catch (e) {
+        console.warn('Não foi possível obter serviços cobrados para impressão:', e.message || e);
+      }
+
+      res.render('reports/imprimir_ficha_basica', {
+        layout: 'layouts/report',
+        reportTitle: 'Ficha Optométrica Básica',
+        metaInfo: {
+          Ficha: paciente.nFicha || 'N/D',
+        },
+        paciente,
+        anamneses: paciente.anamneses,
+        idadePaciente,
+        servicosCobrados,
+        servicoDestaque,
+      });
+    } catch (error) {
+      console.error('Erro ao gerar impressão da ficha:', error);
+      req.flash('error', 'Erro ao gerar impressão. Tente novamente.');
       return res.redirect(`/pacientes/${req.params.idPaciente}`);
     }
   },

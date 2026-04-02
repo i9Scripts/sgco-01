@@ -93,6 +93,7 @@
                   Registrada
                 </span>
                 <div class="flex gap-1">
+                  <% if (userRole === 'profissional') { %>
                   <button
                     onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>', 'Ver Anamnese')"
                     class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
@@ -107,6 +108,8 @@
                   >
                     <span class="material-symbols-outlined text-[18px]">edit</span>
                   </button>
+                  <% } %>
+                  <!-- Todos os perfis podem cadastrar nova anamnese -->
                   <button
                     onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')"
                     class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
