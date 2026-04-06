@@ -15,7 +15,7 @@
 
 :root {
   --receita-bg: url('/img/2964668.jpg');
-  --receita-bg-pos: 30% 80%; /* change to '20% 30%' etc. */
+  --receita-bg-pos: 30% 76%; /* change to '20% 30%' etc. */
   --receita-bg-size: 100%; /* change to 'cover', 'contain' or percentage */
 }
 
@@ -161,6 +161,21 @@ th {
 
 /* Styling for printing */
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 5mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .print-container {
+    padding: 0 !important;
+  }
   .corpo {
     width: 148mm;
     height: 210mm;

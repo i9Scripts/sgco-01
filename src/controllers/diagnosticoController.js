@@ -38,7 +38,7 @@ export const diagnosticoController = {
         return res.redirect('/consultorios/new');
       }
 
-      await prisma.diagnostico.create({
+      const novoDiagnostico = await prisma.diagnostico.create({
         data: {
           esfOD,
           cilOD,
@@ -67,7 +67,7 @@ export const diagnosticoController = {
       });
 
       req.flash('success', 'Diagnóstico criado com sucesso!');
-      return res.redirect('/profissionais/dashboard');
+      return res.redirect(`/diagnosticos/${novoDiagnostico.idDiagnostico}`);
     } catch (error) {
       console.error('Erro ao criar diagnóstico:', error);
       req.flash('error', 'Erro ao criar diagnóstico. Tente novamente.');
@@ -199,13 +199,13 @@ export const diagnosticoController = {
         pageIcon: 'ri-file-list-line',
         diagnostico,
         layout: false,
-        formatarSoma: (v1, v2) => {
-          const n1 = parseFloat(String(v1 || '0').replace(',', '.'));
-          const n2 = parseFloat(String(v2 || '0').replace(',', '.'));
-          const soma = n1 + n2;
-          if (Number.isNaN(soma)) return '';
-          return (soma > 0 ? '+' : '') + soma.toFixed(2).replace('.', ',');
-        },
+        // formatarSoma: (v1, v2) => {
+        //   const n1 = parseFloat(String(v1 || '0').replace(',', '.'));
+        //   const n2 = parseFloat(String(v2 || '0').replace(',', '.'));
+        //   const soma = n1 + n2;
+        //   if (Number.isNaN(soma)) return '';
+        //   return (soma > 0 ? '+' : '') + soma.toFixed(2).replace('.', ',');
+        // },
       });
     } catch (error) {
       console.error('Erro ao buscar diagnóstico:', error);
@@ -405,7 +405,7 @@ export const diagnosticoController = {
       });
 
       req.flash('success', 'Diagnóstico atualizado com sucesso!');
-      return res.redirect('/diagnosticos');
+      return res.redirect(`/diagnosticos/${idDiagnostico}`);
     } catch (error) {
       console.error('Erro ao atualizar diagnóstico:', error);
       req.flash('error', 'Erro ao atualizar diagnóstico. Tente novamente.');

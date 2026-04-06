@@ -1,0 +1,27 @@
+<% layout('layouts/report') %>
+<link rel="stylesheet" href="/css/report.css">
+<div class="print-container">
+  <header class="print-header">
+    <div class="logo"><img src="/img/LogotipoAC.png" alt="logo" style="height:48px"></div>
+    <div class="report-title">Relatório de Exemplo</div>
+    <div class="report-meta"><%= new Date().toLocaleDateString('pt-BR') %></div>
+  </header>
+
+  <main>
+    <section class="section-box">
+      <h3 class="section-title">Paciente</h3>
+      <p><strong>Nome:</strong> <%= paciente?.nome || 'N/D' %></p>
+      <p><strong>Data:</strong> <%= data || new Date().toLocaleDateString('pt-BR') %></p>
+    </section>
+
+    <section class="section-box">
+      <h3 class="section-title">Conteúdo</h3>
+      <p><%= conteudo || 'Sem conteúdo' %></p>
+    </section>
+  </main>
+</div>
+
+<div class="no-print" style="padding:12px;display:flex;justify-content:flex-end;gap:8px;">
+  <button onclick="window.print()" class="no-print-btn">🖨️ Imprimir</button>
+  <a href="/" class="btn">Fechar</a>
+</div>
