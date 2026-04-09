@@ -15,7 +15,7 @@ export const indexController = {
           pacientesReservados: [],
           agendamentosHoje: [],
           atendimentosHoje: 0,
-          usuario: null
+          usuario: null,
         });
       }
 
@@ -24,7 +24,7 @@ export const indexController = {
       if (idUser) {
         usuario = await prisma.user.findUnique({
           where: { idUser: idUser },
-          select: { nome: true }
+          select: { nome: true },
         });
       }
 
@@ -40,22 +40,22 @@ export const indexController = {
           consultorioId: idConsultorio,
           dataHora: {
             gte: hojeInicio,
-            lte: hojeFim
-          }
+            lte: hojeFim,
+          },
         },
         include: {
-          paciente: true
+          paciente: true,
         },
         orderBy: {
-          dataHora: 'asc'
-        }
+          dataHora: 'asc',
+        },
       });
 
       // Buscar pacientes na fila
       const pacientesNaFila = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio, naFila: true },
         include: { anamneses: { take: 1, orderBy: { createdAt: 'desc' } } },
-        orderBy: { createdAt: 'asc' }
+        orderBy: { createdAt: 'asc' },
       });
 
       // Buscar pacientes reservados (fora da fila mas ativos hoje?) ou apenas os que não estão na fila
@@ -63,7 +63,7 @@ export const indexController = {
       const pacientesReservados = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio, naFila: false },
         take: 10,
-        orderBy: { updatedAt: 'desc' }
+        orderBy: { updatedAt: 'desc' },
       });
 
       // Contagem de atendimentos finalizados hoje
@@ -72,10 +72,10 @@ export const indexController = {
           consultorioId: idConsultorio,
           createdAt: {
             gte: hojeInicio,
-            lte: hojeFim
+            lte: hojeFim,
           },
-          statusConsulta: 'Finalizada'
-        }
+          statusConsulta: 'Finalizada',
+        },
       });
 
       res.render('index', {
@@ -107,13 +107,6 @@ export const indexController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const isProfissional = !!req.session.idProfissional;
-
-      // Se não houver dados em locals, buscamos diretamente para garantir a atualização
-      // const pacientes = await prisma.paciente.findMany({
-      //   where: { consultorioId: idConsultorio, naFila: true },
-      //   include: { anamneses: true },
-      //   orderBy: { createdAt: 'asc' },
-      // });
 
       // Renderiza o partial passando as variáveis necessárias
       return res.render('fila-espera', {

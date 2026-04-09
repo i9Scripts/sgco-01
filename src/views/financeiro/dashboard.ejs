@@ -161,7 +161,7 @@
                     <% lancamentos.forEach(l => { %>
                     <tr class="hover:bg-slate-50/50 transition-colors">
                         <td class="px-6 py-4 text-slate-500">
-                            <%= new Date(l.dataPagamento).toLocaleDateString('pt-BR') %>
+                            <%= new Date(l.dataPagamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) %>
                         </td>
                         <td class="px-6 py-4 font-medium text-slate-700">
                             <%= l.paciente ? l.paciente.nome : 'N/A' %>

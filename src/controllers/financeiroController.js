@@ -212,16 +212,24 @@ export const listarParceirosPendentes = async (req, res) => {
   try {
     const { startDate: qStartDate, endDate: qEndDate } = req.query;
 
+    // Parse date strings as UTC boundaries to avoid timezone shifts
     let start = null;
     let end = null;
-    if (qStartDate) {
-      start = new Date(qStartDate);
-      start.setHours(0, 0, 0, 0);
-    }
-    if (qEndDate) {
-      end = new Date(qEndDate);
-      end.setHours(23, 59, 59, 999);
-    }
+    const parseUtcStart = (s) => {
+      const parts = (s || '').split('-').map(Number);
+      if (parts.length !== 3) return null;
+      const [y, m, d] = parts;
+      return new Date(Date.UTC(y, m - 1, d, 0, 0, 0, 0));
+    };
+    const parseUtcEnd = (s) => {
+      const parts = (s || '').split('-').map(Number);
+      if (parts.length !== 3) return null;
+      const [y, m, d] = parts;
+      return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
+    };
+
+    if (qStartDate) start = parseUtcStart(qStartDate);
+    if (qEndDate) end = parseUtcEnd(qEndDate);
 
     // Build where clause for consultas: parceiroId not null, pagamentoRealizado = false
     const whereClause = {
@@ -385,16 +393,26 @@ export const listarLancamentos = async (req, res) => {
     const { startDate: qStartDate, endDate: qEndDate } = req.query;
     const whereClause = { consultorioId: consultorioId };
 
+    // Parse date strings as UTC boundaries to avoid timezone shifts
     let start = null;
     let end = null;
-    if (qStartDate) {
-      start = new Date(qStartDate);
-      start.setHours(0, 0, 0, 0);
-    }
-    if (qEndDate) {
-      end = new Date(qEndDate);
-      end.setHours(23, 59, 59, 999);
-    }
+
+    const parseUtcStart = (s) => {
+      const parts = (s || '').split('-').map(Number);
+      if (parts.length !== 3) return null;
+      const [y, m, d] = parts;
+      return new Date(Date.UTC(y, m - 1, d, 0, 0, 0, 0));
+    };
+
+    const parseUtcEnd = (s) => {
+      const parts = (s || '').split('-').map(Number);
+      if (parts.length !== 3) return null;
+      const [y, m, d] = parts;
+      return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
+    };
+
+    if (qStartDate) start = parseUtcStart(qStartDate);
+    if (qEndDate) end = parseUtcEnd(qEndDate);
 
     // Quando o usuário filtra por período, o filtro deve ser aplicado sobre `dataPagamento`
     let orderByClause = { createdAt: 'desc' };
