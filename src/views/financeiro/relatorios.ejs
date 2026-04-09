@@ -1,29 +1,55 @@
-<div class="container-fluid py-4">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Gestão Financeira</h6>
-        </div>
-        <div class="card-body">
-            <div class="row text-center">
-                <div class="col-md-4 mb-3">
-                    <a href="/financeiro/dashboard" class="btn btn-outline-dark btn-lg btn-block">
-                        <i class="bi bi-speedometer2" style="font-size:2rem"></i>
-                        <div>Painel Principal</div>
-                    </a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <a href="/financeiro/relatorios/vendas-dia" class="btn btn-outline-primary btn-lg btn-block">
-                        <i class="bi bi-calendar-day" style="font-size:2rem"></i>
-                        <div>Vendas do Dia</div>
-                    </a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <a href="/financeiro/extrato" class="btn btn-outline-secondary btn-lg btn-block">
-                        <i class="bi bi-receipt" style="font-size:2rem"></i>
-                        <div>Extrato Completo</div>
-                    </a>
-                </div>
+<div class="max-w-6xl mx-auto p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold">Gestão Financeira</h2>
+                <p class="text-sm text-slate-500">Acesse relatórios e ferramentas financeiras do consultório.</p>
             </div>
+            <div>
+                <a href="/financeiro/dashboard" class="px-4 py-2 bg-clinic-500 text-white rounded">Voltar ao Painel</a>
+            </div>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a href="/financeiro/dashboard" class="block p-4 bg-slate-50 rounded-lg border hover:shadow-md transition">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl text-slate-700"><i class="bi bi-speedometer2"></i></div>
+                    <div>
+                        <div class="font-bold">Painel Principal</div>
+                        <div class="text-sm text-slate-500">Visão geral e indicadores</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/financeiro/relatorios/vendas-dia" class="block p-4 bg-slate-50 rounded-lg border hover:shadow-md transition">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl text-slate-700"><i class="bi bi-calendar-day"></i></div>
+                    <div>
+                        <div class="font-bold">Vendas do Dia</div>
+                        <div class="text-sm text-slate-500">Relatório resumido das vendas</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/financeiro/extrato" class="block p-4 bg-slate-50 rounded-lg border hover:shadow-md transition">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl text-slate-700"><i class="bi bi-receipt"></i></div>
+                    <div>
+                        <div class="font-bold">Extrato Completo</div>
+                        <div class="text-sm text-slate-500">Histórico de lançamentos financeiros</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/financeiro/relatorios/parceiros-pendentes" class="block p-4 bg-amber-50 rounded-lg border hover:shadow-md transition">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl text-amber-700"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="font-bold">Parceiros Pendentes</div>
+                        <div class="text-sm text-amber-700">Relatório de parceiros com pagamentos pendentes</div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>

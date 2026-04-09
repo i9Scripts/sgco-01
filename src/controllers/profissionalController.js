@@ -228,6 +228,12 @@ export const profissionalController = {
         return res.redirect('/consultorios/new');
       }
 
+      // Carregar profissional (quando a sessão indica que é um profissional logado)
+      let profissional = null;
+      if (req.session?.idProfissional) {
+        profissional = await findProfissionalDoConsultorio(req.session.idProfissional, idConsultorio);
+      }
+
       const hoje = new Date();
       hoje.setHours(0, 0, 0, 0);
       const amanha = new Date(hoje);
@@ -274,6 +280,7 @@ export const profissionalController = {
         pacientesReservados,
         agendamentosHoje,
         atendimentosHoje,
+        profissional,
         usuario: req.session.usuario,
       });
     } catch (error) {

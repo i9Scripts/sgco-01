@@ -151,7 +151,7 @@
                     <tr class="bg-slate-50 border-b text-slate-600 text-xs font-semibold uppercase tracking-wider">
                         <th class="px-6 py-4">Data</th>
                         <th class="px-6 py-4">Paciente</th>
-                        <th class="px-6 py-4">Descrição</th>
+                        <th class="px-6 py-4">Observação</th>
                         <th class="px-6 py-4 text-right">Valor</th>
                         <th class="px-6 py-4 text-center">Status</th>
                         <th class="px-6 py-4 text-right">Ações</th>
@@ -167,7 +167,7 @@
                             <%= l.paciente ? l.paciente.nome : 'N/A' %>
                         </td>
                         <td class="px-6 py-4 text-slate-600 italic text-xs">
-                            <%= l.descricao %>
+                            <%= l.observacao || '—' %>
                         </td>
                         <td class="px-6 py-4 text-right font-semibold">
                             R$ <%= l.valorFinal.toFixed(2) %>

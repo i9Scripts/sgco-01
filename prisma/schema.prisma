@@ -167,7 +167,6 @@ model Parceiro {
 
 model LancamentoFinanceiro {
   idLancamento    Int             @id @default(autoincrement())
-  descricao       String?         @db.VarChar(255)
   valorBruto      Decimal         @db.Decimal(10, 2)
   valorDesconto   Decimal         @default(0.00) @db.Decimal(10, 2)
   valorFinal      Decimal         @db.Decimal(10, 2)

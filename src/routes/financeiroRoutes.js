@@ -30,6 +30,9 @@ router.get('/relatorios', financeiroController.renderizarRelatorios);
 // Relatório: vendas do dia
 router.get('/relatorios/vendas-dia', financeiroController.vendasDoDia);
 
+// Relatório: Parceiros com pagamentos pendentes no período
+router.get('/relatorios/parceiros-pendentes', financeiroController.listarParceirosPendentes);
+
 // Selecionar paciente para cobrança (permite que profissional escolha quem cobrar)
 router.get('/selecionar-paciente', financeiroController.renderizarSelecionarPaciente);
 

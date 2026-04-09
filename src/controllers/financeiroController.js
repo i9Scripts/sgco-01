@@ -135,12 +135,11 @@ export const processarCobranca = async (req, res) => {
 
     await prisma.lancamentoFinanceiro.create({
       data: {
-        descricao: `Venda para o paciente ${pacienteId}`,
         valorBruto: valorBruto,
         valorDesconto: desconto,
         valorFinal: valorFinal,
         formaPagamento: forma,
-        statusPagamento: 'Pago',
+        statusPagamento: forma === FormaPagamento.Convenio ? StatusPagamento.Pendente : StatusPagamento.Pago,
         ...(dataPagamento && { dataPagamento: new Date(dataPagamento) }),
         observacao: observacao || null,
         paciente: { connect: { idPaciente: parseInt(pacienteId) } },
@@ -207,34 +206,135 @@ export const renderizarRelatorios = async (req, res) => {
   }
 };
 
+// GET - Lista parceiros com pagamentos pendentes no período selecionado
+export const listarParceirosPendentes = async (req, res) => {
+  const consultorioId = req.session.consultorio.idConsultorio;
+  try {
+    const { startDate: qStartDate, endDate: qEndDate } = req.query;
+
+    let start = null;
+    let end = null;
+    if (qStartDate) {
+      start = new Date(qStartDate);
+      start.setHours(0, 0, 0, 0);
+    }
+    if (qEndDate) {
+      end = new Date(qEndDate);
+      end.setHours(23, 59, 59, 999);
+    }
+
+    // Build where clause for consultas: parceiroId not null, pagamentoRealizado = false
+    const whereClause = {
+      consultorioId,
+      parceiroId: { not: null },
+      pagamentoRealizado: false,
+    };
+
+    if (start && end) {
+      whereClause.createdAt = { gte: start, lte: end };
+    } else if (start) {
+      whereClause.createdAt = { gte: start };
+    } else if (end) {
+      whereClause.createdAt = { lte: end };
+    }
+
+    const consultas = await prisma.consulta.findMany({
+      where: whereClause,
+      include: { parceiro: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Agrupar por parceiro
+    const mapa = new Map();
+    consultas.forEach((c) => {
+      const pid = c.parceiroId;
+      const nome = c.parceiro?.nome || '—';
+      const valor = parseFloat(c.valorAPagarParceiro || 0);
+      if (!mapa.has(pid)) mapa.set(pid, { parceiroId: pid, nome, total: 0, count: 0 });
+      const cur = mapa.get(pid);
+      cur.total += valor;
+      cur.count += 1;
+    });
+
+    const parceiros = Array.from(mapa.values());
+
+    res.render('financeiro/relatorios-parceiros-pendentes', {
+      pageTitle: 'Parceiros Pendentes',
+      pageIcon: 'bi-people',
+      parceiros,
+      startDate: qStartDate || '',
+      endDate: qEndDate || '',
+    });
+  } catch (error) {
+    console.error('Erro ao listar parceiros pendentes:', error);
+    req.flash('error', 'Erro ao gerar relatório de parceiros pendentes.');
+    res.redirect('/financeiro/relatorios');
+  }
+};
+
 // GET - Relatório: Vendas do dia
 export const vendasDoDia = async (req, res) => {
   const consultorioId = req.session.consultorio.idConsultorio;
   try {
+    // Paginação e filtros via query params
+    const q = req.query.q || '';
+    const formaFilter = req.query.forma || '';
+    const page = parseInt(req.query.page || '1', 10) || 1;
+    const pageSize = parseInt(req.query.pageSize || '15', 10) || 15;
+
     const start = new Date();
     start.setHours(0, 0, 0, 0);
     const end = new Date();
     end.setHours(23, 59, 59, 999);
 
+    const whereClause = {
+      consultorioId: consultorioId,
+      createdAt: { gte: start, lte: end },
+    };
+
+    if (formaFilter) whereClause.formaPagamento = formaFilter;
+
+    if (q) {
+      whereClause.OR = [
+        { paciente: { nome: { contains: q } } },
+        { parceiro: { nome: { contains: q } } },
+        { observacao: { contains: q } },
+      ];
+    }
+
+    const totalCount = await prisma.lancamentoFinanceiro.count({ where: whereClause });
+
+    const totalAgg = await prisma.lancamentoFinanceiro.aggregate({
+      where: whereClause,
+      _sum: { valorFinal: true },
+    });
+
     const vendas = await prisma.lancamentoFinanceiro.findMany({
-      where: {
-        consultorioId: consultorioId,
-        createdAt: { gte: start, lte: end },
-      },
+      where: whereClause,
       include: {
         paciente: { select: { nome: true } },
         parceiro: { select: { nome: true } },
       },
       orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
-    const total = vendas.reduce((sum, v) => sum + (parseFloat(v.valorFinal) || 0), 0);
+    const total = (totalAgg._sum.valorFinal || 0).toFixed(2);
+
+    const pageCount = Math.max(1, Math.ceil(totalCount / pageSize));
 
     res.render('financeiro/vendas-do-dia', {
       pageTitle: 'Vendas do Dia',
       pageIcon: 'bi-calendar-day',
       vendas,
-      total: total.toFixed(2),
+      total,
+      q,
+      formaFilter,
+      page,
+      pageCount,
+      pageSize,
+      formasPagamento: Object.values(FormaPagamento),
     });
   } catch (error) {
     console.error('Erro ao gerar relatório de vendas do dia:', error);
@@ -281,23 +381,49 @@ export const listarLancamentos = async (req, res) => {
   const consultorioId = req.session.consultorio.idConsultorio;
 
   try {
+    // Filtragem por período (opcional)
+    const { startDate: qStartDate, endDate: qEndDate } = req.query;
+    const whereClause = { consultorioId: consultorioId };
+
+    let start = null;
+    let end = null;
+    if (qStartDate) {
+      start = new Date(qStartDate);
+      start.setHours(0, 0, 0, 0);
+    }
+    if (qEndDate) {
+      end = new Date(qEndDate);
+      end.setHours(23, 59, 59, 999);
+    }
+
+    // Quando o usuário filtra por período, o filtro deve ser aplicado sobre `dataPagamento`
+    let orderByClause = { createdAt: 'desc' };
+    if (start && end) {
+      whereClause.dataPagamento = { gte: start, lte: end };
+      orderByClause = { dataPagamento: 'desc' };
+    } else if (start) {
+      whereClause.dataPagamento = { gte: start };
+      orderByClause = { dataPagamento: 'desc' };
+    } else if (end) {
+      whereClause.dataPagamento = { lte: end };
+      orderByClause = { dataPagamento: 'desc' };
+    }
+
     const lancamentos = await prisma.lancamentoFinanceiro.findMany({
-      where: { consultorioId: consultorioId },
+      where: whereClause,
       include: {
-        paciente: {
-          select: { nome: true },
-        },
-        parceiro: {
-          select: { nome: true },
-        },
+        paciente: { select: { nome: true } },
+        parceiro: { select: { nome: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: orderByClause,
     });
 
     res.render('financeiro/extrato', {
       pageTitle: 'Extrato Financeiro',
       pageIcon: 'bi-cash-stack',
       lancamentos,
+      startDate: qStartDate || '',
+      endDate: qEndDate || '',
     });
   } catch (error) {
     console.error('Erro ao listar lançamentos financeiros:', error);

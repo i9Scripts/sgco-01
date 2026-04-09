@@ -656,26 +656,26 @@ export const pacienteController = {
       try {
         const lancamentos = await prisma.lancamentoFinanceiro.findMany({
           where: { pacienteId: idPaciente },
-          include: { 
-            items: { 
-              include: { 
-                servico: true 
-              } 
-            } 
+          include: {
+            items: {
+              include: {
+                servico: true,
+              },
+            },
           },
           orderBy: { createdAt: 'desc' },
         });
 
         // Achata todos os itens de todos os lançamentos que contêm serviços
-        lancamentos.forEach(lanc => {
+        lancamentos.forEach((lanc) => {
           if (lanc.items) {
-            lanc.items.forEach(it => {
+            lanc.items.forEach((it) => {
               if (it.servico) {
                 servicosCobrados.push({
                   descricao: it.servico.descricao,
                   valorUnitario: it.valorUnitario,
                   quantidade: it.quantidade || 1,
-                  data: lanc.createdAt // Para saber quando foi realizado
+                  data: lanc.createdAt, // Para saber quando foi realizado
                 });
               }
             });
@@ -735,33 +735,33 @@ export const pacienteController = {
 
       paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
       const idadePaciente = paciente.dataNasc ? dayjs().diff(dayjs(paciente.dataNasc), 'year') : 'N/D';
-      
+
       // Busca TODOS os serviços cobrados para este paciente através de seus lançamentos financeiros
       let servicosCobrados = [];
       let servicoDestaque = null;
       try {
         const lancamentos = await prisma.lancamentoFinanceiro.findMany({
           where: { pacienteId: idPaciente },
-          include: { 
-            items: { 
-              include: { 
-                servico: true 
-              } 
-            } 
+          include: {
+            items: {
+              include: {
+                servico: true,
+              },
+            },
           },
           orderBy: { createdAt: 'desc' },
         });
 
         // Achata todos os itens de todos os lançamentos que contêm serviços
-        lancamentos.forEach(lanc => {
+        lancamentos.forEach((lanc) => {
           if (lanc.items) {
-            lanc.items.forEach(it => {
+            lanc.items.forEach((it) => {
               if (it.servico) {
                 servicosCobrados.push({
                   descricao: it.servico.descricao,
                   valorUnitario: it.valorUnitario,
                   quantidade: it.quantidade || 1,
-                  data: lanc.createdAt
+                  data: lanc.createdAt,
                 });
               }
             });

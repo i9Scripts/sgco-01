@@ -1,7 +1,7 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8 bg-white/70 p-6 rounded-xl shadow-sm">
     <div class="lg:col-span-1 flex flex-col justify-center">
-        <h2 class="font-headline text-2xl font-extrabold text-primary leading-tight">Olá, <%= usuario ? usuario.nome : 'Doutor' %></h2>
+        <h2 class="font-headline text-2xl font-extrabold text-primary leading-tight">Olá, <%= profissional ? profissional.nome : 'Doutor' %></h2>
         <p class="text-secondary text-sm mt-2">Você tem <%= agendamentosHoje.length %> consultas agendadas para hoje.</p>
     </div>
     
@@ -31,7 +31,7 @@
             <span class="material-symbols-outlined">event_repeat</span>
         </div>
         <div>
-            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Reservados</p>
+            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Cadastrados</p>
             <p class="text-2xl font-headline font-bold text-slate-800"><%= pacientesReservados.length %></p>
         </div>
     </div>
@@ -42,8 +42,8 @@
     <!-- Column Left: Daily Schedule (5 cols) -->
     <div class="lg:col-span-5 space-y-6 bg-medical-navy/80 p-6 rounded-xl shadow-sm">
         <div class="flex items-center justify-between">
-            <h3 class="font-headline font-bold text-white text-lg text-slate-800">Agenda do Dia</h3>
-            <a href="/agendamentos" class="text-xs font-label text-white-50 font-bold hover:underline">Ver Calendário Completo</a>
+            <h3 class="font-headline font-bold text-white text-lg ">Agenda do Dia</h3>
+            <a href="/agendamentos" class="text-xs font-label text-white font-bold hover:underline">Ver Calendário Completo</a>
         </div>
         
         <div class="space-y-4">

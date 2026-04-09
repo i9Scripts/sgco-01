@@ -1,48 +1,84 @@
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Extrato Financeiro</h6>
+<div class="bg-white/80 rounded-xl shadow-sm p-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-headline font-extrabold text-slate-800">Extrato Financeiro</h2>
+            <p class="text-sm text-slate-500 mt-1">Registro de lançamentos do consultório</p>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Paciente</th>
-                            <th>Descrição</th>
-                            <th>Parceiro</th>
-                            <th>Valor Bruto (R$)</th>
-                            <th>Desconto (R$)</th>
-                            <th>Valor Final (R$)</th>
-                            <th>Forma Pagamento</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (lancamentos.length > 0) { %>
-                            <% lancamentos.forEach(lancamento => { %>
-                                <tr>
-                                    <td><%= new Date(lancamento.createdAt).toLocaleDateString('pt-BR') %></td>
-                                    <td><%= lancamento.paciente.nome %></td>
-                                    <td><%= lancamento.descricao || 'Atendimento' %></td>
-                                    <td><%= lancamento.parceiro ? lancamento.parceiro.nome : 'Particular' %></td>
-                                    <td><%= lancamento.valorBruto.toFixed(2) %></td>
-                                    <td><%= lancamento.valorDesconto.toFixed(2) %></td>
-                                    <td><%= lancamento.valorFinal.toFixed(2) %></td>
-                                    <td><%= lancamento.formaPagamento %></td>
-                                    <td><%= lancamento.statusPagamento %></td>
-                                </tr>
-                            <% }) %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="9" class="text-center">Nenhum lançamento financeiro encontrado.</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+
+        <div class="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex-1">
+                <form action="/financeiro/extrato" method="get" class="flex flex-wrap items-center gap-2">
+                    <div class="flex flex-col md:flex-row">
+                        <label class="text-xs text-slate-600 gap-2">Período:</label>
+                        <input type="date" name="startDate" value="<%= startDate || '' %>" class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm" />
+                        <span class="text-sm text-slate-600 gap-2">a</span>
+                        <input type="date" name="endDate" value="<%= endDate || '' %>" class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm" />
+                    </div>
+                    <div class="w-full flex justify-center items-center gap-2 mt-2 md:mt-0">
+                        <button type="submit" class="inline-flex items-center px-3 py-2 bg-clinic-500 text-white rounded-lg text-sm font-bold hover:bg-clinic-600 transition z-10">Filtrar</button>
+                        <a href="/financeiro/extrato" class="inline-flex items-center px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200 transition z-10">Limpar</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <% const totalLancamentos = (lancamentos && lancamentos.length) ? lancamentos.length : 0; %>
+                <% const totalValor = (lancamentos && lancamentos.length) ? lancamentos.reduce((s, l) => s + (Number(l?.valorFinal) || 0), 0).toFixed(2) : '0.00'; %>
+                <div class="px-4 py-2 bg-slate-50 rounded-lg text-sm text-slate-600">
+                    <div class="text-xs uppercase tracking-widest">Lançamentos</div>
+                    <div class="text-lg font-bold text-slate-800"> <%= totalLancamentos %> </div>
+                </div>
+                <div class="px-4 py-2 bg-slate-50 rounded-lg text-sm text-slate-600">
+                    <div class="text-xs uppercase tracking-widest">Total</div>
+                    <div class="text-lg font-bold text-slate-800"> <%= totalValor %> </div>
+                </div>
+
             </div>
         </div>
     </div>
-    <a href="/profissionais/dashboard" class="btn btn-secondary">Voltar</a>
+
+    <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+        <% if (lancamentos && lancamentos.length > 0) { %>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[900px] border-collapse">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Data</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Paciente</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Descrição</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Parceiro</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Bruto</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Desconto</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Final</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Pagamento</th>
+                        <th class="px-6 py-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% lancamentos.forEach(lancamento => { %>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= new Date(lancamento.dataPagamento || lancamento.createdAt).toLocaleDateString('pt-BR') %></td>
+                            <td class="px-6 py-4 text-sm font-bold text-slate-800"><%= lancamento.paciente?.nome || '---' %></td>
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= lancamento.observacao || 'Atendimento' %></td>
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= lancamento.parceiro?.nome || 'Particular' %></td>
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= (lancamento.valorBruto || 0).toFixed(2) %></td>
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= (lancamento.valorDesconto || 0).toFixed(2) %></td>
+                            <td class="px-6 py-4 text-sm font-bold text-slate-800"><%= (lancamento.valorFinal || 0).toFixed(2) %></td>
+                            <td class="px-6 py-4 text-sm text-slate-600"><%= lancamento.formaPagamento || '---' %></td>
+                            <td class="px-6 py-4 text-sm"><span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold <%= lancamento.statusPagamento === 'Pendente' ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700' %>"><%= lancamento.statusPagamento %></span></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <% } else { %>
+            <div class="p-12 text-center">
+                <div class="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-3xl text-slate-300">receipt_long</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Nenhum lançamento financeiro encontrado</h3>
+                <p class="text-slate-500 text-sm">Cadastre um novo lançamento para que apareça aqui.</p>
+            </div>
+        <% } %>
+    </div>
 </div>
