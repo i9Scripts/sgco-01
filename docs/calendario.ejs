@@ -1,0 +1,209 @@
+<div class="p-4 md:p-8 space-y-8 flex-1">
+    <!-- Calendar Navigation & Stats Header -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 bg-white/80 p-6 rounded-[1.5rem] shadow-sm border border-slate-100">
+        <div class="space-y-2">
+            <div class="flex items-center gap-4">
+                <h2 class="font-headline text-3xl font-extrabold text-medical-navy tracking-tight">
+                    <%= currentViewDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, (c) => c.toUpperCase()) %>
+                </h2>
+                <div class="flex bg-slate-100 rounded-full p-1">
+                    <% 
+                        const prevMonth = queryMonth === 0 ? 11 : queryMonth - 1;
+                        const prevYear = queryMonth === 0 ? queryYear - 1 : queryYear;
+                        const nextMonth = queryMonth === 11 ? 0 : queryMonth + 1;
+                        const nextYear = queryMonth === 11 ? queryYear + 1 : queryYear;
+                    %>
+                    <a href="/agendamentos/calendario?month=<%= prevMonth %>&year=<%= prevYear %>" class="p-1.5 hover:bg-slate-200 rounded-full transition-all text-slate-600">
+                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    </a>
+                    <a href="/agendamentos/calendario?month=<%= nextMonth %>&year=<%= nextYear %>" class="p-1.5 hover:bg-slate-200 rounded-full transition-all text-slate-600">
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    </a>
+                </div>
+                <a href="/agendamentos/calendario" class="px-4 py-1.5 bg-slate-100 text-slate-600 font-bold text-[10px] rounded-full uppercase tracking-widest hover:bg-slate-200 transition-colors">Hoje</a>
+            </div>
+            <p class="text-slate-500 font-body text-sm">Visualize sua agenda mensal de forma organizada.</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl">
+                <a href="/agendamentos" class="px-6 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Lista</a>
+                <a href="/agendamentos/semanal" class="px-6 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Semana</a>
+                <button class="px-6 py-2 text-sm font-bold bg-white text-clinic-600 rounded-xl shadow-sm">Calendário</button>
+            </div>
+            <a href="/agendamentos/new" class="flex items-center space-x-2 bg-clinic-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-clinic-500/20 hover:shadow-xl transition-all active:scale-95">
+                <span class="material-symbols-outlined text-sm">add_circle</span>
+                <span class="text-sm">Novo Agendamento</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Calendar Container -->
+    <section class="bg-white/60 rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 flex flex-col">
+        <div class="min-w-[800px] flex-1 flex flex-col">
+            <div class="grid grid-cols-6 bg-slate-50/50 border-b border-slate-100">
+                <% ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].forEach(day => { %>
+                    <div class="py-3 text-center font-headline text-[11px] font-bold uppercase tracking-widest text-slate-600"><%= day %></div>
+                <% }) %>
+            </div>
+            
+            <div class="grid grid-cols-6 bg-white/60 flex-1">
+                <% 
+                    // Ajuste para semana de 6 dias (Seg-Sáb)
+                    const adjustedFirstDay = (firstDayOfMonth === 0) ? 0 : firstDayOfMonth - 1;
+                    
+                    for(let i = 0; i < adjustedFirstDay; i++) { 
+                        const dayDate = new Date(queryYear, queryMonth, 1);
+                        dayDate.setDate(dayDate.getDate() - (adjustedFirstDay - i));
+                        const dayNum = dayDate.getDate();
+                %>
+                    <div class="bg-slate-50 h-[120px] xl:h-[130px] p-2 opacity-20 border-b border-r border-slate-100/50">
+                        <span class="text-xs font-bold text-slate-700 ml-1"><%= dayNum %></span>
+                    </div>
+                <% } %>
+
+                <% 
+                    let visibleDaysCount = 0;
+                    for(let d = 1; d <= lastDateOfMonth; d++) { 
+                        const dayDate = new Date(queryYear, queryMonth, d);
+                        if (dayDate.getDay() === 0) continue; // Pula Domingos
+                        visibleDaysCount++;
+
+                        const isToday = d === hoje.getDate() && queryMonth === hoje.getMonth() && queryYear === hoje.getFullYear();
+                        const dayAgendamentos = agendamentosPorDia[d] || [];
+                        const formattedDate = `${queryYear}-${String(queryMonth+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                %>
+                      <div class="<%= isToday ? 'bg-clinic-50/40' : 'bg-white/40' %> h-[120px] xl:h-[130px] p-2 hover:bg-slate-50 transition-all relative border-b border-r border-slate-100 cursor-pointer flex flex-col overflow-visible"
+                         onclick="window.location.href='/agendamentos/new?date=<%= formattedDate %>'">
+                        
+                        <div class="flex justify-between items-start mb-1.5 shrink-0">
+                            <span class="flex items-center justify-center w-7 h-7 <%= isToday ? 'bg-clinic-500 text-white shadow-md shadow-clinic-500/30' : 'text-slate-600 font-bold' %> text-sm rounded-xl transition-all group-hover:scale-110">
+                                <%= d %>
+                            </span>
+                            <% if(isToday) { %>
+                                <span class="text-[9px] font-extrabold text-clinic-500 uppercase tracking-tighter bg-clinic-100 px-2 py-0.5 rounded-full mt-0.5">Hoje</span>
+                            <% } %>
+                        </div>
+
+                        <div class="space-y-1 flex-1 overflow-visible">
+                            <% dayAgendamentos.slice(0, 3).forEach(a => { 
+                                const time = new Date(a.dataHora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                                let statusClass = "bg-clinic-50 text-clinic-700 border-clinic-100";
+                                if (a.status === 'Finalizada') statusClass = "bg-teal-50 text-teal-700 border-teal-100";
+                                if (a.status === 'Cancelado') statusClass = "bg-red-50 text-red-700 border-red-100";
+                            %>
+                                <div class="relative group appointment-group">
+                                    <a href="/agendamentos/<%= a.id %>/edit" 
+                                       class="block px-1.5 py-1 <%= statusClass %> text-[10px] font-bold rounded-lg truncate shadow-sm border hover:scale-[1.02] transition-transform relative z-10"
+                                       onclick="event.stopPropagation()">
+                                        <span class="opacity-60 mr-0.5"><%= time %></span> <%= a.paciente ? a.paciente.nome : a.nome %>
+                                    </a>
+                                    <!-- Pop-up de Detalhes -->
+                                    <div class="appointment-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-[100] opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 transform scale-95 group-hover:scale-100">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-[10px] font-black uppercase tracking-widest text-clinic-600 bg-clinic-50 px-2 py-0.5 rounded-full"><%= a.status %></span>
+                                            <span class="text-[12px] text-clinic-600 bg-clinic-50"><%= time %></span>
+                                        </div>
+                                        <h5 class="text-sm font-bold text-medical-navy mb-1"><%= a.paciente ? a.paciente.nome : a.nome %></h5>
+                                        <p class="text-[11px] text-slate-500 flex items-center mb-2">
+                                            <span class="material-symbols-outlined text-xs mr-1">card_membership</span>
+                                            <%= a.parceiro ? a.parceiro.nome : 'Particular' %>
+                                        </p>
+                                        <% if(a.observacao) { %>
+                                            <div class="pt-2 border-t border-slate-100">
+                                                <p class="text-[10px] italic text-slate-400 line-clamp-2">"<%= a.observacao %>"</p>
+                                            </div>
+                                        <% } %>
+                                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-white"></div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                            
+                            <% if(dayAgendamentos.length > 3) { %>
+                                <div class="text-[9px] text-slate-400 font-extrabold pl-1 uppercase tracking-tight pt-0.5">
+                                    +<%= dayAgendamentos.length - 3 %> atends.
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+                
+                <% 
+                    const totalCells = adjustedFirstDay + visibleDaysCount;
+                    const remainingCells = (6 - (totalCells % 6)) % 6;
+                    for(let i = 1; i <= remainingCells; i++) { 
+                %>
+                    <div class="bg-slate-50 h-[120px] xl:h-[130px] p-2 opacity-20 border-b border-r border-slate-100/50"></div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .calendar-layout {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .font-headline { font-family: 'Manrope', sans-serif; }
+    .font-body { font-family: 'Inter', sans-serif; }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const OFFSET = 8;
+
+    function positionPortal(portal, triggerRect) {
+        const pw = portal.offsetWidth;
+        const ph = portal.offsetHeight;
+        let left = Math.round(triggerRect.left + triggerRect.width / 2 - pw / 2);
+        let top = Math.round(triggerRect.top - ph - OFFSET);
+
+        // Flip to below if not enough space above
+        if (top < OFFSET) {
+            top = Math.round(triggerRect.bottom + OFFSET);
+        }
+
+        // Keep inside viewport horizontally
+        if (left < OFFSET) left = OFFSET;
+        if (left + pw > window.innerWidth - OFFSET) left = Math.max(OFFSET, window.innerWidth - pw - OFFSET);
+
+        portal.style.left = left + 'px';
+        portal.style.top = top + 'px';
+    }
+
+    document.querySelectorAll('.appointment-group').forEach(container => {
+        const trigger = container.querySelector('a');
+        const popup = container.querySelector('.appointment-popup');
+        if (!trigger || !popup) return;
+
+        let portal = null;
+        let hideTimeout = null;
+
+        function show() {
+            if (portal) return;
+            portal = popup.cloneNode(true);
+            portal.classList.add('appointment-portal');
+            portal.style.position = 'fixed';
+            portal.style.transform = 'none';
+            portal.style.opacity = '1';
+            portal.style.pointerEvents = 'auto';
+            portal.style.zIndex = 9999;
+            document.body.appendChild(portal);
+
+            // Wait for layout then position
+            requestAnimationFrame(() => positionPortal(portal, trigger.getBoundingClientRect()));
+
+            portal.addEventListener('mouseenter', () => { if (hideTimeout) { clearTimeout(hideTimeout); hideTimeout = null; } });
+            portal.addEventListener('mouseleave', hide);
+        }
+
+        function hide() {
+            if (portal) { portal.remove(); portal = null; }
+        }
+
+        trigger.addEventListener('mouseenter', () => { if (hideTimeout) { clearTimeout(hideTimeout); hideTimeout = null; } show(); });
+        trigger.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hide, 150); });
+    });
+});
+</script>

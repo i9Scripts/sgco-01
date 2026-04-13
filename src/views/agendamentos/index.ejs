@@ -107,7 +107,10 @@
 <!--*** Main Interactive Area FIM ***-->
     <!-- Right: Appointments List -->
     <div class="flex-1">
-        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
+        <% 
+            const agendamentosHoje = agendamentos.filter(a => new Date(a.dataHora).toDateString() === hoje.toDateString());
+        %>
+        <div class="bg-white/70 rounded-xl p-8 shadow-sm border border-slate-100">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h3 class="font-headline text-2xl font-extrabold text-medical-navy">Consultas Agendadas</h3>
@@ -117,24 +120,25 @@
                 </div>
                 <div class="flex bg-slate-100 p-1.5 rounded-2xl">
                     <button class="px-5 py-2 text-sm font-bold bg-white text-clinic-600 rounded-xl shadow-sm">Lista</button>
-                    <button class="px-5 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Calendário</button>
+                    <a href="/agendamentos/semanal" class="px-5 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Semana</a>
+                    <a href="/agendamentos/calendario" class="px-5 py-2 text-sm font-bold text-slate-500 hover:text-clinic-600 transition-colors">Mês</a>
                 </div>
             </div>
 
-            <% if (agendamentos && agendamentos.length > 0) { %>
+            <% if (agendamentosHoje && agendamentosHoje.length > 0) { %>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="text-left">
-                                <th class="pb-6 pl-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Horário</th>
-                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Paciente</th>
-                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Convênio</th>
-                                <th class="pb-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="pb-6 pl-4 text-xs font-bold text-slate-600 uppercase tracking-widest">Horário</th>
+                                <th class="pb-6 text- text-center font-bold text-slate-600 uppercase tracking-widest">Paciente</th>
+                                <th class="pb-6 text-xs font-bold text-slate-600 uppercase tracking-widest">Convênio</th>
+                                <th class="pb-6 text-xs font-bold text-slate-600 uppercase tracking-widest">Status</th>
                                 <th class="pb-6 pr-4"></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y-8 divide-white">
-                            <% agendamentos.forEach(agendamento => { 
+                            <% agendamentosHoje.forEach(agendamento => { 
                                 const dataAgend = new Date(agendamento.dataHora);
                                 const isFinalizado = agendamento.status === 'Finalizada';
                             %>
@@ -151,16 +155,14 @@
                                     </td>
                                     <td class="py-5">
                                         <div class="flex items-center space-x-3">
-                                            <div class="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center text-clinic-600 font-bold text-xs">
-                                                <%= (agendamento.paciente ? agendamento.paciente.nome : agendamento.nome).split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
-                                            </div>
-                                            <span class="font-bold text-sm text-slate-800">
+                                            
+                                            <span class="font-bold text-sm text-slate-600 text-center p-2">
                                                 <%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %>
                                             </span>
                                         </div>
                                     </td>
                                     <td class="py-5">
-                                        <span class="text-sm text-slate-600 font-medium">
+                                        <span class="text-sm text-slate-600 font-medium text-center p-2">
                                             <%= agendamento.parceiro ? agendamento.parceiro.nome : 'Particular' %>
                                         </span>
                                     </td>
@@ -178,9 +180,9 @@
                                     <td class="py-5 pr-6 text-right">
                                         <div class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                                             <!-- Botão Editar -->
-                                            <button onclick="abrirModalGenerico('/agendamentos/<%= agendamento.id %>/edit', 'Editar Agendamento')" class="p-2 text-slate-400 hover:text-clinic-600 bg-white rounded-lg transition-all shadow-sm" title="Editar Agendamento">
+                                            <a href="/agendamentos/<%= agendamento.id %>/edit" class="p-2 text-slate-400 hover:text-clinic-600 bg-white rounded-lg transition-all shadow-sm" title="Editar Agendamento">
                                                 <span class="material-symbols-outlined text-[20px]">edit</span>
-                                            </button>
+                                            </a>
 
                                             <!-- Botão Cancelar (Excluir) -->
                                             <form action="/agendamentos/<%= agendamento.id %>?_method=DELETE" method="post" onsubmit="return confirm('Tem certeza que deseja excluir?')">
@@ -200,19 +202,19 @@
                     <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                         <span class="material-symbols-outlined text-4xl">calendar_today</span>
                     </div>
-                    <p class="text-slate-500">Nenhum agendamento encontrado.</p>
+                    <p class="text-slate-500">Nenhum agendamento para hoje.</p>
                 </div>
             <% } %>
 
             <!-- Footer Pagination / Actions -->
             <div class="mt-12 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p class="text-xs font-semibold text-slate-400 tracking-wider uppercase">
-                    Total de <%= agendamentos.length %> agendamentos listados
+                <p class="text-xs font-semibold text-slate-600 tracking-wider uppercase">
+                    Total de <%= agendamentosHoje.length %> agendamentos hoje
                 </p>
-                <div class="flex space-x-3">
+                <!-- <div class="flex space-x-3">
                     <button class="px-6 py-2 border border-slate-200 text-slate-600 font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors">Relatórios</button>
                     <button class="px-6 py-2 bg-medical-navy text-white font-bold text-sm rounded-xl hover:bg-slate-800 transition-all">Exportar PDF</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

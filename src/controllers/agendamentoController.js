@@ -61,6 +61,164 @@ export const agendamentoController = {
     }
   },
 
+  async listCalendario(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/selecionar');
+      }
+
+      const queryYear = parseInt(req.query.year) || new Date().getFullYear();
+      const queryMonth = parseInt(req.query.month) || new Date().getMonth(); // 0-indexed
+
+      const hoje = new Date();
+      const currentViewDate = new Date(queryYear, queryMonth, 1);
+      
+      const firstDayOfMonth = new Date(queryYear, queryMonth, 1).getDay();
+      const lastDateOfMonth = new Date(queryYear, queryMonth + 1, 0).getDate();
+      
+      const prevMonthLastDate = new Date(queryYear, queryMonth, 0).getDate();
+      
+      // Fetch appointments for this month
+      const startOfMonth = new Date(queryYear, queryMonth, 1);
+      const endOfMonth = new Date(queryYear, queryMonth + 1, 0, 23, 59, 59);
+
+      const agendamentos = await prisma.agendamento.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          dataHora: {
+            gte: startOfMonth,
+            lte: endOfMonth
+          }
+        },
+        include: {
+          paciente: true,
+          parceiro: true,
+        },
+        orderBy: {
+          dataHora: 'asc',
+        },
+      });
+
+      // Group appointments by day
+      const agendamentosPorDia = {};
+      agendamentos.forEach(a => {
+        const day = new Date(a.dataHora).getDate();
+        if (!agendamentosPorDia[day]) agendamentosPorDia[day] = [];
+        agendamentosPorDia[day].push(a);
+      });
+
+      const profissionais = await prisma.profissional.findMany({
+        where: { consultorioId: idConsultorio },
+      });
+
+      res.render('agendamentos/calendario', {
+        pageTitle: 'Calendário de Consultas',
+        pageIcon: 'material-symbols-outlined',
+        iconName: 'calendar_month',
+        agendamentosPorDia,
+        currentViewDate,
+        hoje,
+        profissionais,
+        queryYear,
+        queryMonth,
+        firstDayOfMonth,
+        lastDateOfMonth,
+        prevMonthLastDate
+      });
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Erro ao carregar o calendário.');
+      res.redirect('/agendamentos');
+    }
+  },
+
+  async listCalendarioSemanal(req, res) {
+    try {
+      const idConsultorio = req.session.idConsultorio;
+      if (!idConsultorio) {
+        req.flash('error', 'Nenhum consultório selecionado.');
+        return res.redirect('/consultorios/selecionar');
+      }
+
+      const hoje = new Date();
+      // Parse data YYYY-MM-DD manualmente para evitar problemas de fuso horário
+      let referenceDate;
+      if (req.query.date) {
+        const [year, month, day] = req.query.date.split('-').map(Number);
+        referenceDate = new Date(year, month - 1, day);
+      } else {
+        referenceDate = new Date();
+      }
+      
+      if (isNaN(referenceDate.getTime())) referenceDate = new Date();
+
+      // Ajustar para o início da semana (Domingo)
+      const startOfWeek = new Date(referenceDate);
+      const dayOfWeek = startOfWeek.getDay();
+      startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const agendamentos = await prisma.agendamento.findMany({
+        where: {
+          consultorioId: idConsultorio,
+          dataHora: {
+            gte: startOfWeek,
+            lte: endOfWeek
+          }
+        },
+        include: {
+          paciente: true,
+          parceiro: true,
+        },
+        orderBy: {
+          dataHora: 'asc',
+        },
+      });
+
+      // Agrupar por dia da semana (0-6)
+      const agendamentosPorDia = [[], [], [], [], [], [], []];
+      agendamentos.forEach(a => {
+        const d = new Date(a.dataHora).getDay();
+        agendamentosPorDia[d].push(a);
+      });
+
+      const profissionais = await prisma.profissional.findMany({
+        where: { consultorioId: idConsultorio },
+      });
+
+      // Gerar os dias da semana para o header
+      const diasSemana = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(startOfWeek);
+        d.setDate(d.getDate() + i);
+        diasSemana.push(d);
+      }
+
+      res.render('agendamentos/semanal', {
+        pageTitle: 'Agenda Semanal',
+        pageIcon: 'material-symbols-outlined',
+        iconName: 'calendar_view_week',
+        agendamentosPorDia,
+        startOfWeek,
+        endOfWeek,
+        hoje,
+        profissionais,
+        diasSemana,
+        referenceDate
+      });
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Erro ao carregar o calendário semanal.');
+      res.redirect('/agendamentos');
+    }
+  },
+
   // Exibir o formulário para criar um novo agendamento (geralmente em um modal)
   async createAgendamentoForm(req, res) {
     try {
@@ -78,11 +236,13 @@ export const agendamentoController = {
         where: { consultorioId: idConsultorio },
         orderBy: { nome: 'asc' },
       });
-      // Esta rota pode não ser renderizada diretamente se for um modal
+
+      const dateParam = req.query.date || '';
+
       res.render('agendamentos/new', {
         pacientes,
         parceiros,
-        formData: {},
+        formData: { data: dateParam },
         errors: {},
       });
     } catch (error) {

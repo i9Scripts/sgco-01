@@ -1,0 +1,218 @@
+<div class="p-4 md:p-8 space-y-8 flex-1 max-w-[1600px] mx-auto w-full">
+    <!-- Calendar Header Navigation -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 p-6 rounded-[1.5rem] shadow-sm border border-slate-100">
+        <div>
+            <h2 class="text-3xl font-headline font-extrabold text-medical-navy tracking-tight">
+                <%= startOfWeek.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, (c) => c.toUpperCase()) %>
+            </h2>
+            <p class="text-slate-600 font-medium text-sm">Cronograma Semanal de Atendimento</p>
+        </div>
+        <div class="flex items-center gap-4 bg-slate-100 p-1.5 rounded-full">
+            <% 
+                const prevWeek = new Date(startOfWeek);
+                prevWeek.setDate(prevWeek.getDate() - 7);
+                const nextWeek = new Date(startOfWeek);
+                nextWeek.setDate(nextWeek.getDate() + 7);
+            %>
+            <a href="/agendamentos/semanal?date=<%= prevWeek.toISOString().split('T')[0] %>" class="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-600">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </a>
+            <a href="/agendamentos/semanal" class="px-4 py-1.5 font-bold text-xs text-clinic-600 hover:bg-clinic-50 rounded-full uppercase tracking-widest transition-colors">Hoje</a>
+            <a href="/agendamentos/semanal?date=<%= nextWeek.toISOString().split('T')[0] %>" class="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-600">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </a>
+            <div class="h-6 w-[1px] bg-slate-300 mx-2"></div>
+            <div class="flex items-center gap-1">
+                <a href="/agendamentos" class="px-5 py-2 text-sm font-semibold text-slate-500 hover:text-clinic-600 transition-colors">Lista</a>
+                <button class="px-5 py-2 text-sm font-bold bg-white text-clinic-600 rounded-xl shadow-sm">Semana</button>
+                <a href="/agendamentos/calendario" class="px-5 py-2 text-sm font-semibold text-slate-500 hover:text-clinic-600 transition-colors">Mês</a>
+            </div>
+        </div>
+        <a href="/agendamentos/new" class="flex items-center space-x-2 bg-clinic-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-clinic-500/20 hover:shadow-xl transition-all active:scale-95">
+            <span class="material-symbols-outlined text-sm">add_circle</span>
+            <span class="text-sm">Novo Agendamento</span>
+        </a>
+    </div>
+
+    <!-- Dashboard Layout: Stats Sidebar + Grid -->
+    <div class="grid grid-cols-12 gap-8">
+        <!-- Weekly Stats Panel -->
+        <div class="col-span-12 lg:col-span-3 space-y-6">
+            <div class="bg-white/80 p-6 rounded-2xl shadow-sm border border-slate-100 backdrop-blur-sm">
+                <h3 class="font-headline font-bold text-lg mb-6 text-medical-navy">Resumo da Semana</h3>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total de Consultas</p>
+                            <p class="text-3xl font-headline font-extrabold text-clinic-600">
+                                <%= agendamentosPorDia.reduce((acc, curr) => acc + curr.length, 0) %>
+                            </p>
+                        </div>
+                        <div class="bg-clinic-50 p-3 rounded-xl text-clinic-600">
+                            <span class="material-symbols-outlined">event_note</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-medical-navy p-6 rounded-2xl text-white shadow-lg">
+                <h4 class="font-bold text-sm mb-4">Legenda de Status</h4>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 text-xs font-medium">
+                        <span class="w-3 h-3 rounded-full bg-clinic-400"></span>
+                        <span>Agendado</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-medium">
+                        <span class="w-3 h-3 rounded-full bg-teal-400"></span>
+                        <span>Finalizada</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-medium">
+                        <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                        <span>Cancelado</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-100">
+                <h4 class="font-bold text-xs text-slate-600 uppercase tracking-widest mb-4">Profissionais</h4>
+                <div class="space-y-4">
+                    <% profissionais.slice(0, 5).forEach(p => { %>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-clinic-600 font-bold text-[10px] shadow-sm border border-slate-100">
+                                <%= p.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-slate-800 truncate"><%= p.nome %></p>
+                                <p class="text-[10px] text-slate-600"><%= p.especialidade %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Grid Stage -->
+        <div class="col-span-12 lg:col-span-9 bg-white/80 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden backdrop-blur-sm">
+            <div class="grid grid-cols-8 border-b border-slate-100 bg-slate-50/50">
+                <div class="p-4"></div>
+                <!-- Days of week -->
+                <% 
+                    const diasNomes = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+                    diasSemana.forEach((data, index) => { 
+                        const isToday = data.toDateString() === hoje.toDateString();
+                %>
+                    <div class="p-6 text-center border-l border-slate-100 <%= isToday ? 'bg-clinic-50/50' : '' %>">
+                        <p class="text-[11px] font-bold <%= isToday ? 'text-clinic-600' : 'text-slate-600' %> uppercase tracking-widest mb-1"><%= diasNomes[index] %></p>
+                        <p class="text-2xl font-headline font-extrabold <%= isToday ? 'text-clinic-600' : 'text-medical-navy' %>"><%= data.getDate() %></p>
+                    </div>
+                <% }) %>
+            </div>
+            
+            <div class="grid grid-cols-8 relative h-[800px] overflow-y-auto hide-scrollbar">
+                <!-- Time Column -->
+                <div class="col-span-1 border-r border-slate-100">
+                    <% for(let h = 8; h <= 18; h++) { %>
+                        <div class="h-32 p-4 text-right text-[11px] font-bold text-slate-500 border-b border-slate-50">
+                            <%= String(h).padStart(2, '0') %>:00
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Grid Days Columns -->
+                <% agendamentosPorDia.forEach((diaAgendamentos, index) => { 
+                    const dataDia = diasSemana[index];
+                    const isToday = dataDia.toDateString() === hoje.toDateString();
+                    const formattedDate = dataDia.toISOString().split('T')[0];
+                %>
+                    <div class="relative border-r border-slate-100 <%= isToday ? 'bg-white/80' : 'bg-clinic-50/10' %> cursor-pointer group/col"
+                         onclick="window.location.href='/agendamentos/new?date=<%= formattedDate %>'">
+                        
+                        <!-- Hourly Slot Hover Effect -->
+                        <div class="absolute inset-0 z-0">
+                            <% for(let h = 0; h < 11; h++) { %>
+                                <div class="h-32 border-b border-slate-50 hover:bg-slate-50/80 transition-colors"></div>
+                            <% } %>
+                        </div>
+
+                        <% diaAgendamentos.forEach(a => { 
+                            const date = new Date(a.dataHora);
+                            const hour = date.getHours();
+                            const minutes = date.getMinutes();
+                            const topOffset = (hour - 8) * 128 + (minutes / 60) * 128;
+                            const timeStr = String(hour).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+                            
+                            let statusClass = "bg-clinic-100 border-clinic-500 text-clinic-700";
+                            if (a.status === 'Finalizada') statusClass = "bg-teal-100 border-teal-500 text-teal-700";
+                            if (a.status === 'Cancelado') statusClass = "bg-red-100 border-red-500 text-red-700";
+                        %>
+                            <div class="absolute left-1 right-1 h-24 z-120 group/appointment" style="top: <%= topOffset %>px">
+                                <a href="/agendamentos/<%= a.id %>/edit" 
+                                   class="<%= statusClass %> block w-full h-full rounded-xl p-2.5 shadow-sm border-l-4 overflow-hidden hover:scale-[1.02] transition-transform cursor-pointer relative z-20" 
+                                   onclick="event.stopPropagation()">
+                                    <p class="text-[9px] font-extrabold uppercase opacity-70 mb-0.5"><%= timeStr %></p>
+                                    <p class="text-[11px] font-bold truncate"><%= a.paciente ? a.paciente.nome : a.nome %></p>
+                                    <% if(a.parceiro) { %>
+                                        <p class="text-[9px] font-medium opacity-80"><%= a.parceiro.nome %></p>
+                                    <% } %>
+                                </a>
+
+                                <!-- Pop-up de Detalhes -->
+                                <% 
+                                    // 1. Lógica Vertical (Abre para baixo se estiver no topo - antes das 12h)
+                                    const isSuperior = hour < 12;
+                                    let popupVertical = isSuperior ? "top-full mt-3" : "bottom-full mb-3";
+                                    let arrowVertical = isSuperior ? "bottom-full -mb-1" : "top-full -mt-1";
+                                    let arrowColor = isSuperior ? "border-bottom-color: white" : "border-top-color: white";
+                                    let origin = isSuperior ? "origin-top" : "origin-bottom";
+
+                                    // 2. Lógica Horizontal (Abre para os lados dependendo da coluna)
+                                    let popupHorizontal = "left-1/2 -translate-x-1/2";
+                                    let arrowHorizontal = "left-1/2 -translate-x-1/2";
+
+                                    if (index >= 5) { // Sexta e Sábado
+                                        popupHorizontal = "right-0";
+                                        arrowHorizontal = "right-6";
+                                        origin += "-right";
+                                    } else if (index <= 1) { // Domingo e Segunda
+                                        popupHorizontal = "left-0";
+                                        arrowHorizontal = "left-6";
+                                        origin += "-left";
+                                    }
+                                %>
+                                <div class="absolute <%= popupVertical %> <%= popupHorizontal %> <%= origin %> w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-5 z-[110] 
+                                            pointer-events-none opacity-0 group-hover/appointment:opacity-100 transition-all duration-200 transform scale-95 
+                                            group-hover/appointment:scale-100 <%= isSuperior ? 'translate-y-2' : '-translate-y-2' %> 
+                                            group-hover/appointment:translate-y-0">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-clinic-600 bg-clinic-50 px-3 py-1 rounded-full"><%= a.status %></span>
+                                        <span class="text-[12px] text-clinic-600 bg-clinic-50"><%= timeStr %></span>
+                                    </div>
+                                    <h5 class="text-base font-bold text-medical-navy mb-1"><%= a.paciente ? a.paciente.nome : a.nome %></h5>
+                                    <div class="space-y-2">
+                                        <p class="text-xs text-slate-600 flex items-center">
+                                            <span class="material-symbols-outlined text-sm mr-2 text-slate-400">card_membership</span>
+                                            <%= a.parceiro ? a.parceiro.nome : 'Particular' %>
+                                        </p>
+                                        <% if(a.observacao) { %>
+                                            <div class="pt-3 border-t border-slate-100">
+                                                <p class="text-[11px] italic text-slate-500 leading-relaxed">"<%= a.observacao %>"</p>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <!-- Seta do Pop-up -->
+                                    <div class="absolute <%= arrowVertical %> <%= arrowHorizontal %> border-[10px] border-transparent" style="<%= arrowColor %>"></div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .font-headline { font-family: 'Manrope', sans-serif; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

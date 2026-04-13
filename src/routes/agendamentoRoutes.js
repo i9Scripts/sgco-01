@@ -8,7 +8,9 @@ const router = Router();
 // router.use(verificarUsuarioAutenticado);
 
 router.get('/', agendamentoController.listAgendamentos);
-router.get('/new', agendamentoController.createAgendamentoForm); // Rota para o formulário (pode ser em modal)
+router.get('/calendario', agendamentoController.listCalendario);
+router.get('/semanal', agendamentoController.listCalendarioSemanal);
+router.get('/new', agendamentoController.createAgendamentoForm);
 router.post('/', agendamentoController.createAgendamento);
 router.get('/:id/edit', agendamentoController.editAgendamentoForm);
 router.put('/:id', agendamentoController.updateAgendamento);

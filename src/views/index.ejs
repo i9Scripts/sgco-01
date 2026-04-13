@@ -51,13 +51,13 @@
                 <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                     <% if (agendamentosHoje && agendamentosHoje.length > 0) { %>
                         <% agendamentosHoje.forEach(agendamento => { %>
-                            <div class="bg-slate-700/50 p-4 rounded-xl flex items-center gap-4 group hover:bg-slate-700 transition-all border border-slate-600">
-                                <div class="flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-medical-navy/60 text-clinic-400 group-hover:bg-clinic-500 group-hover:text-white transition-all shadow-inner">
+                            <div class="bg-clinic-500/50 p-2 rounded-xl flex items-center gap-4 group hover:bg-slate-700 transition-all border border-slate-600">
+                                <div class="flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-white/80 text-clinic-400 group-hover:bg-clinic-500 group-hover:text-white transition-all shadow-inner">
                                     <span class="text-xs font-black"><%= new Date(agendamento.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></span>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h4 class="font-bold text-sm text-white truncate"><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></h4>
-                                    <p class="text-xs text-slate-400 truncate"><%= agendamento.observacao || 'Consulta agendada' %></p>
+                                    <p class="text-xs text-slate-300 truncate"><%= agendamento.observacao || 'Consulta agendada' %></p>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <% if (agendamento.paciente && !agendamento.paciente.naFila) { %>
