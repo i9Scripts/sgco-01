@@ -25,8 +25,8 @@
           <p class="text-xl font-black text-clinic-700">
             <%= paciente.nome %>
           </p>
-          <% if (paciente.nFicha) { %>
-            <p class="text-xs font-bold text-slate-400 mt-1">Ficha nº <%= paciente.nFicha %></p>
+          <% if (paciente.anamneses && paciente.anamneses.length > 0) { %>
+            <p class="text-xs font-bold text-slate-400 mt-1">Ficha nº <%= paciente.anamneses[0].nFicha %></p>
           <% } %>
         </div>
       </div>
@@ -65,7 +65,7 @@
             btnSim.classList.add('opacity-50', 'cursor-not-allowed');
             btnNao.disabled = true;
             
-            fetch(`/pacientes/${pacienteId}/adicionar-fila`, {
+            fetch(`/pacientes/${pacienteId}/adicionar-fila?direct=true`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json'

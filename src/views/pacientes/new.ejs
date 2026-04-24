@@ -8,23 +8,6 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-3 relative">
           <input
-            type="number"
-            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
-            id="nFicha"
-            name="nFicha"
-            placeholder="Nº da Ficha"
-            value="<%= formData && formData.nFicha %>"
-            maxlength="20"
-            onblur="validarNFicha(this)"
-            autofocus
-          />
-          <label for="nFicha" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
-            Nº da Ficha
-          </label>
-          <div id="ficha-feedback" class="hidden absolute -bottom-5 left-0 text-[10px] font-bold"></div>
-        </div>
-        <div class="md:col-span-3 relative">
-          <input
             type="text"
             class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
             id="dataAtend"
@@ -33,6 +16,7 @@
             value="<%= formData && formData.dataAtend %>"
             oninput="mascaraData(this)"
             maxlength="20"
+            autofocus
           />
           <label for="dataAtend" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
             Data Atendimento
@@ -265,48 +249,4 @@
   </div>
 </div>
 
-<script>
-  window.addEventListener('load', function() {
-    const inputData = document.getElementById('dataAtend');
-    if (!inputData.value || inputData.value === "undefined") {
-      const hoje = new Date();
-      const dia = String(hoje.getDate()).padStart(2, '0');
-      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-      const ano = hoje.getFullYear();
-      inputData.value = `${dia}/${mes}/${ano}`;
-    }
-  });
-
-  async function validarNFicha(input) {
-    const nFicha = input.value;
-    const feedback = document.getElementById('ficha-feedback');
-    
-    if (!nFicha) {
-      feedback.classList.add('hidden');
-      input.classList.remove('border-red-500', 'border-emerald-500');
-      return;
-    }
-
-    try {
-      const response = await fetch(`/pacientes/check-ficha/${nFicha}`);
-      const data = await response.json();
-
-      feedback.classList.remove('hidden');
-      if (data.available) {
-        feedback.textContent = '✓ Disponível';
-        feedback.classList.remove('text-red-500');
-        feedback.classList.add('text-emerald-500');
-        input.classList.remove('border-red-500');
-        input.classList.add('border-emerald-500');
-      } else {
-        feedback.textContent = `⚠ Já em uso por: ${data.nome}`;
-        feedback.classList.remove('text-emerald-500');
-        feedback.classList.add('text-red-500');
-        input.classList.remove('border-emerald-500');
-        input.classList.add('border-red-500');
-      }
-    } catch (error) {
-      console.error('Erro ao validar ficha:', error);
-    }
-  }
-</script>
+<script defer src="/js/validaNficha.js"></script>

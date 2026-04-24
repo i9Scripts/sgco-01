@@ -10,7 +10,7 @@
         <p class="text-xl font-extrabold text-slate-800">
           <%= paciente?.nome || 'N/D' %> 
           <span class="mx-2 text-slate-300">|</span> 
-          <span class="text-slate-600 text-lg">Ficha: <%= paciente?.nFicha || 'N/D' %></span>
+          <span class="text-slate-600 text-lg">Ficha: <%= anamnese.nFicha || 'N/D' %></span>
         </p>
       </div>
     </div>
@@ -61,6 +61,16 @@
               <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase">Sintomas</p>
                 <p class="text-sm text-slate-700"><%= anamnese.sintomas || 'Nenhum' %></p>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Cefaleia</p>
+                  <p class="text-sm text-slate-700 capitalize"><%= anamnese.cefaleia || 'Nenhuma' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase">Ant. Pessoais</p>
+                  <p class="text-sm text-slate-700"><%= anamnese.antecedentesPessoais || 'Nenhum' %></p>
+                </div>
               </div>
               <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase">Medicamentos em uso</p>

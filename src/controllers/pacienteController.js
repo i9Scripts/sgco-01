@@ -34,15 +34,6 @@ export const pacienteController = {
         return res.redirect('/consultorios/new');
       }
 
-      // Buscar o maior nFicha atual do consultório para sugerir o próximo
-      const maxPaciente = await prisma.paciente.findFirst({
-        where: { consultorioId: idConsultorio },
-        orderBy: { nFicha: 'desc' },
-        select: { nFicha: true },
-      });
-
-      const proximaFicha = (maxPaciente && maxPaciente.nFicha ? maxPaciente.nFicha : 0) + 1;
-
       const parceiros = await prisma.parceiro.findMany({
         where: { consultorioId: idConsultorio },
       });
@@ -50,7 +41,7 @@ export const pacienteController = {
       res.render('pacientes/new', {
         pageTitle: 'Novo Paciente',
         pageIcon: 'ri-folder-user-line',
-        formData: { nFicha: proximaFicha }, // Pré-preenche com a próxima ficha
+        formData: {},
         parceiros,
       });
     } catch (error) {
@@ -61,27 +52,6 @@ export const pacienteController = {
         req.flash('error', 'Erro ao exibir formulário. Tente novamente.');
       }
       return res.status(500).json({ error: 'Erro ao exibir o formulário', details: error.message });
-    }
-  },
-
-  // Versão Moderna (Tailwind) para teste
-  async newPacienteModernForm(req, res) {
-    try {
-      const idConsultorio = req.session.idConsultorio;
-      const parceiros = await prisma.parceiro.findMany({
-        where: { consultorioId: idConsultorio },
-      });
-
-      res.render('pacientes/new-modern', {
-        layout: 'layouts/modern', // Usa o novo layout Tailwind
-        pageTitle: 'Novo Paciente (Moderno)',
-        pageIcon: 'bi-person-plus-fill',
-        formData: {},
-        parceiros,
-      });
-    } catch (error) {
-      console.error('Erro ao exibir o formulário moderno:', error);
-      res.redirect('/pacientes');
     }
   },
 
@@ -102,7 +72,6 @@ export const pacienteController = {
         cidade,
         cpf,
         profissao,
-        nFicha,
         dataAtend,
       } = req.body;
       const idConsultorio = req.session.idConsultorio;
@@ -130,26 +99,6 @@ export const pacienteController = {
         return res.redirect('/consultorios');
       }
 
-      // Validação de nFicha único por consultório
-      if (nFicha) {
-        const fichaExistente = await prisma.paciente.findFirst({
-          where: {
-            consultorioId: idConsultorio,
-            nFicha: parseInt(nFicha),
-          },
-        });
-
-        if (fichaExistente) {
-          req.flash('error', `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.nome}.`);
-          return res.render('pacientes/new', {
-            pageTitle: 'Novo Paciente',
-            pageIcon: 'ri-folder-user-line',
-            formData: req.body,
-            parceiros: await prisma.parceiro.findMany({ where: { consultorioId: idConsultorio } }),
-          });
-        }
-      }
-
       const novoPaciente = await prisma.paciente.create({
         data: {
           nome,
@@ -163,7 +112,6 @@ export const pacienteController = {
           bairro,
           cidade,
           cpf: cpf || null,
-          nFicha: nFicha ? parseInt(nFicha) : null,
           dataAtend,
           profissao,
           consultorioId: idConsultorio,
@@ -286,19 +234,29 @@ export const pacienteController = {
         orConditions.push({ cpf: { contains: cleanQ } });
       }
 
-      // 4. Busca por nFicha (Campo Inteiro)
-      // Só tentamos converter para número se a string não for vazia
-      // E verificamos se o número não ultrapassa o limite do INT do MariaDB (2.147.483.647)
+      // 4. Busca por nFicha (Campo Inteiro) na tabela Anamnese
       const nFichaNum = parseInt(cleanQ);
       if (!isNaN(nFichaNum) && nFichaNum <= 2147483647) {
-        // Para campos numéricos, usamos 'equals' para busca exata
-        orConditions.push({ nFicha: { equals: nFichaNum } });
+        orConditions.push({
+          anamneses: {
+            some: {
+              nFicha: nFichaNum,
+              consultorioId: idConsultorio,
+            },
+          },
+        });
       }
 
       const pacientes = await prisma.paciente.findMany({
         where: {
           consultorioId: idConsultorio,
           OR: orConditions,
+        },
+        include: {
+          anamneses: {
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
         },
         orderBy: {
           nome: 'asc',
@@ -326,23 +284,31 @@ export const pacienteController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const nFicha = parseInt(req.params.nFicha);
+      const excludePacienteId = req.query.excludeId ? parseInt(req.query.excludeId) : null;
 
       if (!idConsultorio || isNaN(nFicha)) {
         return res.json({ available: true });
       }
 
-      const paciente = await prisma.paciente.findFirst({
-        where: {
-          consultorioId: idConsultorio,
-          nFicha: nFicha,
-        },
-        select: {
-          nome: true,
-        },
+      const whereClause = {
+        consultorioId: idConsultorio,
+        nFicha: parseInt(nFicha),
+      };
+
+      // Se houver excludePacienteId, adicionamos a condição para ignorar as anamneses deste paciente
+      if (excludePacienteId && excludePacienteId !== 'null') {
+        whereClause.pacienteId = {
+          not: parseInt(excludePacienteId),
+        };
+      }
+
+      const anamneseExistente = await prisma.anamnese.findFirst({
+        where: whereClause,
+        include: { paciente: { select: { nome: true } } },
       });
 
-      if (paciente) {
-        return res.json({ available: false, nome: paciente.nome });
+      if (anamneseExistente) {
+        return res.json({ available: false, nome: anamneseExistente.paciente.nome });
       }
 
       return res.json({ available: true });
@@ -356,6 +322,7 @@ export const pacienteController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const { idPaciente } = req.params;
+      const { addToQueue } = req.body;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -368,21 +335,8 @@ export const pacienteController = {
         return res.redirect('/pacientes');
       }
 
-      const {
-        nome,
-        responsavel,
-        dataNasc,
-        celular,
-        cep,
-        endereco,
-        numero,
-        bairro,
-        cidade,
-        cpf,
-        profissao,
-        nFicha,
-        dataAtend,
-      } = req.body;
+      const { nome, responsavel, dataNasc, celular, cep, endereco, numero, bairro, cidade, cpf, profissao, dataAtend } =
+        req.body;
       // CORREÇÃO IMPORTANTE: interpretar dataNasc no formato brasileiro
       const dataNascimentoCorrigida = dayjs(dataNasc, 'DD/MM/YYYY').toDate();
 
@@ -400,11 +354,15 @@ export const pacienteController = {
           bairro,
           cidade,
           cpf: cpf || null,
-          nFicha: nFicha ? parseInt(nFicha) : null,
           dataAtend,
           profissao,
         },
       });
+
+      if (addToQueue === 'true') {
+        req.flash('success', 'Dados atualizados! Agora, preencha a anamnese para entrar na fila.');
+        return res.redirect(`/anamneses/new?idPaciente=${idPaciente}&addToQueue=true`);
+      }
 
       req.flash('success', 'Paciente atualizado com sucesso!');
       return res.redirect('/pacientes');
@@ -419,6 +377,7 @@ export const pacienteController = {
     try {
       const idConsultorio = req.session.idConsultorio;
       const { idPaciente } = req.params;
+      const { addToQueue } = req.query;
 
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -440,6 +399,8 @@ export const pacienteController = {
         pageIcon: 'ri-edit-line',
         paciente,
         idadePaciente,
+        formData: {},
+        addToQueue: addToQueue === 'true',
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);
@@ -502,7 +463,7 @@ export const pacienteController = {
       console.error('Erro ao deletar paciente:', error);
       req.flash(
         'error',
-        'Erro ao deletar paciente. O paciente pode ter registros associados que não puderam ser removidos.'
+        'Erro ao deletar paciente. O paciente pode tel registros associados que não puderam ser removidos.'
       );
       return res.redirect('/pacientes');
     }
@@ -539,14 +500,14 @@ export const pacienteController = {
     }
   },
 
-  // Adicionar paciente à fila de espera
+  // Adicionar paciente à fila de espera - NOVA LÓGICA: Redirecionar para conferência de dados
   async adicionarFila(req, res) {
     try {
-      const idConsultorio = req.session.idConsultorio || req.session.consultorio.idConsultorio;
+      const idConsultorio = req.session.idConsultorio || req.session.consultorio?.idConsultorio;
       const { idPaciente } = req.params;
 
       if (!idConsultorio) {
-        if (req.xhr || req.headers.accept.includes('json')) {
+        if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
           return res.status(400).json({ success: false, message: 'Nenhum consultório selecionado.' });
         }
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -555,35 +516,43 @@ export const pacienteController = {
 
       const paciente = await findPacienteDoConsultorio(idPaciente, idConsultorio);
       if (!paciente) {
-        if (req.xhr || req.headers.accept.includes('json')) {
-          return res
-            .status(404)
-            .json({ success: false, message: 'Paciente não encontrado ou não pertence ao seu consultório.' });
+        if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+          return res.status(404).json({ success: false, message: 'Paciente não encontrado.' });
         }
-        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
 
+      // 1. Identificar o tipo de fluxo
+      const isDirect = req.query.direct === 'true';
+
+      // 2. Detectar se é uma navegação de navegador (HTML) e NÃO é AJAX (XHR)
+      const isHtmlRequest = req.accepts('html') && !req.xhr;
+
+      // 3. Se for navegador e não for fluxo direto (ex: Financeiro), FORÇA o redirecionamento
+      if (isHtmlRequest && !isDirect) {
+        console.log(`[Queue] Redirecionando paciente ${idPaciente} para conferência de dados.`);
+        return res.redirect(`/pacientes/${idPaciente}/edit?addToQueue=true`);
+      }
+
+      // 4. Somente se for AJAX ou parâmetro 'direct=true', o código abaixo é executado
       await prisma.paciente.update({
         where: { idPaciente: parseInt(idPaciente) },
-        data: {
-          naFila: true,
-        },
+        data: { naFila: true },
       });
 
-      req.flash('success', 'Paciente adicionado à fila de espera.');
-
-      if (req.xhr || req.headers.accept.includes('json')) {
-        return res.status(200).json({ success: true, message: 'Paciente adicionado à fila de espera.' });
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(200).json({ success: true, message: 'Paciente adicionado à fila.' });
       }
 
+      req.flash('success', 'Paciente adicionado à fila de espera.');
       return res.redirect('/');
     } catch (error) {
-      console.error('Erro ao adicionar paciente à fila:', error);
-      if (req.xhr || req.headers.accept.includes('json')) {
-        return res.status(500).json({ success: false, message: 'Erro ao adicionar paciente à fila. Tente novamente.' });
+      console.error('Erro ao iniciar processo de adicionar à fila:', error);
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(500).json({ success: false, message: 'Erro ao processar solicitação.' });
       }
-      req.flash('error', 'Erro ao adicionar paciente à fila. Tente novamente.');
+      req.flash('error', 'Erro ao processar solicitação. Tente novamente.');
       return res.redirect('/pacientes');
     }
   },
@@ -706,7 +675,8 @@ export const pacienteController = {
   },
   async imprimirFicha(req, res) {
     try {
-      const idConsultorio = req.session.idConsultorio;
+      // 1. Padronize a captura do ID do Consultório da sessão
+      const idConsultorio = req.session.idConsultorio || req.session.consultorio?.idConsultorio;
       const idPaciente = parseInt(req.params.idPaciente);
 
       if (!idConsultorio) {
@@ -714,83 +684,91 @@ export const pacienteController = {
         return res.redirect('/consultorios/new');
       }
 
-      if (isNaN(idPaciente)) {
-        req.flash('error', 'ID do paciente inválido.');
-        return res.redirect('/pacientes');
-      }
-
       const paciente = await prisma.paciente.findUnique({
         where: { idPaciente: idPaciente },
         include: {
-          anamneses: {
-            orderBy: { createdAt: 'desc' },
-          },
+          anamneses: { orderBy: { createdAt: 'desc' } },
         },
       });
 
       if (!paciente || paciente.consultorioId !== idConsultorio) {
-        req.flash('error', 'Paciente não encontrado ou não pertence ao seu consultório.');
+        req.flash('error', 'Paciente não encontrado.');
         return res.redirect('/pacientes');
       }
 
+      // 2. Formatação de dados básicos
       paciente.dataNascFormatada = paciente.dataNasc ? dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY') : null;
       const idadePaciente = paciente.dataNasc ? dayjs().diff(dayjs(paciente.dataNasc), 'year') : 'N/D';
 
-      // Busca TODOS os serviços cobrados para este paciente através de seus lançamentos financeiros
+      // 3. Busca de Serviços/Produtos Corrigida
       let servicosCobrados = [];
       let servicoDestaque = null;
+
       try {
         const lancamentos = await prisma.lancamentoFinanceiro.findMany({
-          where: { pacienteId: idPaciente },
+          where: {
+            pacienteId: idPaciente,
+            consultorioId: idConsultorio, // Garante que é do consultório atual
+          },
           include: {
             items: {
               include: {
                 servico: true,
+                produto: true,
               },
             },
           },
           orderBy: { createdAt: 'desc' },
         });
 
-        // Achata todos os itens de todos os lançamentos que contêm serviços
         lancamentos.forEach((lanc) => {
-          if (lanc.items) {
+          if (lanc.items && lanc.items.length > 0) {
             lanc.items.forEach((it) => {
-              if (it.servico) {
-                servicosCobrados.push({
-                  descricao: it.servico.descricao,
-                  valorUnitario: it.valorUnitario,
-                  quantidade: it.quantidade || 1,
-                  data: lanc.createdAt,
-                });
-              }
+              // Verifique se o campo no seu modelo Prisma é 'nome' ou 'descricao'
+              // O seu EJS usa 'descricao', por isso mantemos o nome da propriedade aqui
+              const descricaoFinal =
+                it.servico?.descricao ||
+                it.servico?.nome ||
+                it.produto?.descricao ||
+                it.produto?.nome ||
+                'Item de Cobrança';
+
+              servicosCobrados.push({
+                descricao: descricaoFinal,
+                valorUnitario: it.valorUnitario,
+                quantidade: it.quantidade || 1,
+                data: lanc.createdAt,
+                observacao: lanc.observacao,
+              });
             });
           }
         });
 
+        // Define o serviço mais recente como destaque para o topo da ficha
         if (servicosCobrados.length > 0) {
           servicoDestaque = servicosCobrados[0];
         }
       } catch (e) {
-        console.warn('Não foi possível obter serviços cobrados para impressão:', e.message || e);
+        console.error('Erro ao buscar financeiro:', e);
       }
 
+      // 4. Renderização
       res.render('reports/imprimir_ficha_basica', {
         layout: 'layouts/report',
         reportTitle: 'Ficha Optométrica Básica',
         metaInfo: {
-          Ficha: paciente.nFicha || 'N/D',
+          Ficha: paciente.anamneses && paciente.anamneses.length > 0 ? paciente.anamneses[0].nFicha : 'N/D',
         },
         paciente,
         anamneses: paciente.anamneses,
         idadePaciente,
-        servicosCobrados,
-        servicoDestaque,
+        servicosCobrados, // Passa o array para a tabela no EJS
+        servicoDestaque, // Passa o objeto para o campo de destaque no EJS
       });
     } catch (error) {
       console.error('Erro ao gerar impressão da ficha:', error);
-      req.flash('error', 'Erro ao gerar impressão. Tente novamente.');
-      return res.redirect(`/pacientes/${req.params.idPaciente}`);
+      req.flash('error', 'Erro ao gerar impressão.');
+      res.redirect(`/pacientes/${req.params.idPaciente}`);
     }
   },
 };

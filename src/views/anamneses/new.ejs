@@ -3,6 +3,9 @@
     <form class="p-6 sm:p-8 space-y-8 ajax-remote" action="/anamneses" method="post">
       <input type="hidden" name="idPaciente" value="<%= idPaciente %>" />
       <input type="hidden" name="idConsultorio" value="<%= idConsultorio %>" />
+      <% if (typeof addToQueue !== 'undefined' && addToQueue) { %>
+        <input type="hidden" name="addToQueue" value="true">
+      <% } %>
 
       <!-- Cabeçalho / Resumo do Paciente -->
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center space-x-4">
@@ -15,14 +18,27 @@
             <%= paciente?.nome || 'N/D' %> 
             <span class="mx-2 text-slate-300">|</span> 
             <span class="text-slate-600"><%= paciente?.idade || 'N/D' %> anos</span>
-            <span class="mx-2 text-slate-300">|</span> 
-            <span class="text-slate-600">Nº da Ficha <%= paciente?.nFicha || 'N/D' %> </span>
           </p>
         </div>
       </div>
 
-      <!-- Motivo e Último Exame -->
+      <!-- Nº da Ficha e Motivo -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-3 relative">
+          <input
+            type="number"
+            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-clinic-500 rounded-lg bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-600 outline-none transition-all placeholder-transparent"
+            id="nFicha"
+            name="nFicha"
+            placeholder="Nº da Ficha"
+            value="<%= formData && formData.nFicha %>"
+            onblur="validarNFicha(this, '<%= idPaciente %>')"
+          />
+          <label for="nFicha" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
+            Nº da Ficha
+          </label>
+          <div id="ficha-feedback" class="hidden absolute -bottom-5 left-0 text-[10px] font-bold"></div>
+        </div>
         <div class="md:col-span-9 relative">
           <input
             type="text"
@@ -38,6 +54,7 @@
             Motivo da Consulta
           </label>
         </div>
+      </div>
         <div class="md:col-span-3 relative">
           <input
             type="text"
@@ -189,6 +206,35 @@
         <label for="remedio" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-700 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full border border-clinic-500 md:border-none">
           Uso de Medicamentos
         </label>
+      </div>
+
+      <!-- Cefaleia e Antecedentes Pessoais -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Cefaleia -->
+        <div class="space-y-3">
+          <label class="text-xs font-black text-clinic-600 uppercase tracking-widest pointer-events-auto" style="pointer-events: auto !important;">Cefaleia</label>
+          <div class="flex flex-wrap gap-3">
+            <% ['frontal', 'occipital', 'temporal', 'parietal', 'manhã', 'tarde', 'noite'].forEach(opt => { %>
+              <label class="flex items-center space-x-2 cursor-pointer group pointer-events-auto" style="pointer-events: auto !important;">
+                <input type="checkbox" name="cefaleia" value="<%= opt %>" class="w-4 h-4 text-clinic-600 border-2 border-slate-300 rounded focus:ring-clinic-500" style="pointer-events: auto !important;">
+                <span class="text-sm font-bold text-slate-600 group-hover:text-clinic-600 capitalize"><%= opt %></span>
+              </label>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Antecedentes Pessoais -->
+        <div class="space-y-3">
+          <label class="text-xs font-black text-clinic-600 uppercase tracking-widest pointer-events-auto" style="pointer-events: auto !important;">Antecedentes Pessoais</label>
+          <div class="flex flex-wrap gap-3">
+            <% ['Piterígio', 'Ceratocone', 'Hiperemia', 'Cirurgia Ocular'].forEach(opt => { %>
+              <label class="flex items-center space-x-2 cursor-pointer group pointer-events-auto" style="pointer-events: auto !important;">
+                <input type="checkbox" name="antecedentesPessoais" value="<%= opt %>" class="w-4 h-4 text-clinic-600 border-2 border-slate-300 rounded focus:ring-clinic-500" style="pointer-events: auto !important;">
+                <span class="text-sm font-bold text-slate-600 group-hover:text-clinic-600"><%= opt %></span>
+              </label>
+            <% }) %>
+          </div>
+        </div>
       </div>
 
       <!-- Lensometria OD -->

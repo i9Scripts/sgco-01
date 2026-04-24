@@ -1,23 +1,25 @@
 <div class="max-w-6xl mx-auto">
+  <% if (typeof addToQueue !== 'undefined' && addToQueue) { %>
+    <div class="mb-6 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-xl shadow-sm">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <span class="material-symbols-outlined text-emerald-600">info</span>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-bold text-emerald-800">
+            Confirmação de Dados: Verifique e atualize os dados pessoais do paciente antes de prosseguir para a anamnese e entrada na fila.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <form class="p-6 sm:p-8 space-y-8" action="/pacientes/<%= paciente.idPaciente %>?_method=PUT" method="post">
+      <input type="hidden" name="addToQueue" value="<%= (typeof addToQueue !== 'undefined' && addToQueue) ? 'true' : 'false' %>">
       
       <!-- Seção: Identificação da Ficha -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200">
-        <div class="relative">
-          <input 
-            type="number" 
-            class="peer w-full h-10 px-4 text-sm font-semibold border-2 border-slate-300 rounded-lg bg-slate-100 cursor-not-allowed text-slate-600 placeholder-transparent" 
-            id="nFicha" 
-            name="nFicha" 
-            value="<%= paciente.nFicha %>" 
-            placeholder="Nº Ficha"
-            readonly aria-readonly="true"
-          />
-          <label for="nFicha" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
-            Nº Ficha
-          </label>
-        </div>
         <div class="relative">
           <input 
             type="text" 
@@ -26,6 +28,7 @@
             name="dataAtend" 
             value="<%= paciente.dataAtend %>" 
             placeholder="Data de Atendimento"
+            autofocus
           />
           <label for="dataAtend" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-700 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-clinic-600 rounded-full">
             Data de Atendimento
@@ -266,3 +269,4 @@
     </form>
   </div>
 </div>
+<script defer src="/js/validaNficha.js"></script>

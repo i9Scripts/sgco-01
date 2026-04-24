@@ -16,7 +16,7 @@
             <p class="text-lg font-extrabold text-slate-800">
               <%= selectedPaciente.nome %> 
               <span class="mx-2 text-slate-300">|</span> 
-              <span class="text-slate-600">Ficha: <%= selectedPaciente.nFicha || 'N/D' %></span>
+              <span class="text-slate-600">Ficha: <%= (selectedPaciente.anamneses && selectedPaciente.anamneses.length > 0) ? selectedPaciente.anamneses[0].nFicha : 'N/D' %></span>
             </p>
           </div>
         </div>

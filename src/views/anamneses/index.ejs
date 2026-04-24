@@ -11,7 +11,7 @@
         />
         <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400">search</span>
       </div>
-      <button class="h-11 px-6 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-colors flex items-center justify-center gap-2" type="submit">
+      <button class="h-11 px-4 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-colors flex items-center justify-center gap-2" type="submit">
         <span class="material-symbols-outlined">filter_list</span>
         Buscar
       </button>
@@ -25,20 +25,20 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200">
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">ID</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Data</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Paciente</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Último Exame</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Motivo</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">FICHA</th>
+              <th class="px-4 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Data</th>
+              <th class="px-4 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Paciente</th>
+              <th class="px-4 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Último Exame</th>
+              <th class="px-4 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider w-48">Motivo</th>
+              <th class="px-4 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
             <% anamneses.forEach(anamnese => { %>
               <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 text-sm font-medium text-slate-600">#<%= anamnese.idAnam %></td>
-                <td class="px-6 py-4 text-sm text-slate-600"><%= anamnese.dataCreatedAt %></td>
-                <td class="px-6 py-4">
+                <td class="px-4 py-4 text-sm font-medium text-slate-600"><%= anamnese.nFicha || anamnese.idAnam %></td>
+                <td class="px-4 py-4 text-sm text-slate-600"><%= anamnese.dataCreatedAt %></td>
+                <td class="px-4 py-4">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-clinic-50 flex items-center justify-center text-clinic-600 font-bold text-xs">
                       <%= anamnese.paciente.nome.charAt(0).toUpperCase() %>
@@ -46,9 +46,9 @@
                     <span class="text-sm font-bold text-slate-800"><%= anamnese.paciente.nome %></span>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-slate-500"><%= anamnese.ultimoExame || 'Não informado' %></td>
-                <td class="px-6 py-4 text-sm text-slate-600 truncate max-w-xs"><%= anamnese.motivo %></td>
-                <td class="px-6 py-4 text-right">
+                <td class="px-4 py-4 text-sm text-slate-500"><%= anamnese.ultimoExame || 'Não informado' %></td>
+                <td class="px-4 py-4 text-sm text-slate-600 truncate max-w-[12rem]"><%= anamnese.motivo %></td>
+                <td class="px-4 py-4 text-right">
                   <div class="flex justify-end gap-2">
                     <a href="/anamneses/new?idPaciente=<%= anamnese.paciente.idPaciente %>" 
                        class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" 
@@ -60,11 +60,13 @@
                             title="Ver anamnese">
                       <span class="material-symbols-outlined text-[20px]">visibility</span>
                     </button>
+                    <% if (typeof idProfissional !== 'undefined' && idProfissional) { %>
                     <a href="/anamneses/<%= anamnese.idAnam %>/edit" 
                        class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" 
                        title="Editar Anamnese">
                       <span class="material-symbols-outlined text-[20px]">edit</span>
                     </a>
+                    <% } %>
                   </div>
                 </td>
               </tr>

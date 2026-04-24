@@ -48,4 +48,21 @@ router.put('/paciente/:idPaciente/atendido', async (req, res) => {
   }
 });
 
+// Rota para retirar paciente da fila (vinda do dashboard/index)
+router.post('/paciente/:idPaciente/remover-fila', async (req, res) => {
+  const { idPaciente } = req.params;
+  try {
+    await prisma.paciente.update({
+      where: { idPaciente: parseInt(idPaciente) },
+      data: { naFila: false },
+    });
+    req.flash('success', 'Paciente removido da fila.');
+    res.redirect('/');
+  } catch (error) {
+    console.error('Erro ao remover da fila:', error);
+    req.flash('error', 'Erro ao remover paciente da fila.');
+    res.redirect('/');
+  }
+});
+
 export default router;

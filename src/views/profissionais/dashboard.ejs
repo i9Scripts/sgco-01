@@ -89,7 +89,7 @@
                             <div class="flex gap-4 mt-4">
                                 <div class="bg-black/10 px-3 py-1 rounded-lg">
                                     <p class="text-[9px] uppercase opacity-60">Ficha nº</p>
-                                    <p class="text-xs font-bold"><%= proximo.nFicha || 'N/D' %></p>
+                                    <p class="text-xs font-bold"><%= (proximo.anamneses && proximo.anamneses.length > 0) ? proximo.anamneses[0].nFicha : 'N/D' %></p>
                                 </div>
                                 <div class="bg-black/10 px-3 py-1 rounded-lg">
                                     <p class="text-[9px] uppercase opacity-60">Chegada</p>
@@ -140,7 +140,7 @@
                                             <span class="text-sm font-bold text-slate-800"><%= paciente.nome %></span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600"><%= paciente.nFicha || 'N/D' %></td>
+                                    <td class="px-6 py-4 text-sm text-slate-600"><%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %></td>
                                     <td class="px-6 py-4 text-sm text-slate-500">
                                         <%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
                                     </td>

@@ -94,6 +94,9 @@ export const diagnosticoController = {
 
       const pacientes = await prisma.paciente.findMany({
         where: { consultorioId: idConsultorio },
+        include: {
+          anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+        },
         orderBy: {
           nome: 'asc',
         },
@@ -119,7 +122,11 @@ export const diagnosticoController = {
           pagamentoRealizado: true,
         },
         include: {
-          paciente: true,
+          paciente: {
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
+          },
         },
         orderBy: {
           createdAt: 'desc',
@@ -141,6 +148,9 @@ export const diagnosticoController = {
               idPaciente: pid,
               consultorioId: idConsultorio,
             },
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
           });
 
           if (selectedPaciente) {
@@ -183,7 +193,11 @@ export const diagnosticoController = {
           consultorioId: idConsultorio,
         },
         include: {
-          paciente: true,
+          paciente: {
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
+          },
           profissional: true,
           consultorio: true,
         },
@@ -199,13 +213,6 @@ export const diagnosticoController = {
         pageIcon: 'ri-file-list-line',
         diagnostico,
         layout: false,
-        // formatarSoma: (v1, v2) => {
-        //   const n1 = parseFloat(String(v1 || '0').replace(',', '.'));
-        //   const n2 = parseFloat(String(v2 || '0').replace(',', '.'));
-        //   const soma = n1 + n2;
-        //   if (Number.isNaN(soma)) return '';
-        //   return (soma > 0 ? '+' : '') + soma.toFixed(2).replace('.', ',');
-        // },
       });
     } catch (error) {
       console.error('Erro ao buscar diagnóstico:', error);
@@ -225,7 +232,11 @@ export const diagnosticoController = {
       const diagnosticos = await prisma.diagnostico.findMany({
         where: { consultorioId: idConsultorio },
         include: {
-          paciente: true,
+          paciente: {
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
+          },
           profissional: true,
         },
         orderBy: {
@@ -281,7 +292,11 @@ export const diagnosticoController = {
           ],
         },
         include: {
-          paciente: true,
+          paciente: {
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
+          },
           profissional: true,
         },
         orderBy: {
@@ -324,7 +339,13 @@ export const diagnosticoController = {
           idDiagnostico: parseInt(idDiagnostico),
           consultorioId: idConsultorio,
         },
-        include: { paciente: true }, // Isso traz o objeto 'paciente' junto com o diagnóstico
+        include: { 
+          paciente: {
+            include: {
+              anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+            }
+          } 
+        }, 
       });
 
       if (!diagnostico) {
@@ -332,7 +353,12 @@ export const diagnosticoController = {
         return res.redirect('/diagnosticos');
       }
 
-      const pacientes = await prisma.paciente.findMany({ where: { consultorioId: idConsultorio } });
+      const pacientes = await prisma.paciente.findMany({ 
+        where: { consultorioId: idConsultorio },
+        include: {
+          anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+        }
+      });
       const profissionais = await prisma.profissional.findMany({ where: { consultorioId: idConsultorio } });
 
       // 2. Definimos a variável selectedPaciente que a sua View edit.ejs agora exige

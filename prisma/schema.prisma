@@ -83,7 +83,6 @@ model User {
 
 model Paciente {
   idPaciente    Int                    @id @default(autoincrement())
-  nFicha        Int?
   dataAtend     String?                @db.VarChar(10)
   nome          String                 @db.VarChar(60)
   responsavel   String?                @db.VarChar(60)
@@ -194,37 +193,40 @@ model LancamentoFinanceiro {
 }
 
 model Anamnese {
-  idAnam        Int         @id @default(autoincrement())
-  motivo        String      @db.VarChar(100)
-  ultimoExame   String      @db.VarChar(20)
-  usuarioOculos Boolean
-  usuarioLC     Boolean
-  trauma        String?     @db.VarChar(50)
-  dm            Boolean
-  has           Boolean
-  glauc         Boolean
-  dmFam         String?     @db.VarChar(50)
-  hasFam        String?     @db.VarChar(50)
-  glaucFam      String?     @db.VarChar(50)
-  sintomas      String?     @db.VarChar(50)
-  remedio       String?     @db.VarChar(50)
-  obsGerais     String?     @db.VarChar(255)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  pacienteId    Int
-  consultorioId Int
-  adicao        String?     @db.VarChar(6)
-  cilOD         String?     @db.VarChar(6)
-  cilOE         String?     @db.VarChar(6)
-  eixoOD        String?     @db.VarChar(4)
-  avSCOD        String?     @db.VarChar(8)
-  eixoOE        String?     @db.VarChar(4)
-  esfOD         String?     @db.VarChar(6)
-  esfOE         String?     @db.VarChar(6)
-  avSCOE        String?     @db.VarChar(8)
-  consultorio   Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
-  paciente      Paciente    @relation(fields: [pacienteId], references: [idPaciente])
-  consultas     Consulta[]
+  idAnam               Int         @id @default(autoincrement())
+  nFicha               Int?
+  motivo               String      @db.VarChar(100)
+  ultimoExame          String      @db.VarChar(20)
+  usuarioOculos        Boolean
+  usuarioLC            Boolean
+  trauma               String?     @db.VarChar(50)
+  dm                   Boolean
+  has                  Boolean
+  glauc                Boolean
+  dmFam                String?     @db.VarChar(50)
+  hasFam               String?     @db.VarChar(50)
+  glaucFam             String?     @db.VarChar(50)
+  sintomas             String?     @db.VarChar(50)
+  remedio              String?     @db.VarChar(50)
+  cefaleia             String?     @db.VarChar(100)
+  antecedentesPessoais String?     @db.VarChar(100)
+  obsGerais            String?     @db.VarChar(255)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  pacienteId           Int
+  consultorioId        Int
+  adicao               String?     @db.VarChar(6)
+  cilOD                String?     @db.VarChar(6)
+  cilOE                String?     @db.VarChar(6)
+  eixoOD               String?     @db.VarChar(4)
+  avSCOD               String?     @db.VarChar(8)
+  eixoOE               String?     @db.VarChar(4)
+  esfOD                String?     @db.VarChar(6)
+  esfOE                String?     @db.VarChar(6)
+  avSCOE               String?     @db.VarChar(8)
+  consultorio          Consultorio @relation(fields: [consultorioId], references: [idConsultorio])
+  paciente             Paciente    @relation(fields: [pacienteId], references: [idPaciente])
+  consultas            Consulta[]
 
   @@index([consultorioId], map: "Anamnese_consultorioId_fkey")
   @@index([pacienteId], map: "Anamnese_pacienteId_fkey")

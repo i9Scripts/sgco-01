@@ -46,7 +46,7 @@
           <tr class="hover:bg-slate-50/50 transition-colors">
             <td class="px-6 py-4">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-slate-100 text-slate-600 border border-slate-200">
-                <%= diagnostico.paciente.nFicha %>
+                <%= (diagnostico.paciente.anamneses && diagnostico.paciente.anamneses.length > 0) ? diagnostico.paciente.anamneses[0].nFicha : 'N/D' %>
               </span>
             </td>
             <td class="px-6 py-4">

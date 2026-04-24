@@ -40,64 +40,11 @@
 
     <!-- Dashboard Body Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Column Left: Daily Schedule (5 cols) -->
-        <div class="lg:col-span-5 space-y-6">
-            <div class="bg-medical-navy/60 p-6 rounded-xl shadow-lg border border-slate-700">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="font-headline font-bold text-white text-lg">Agenda de Hoje</h3>
-                    <a href="/agendamentos" class="text-xs font-bold text-clinic-100 hover:text-clinic-300 transition-colors">Ver todos</a>
-                </div>
-                
-                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                    <% if (agendamentosHoje && agendamentosHoje.length > 0) { %>
-                        <% agendamentosHoje.forEach(agendamento => { %>
-                            <div class="bg-clinic-500/50 p-2 rounded-xl flex items-center gap-4 group hover:bg-slate-700 transition-all border border-slate-600">
-                                <div class="flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-white/80 text-clinic-400 group-hover:bg-clinic-500 group-hover:text-white transition-all shadow-inner">
-                                    <span class="text-xs font-black"><%= new Date(agendamento.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h4 class="font-bold text-sm text-white truncate"><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></h4>
-                                    <p class="text-xs text-slate-300 truncate"><%= agendamento.observacao || 'Consulta agendada' %></p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <% if (agendamento.paciente && !agendamento.paciente.naFila) { %>
-                                        <form action="/pacientes/<%= agendamento.paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="inline">
-                                            <button type="submit" class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all" title="Colocar na Fila">
-                                                <span class="material-symbols-outlined text-[20px]">playlist_add</span>
-                                            </button>
-                                        </form>
-                                    <% } %>
-                                </div>
-                            </div>
-                        <% }) %>
-                    <% } else { %>
-                        <div class="bg-slate-700/30 p-8 rounded-xl text-center border border-dashed border-slate-600">
-                            <span class="material-symbols-outlined text-slate-500 text-3xl mb-2">event_busy</span>
-                            <p class="text-slate-400 text-sm font-medium">Nenhum agendamento para hoje.</p>
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="font-headline font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">Ações Rápidas</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <a href="/pacientes/new" class="flex flex-col items-center justify-center p-4 rounded-xl bg-clinic-50 text-clinic-700 hover:bg-clinic-100 transition-all border border-clinic-100 group">
-                        <span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">person_add</span>
-                        <span class="text-xs font-bold">Novo Paciente</span>
-                    </a>
-                    <button onclick="abrirModalGenerico('/agendamentos/new', 'Novo Agendamento')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all border border-emerald-100 group">
-                        <span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">calendar_add_on</span>
-                        <span class="text-xs font-bold">Agendar</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Column Right: Waiting Room (7 cols) -->
-        <div class="lg:col-span-7 space-y-6">
-            <div class="flex items-center justify-between">
+        <div class="lg:col-span-12 space-y-6">
+            <div class="bg-medical-navy/60 flex items-center justify-between rounded-xl">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-8 bg-clinic-500 rounded-full"></div>
                     <h3 class="text-white font-headline font-extrabold text-slate-800 text-xl tracking-tight">Fila de Espera</h3>
@@ -106,13 +53,68 @@
                     <%= pacientesNaFila.length %> Aguardando
                 </div>
             </div>
-            
             <div id="fila-de-espera-recepcao" class="transition-all duration-500">
                 <%- include('./partials/_filaEspera.ejs', { pacientes: pacientesNaFila }) %>
             </div>
+        </div>
+        
+        <div class="lg:col-span-12 space-y-6">
+            <!-- Column Left: Daily Schedule (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-medical-navy/60 p-6 rounded-xl shadow-lg border border-slate-700">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-headline font-bold text-white text-lg">Agenda de Hoje</h3>
+                        <a href="/agendamentos" class="text-xs font-bold text-clinic-100 hover:text-clinic-300 transition-colors">Ver todos</a>
+                    </div>
+                    
+                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        <% if (agendamentosHoje && agendamentosHoje.length > 0) { %>
+                            <% agendamentosHoje.forEach(agendamento => { %>
+                                <div class="bg-clinic-500/50 p-2 rounded-xl flex items-center gap-4 group hover:bg-slate-700 transition-all border border-slate-600">
+                                    <div class="flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-white/80 text-clinic-400 group-hover:bg-clinic-500 group-hover:text-white transition-all shadow-inner">
+                                        <span class="text-xs font-black"><%= new Date(agendamento.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-sm text-white truncate"><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></h4>
+                                        <p class="text-xs text-slate-300 truncate"><%= agendamento.observacao || 'Consulta agendada' %></p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <% if (agendamento.paciente && !agendamento.paciente.naFila) { %>
+                                            <form action="/pacientes/<%= agendamento.paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="inline">
+                                                <button type="submit" class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all" title="Colocar na Fila">
+                                                    <span class="material-symbols-outlined text-[20px]">playlist_add</span>
+                                                </button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="bg-slate-700/30 p-8 rounded-xl text-center border border-dashed border-slate-600">
+                                <span class="material-symbols-outlined text-slate-500 text-3xl mb-2">event_busy</span>
+                                <p class="text-slate-400 text-sm font-medium">Nenhum agendamento para hoje.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
 
+                <!-- Quick Actions -->
+                <div class="bg-medical-navy/60 p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-headline font-bold text-white text-sm uppercase tracking-wider mb-4">Ações Rápidas</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="/pacientes/new" class="flex flex-col items-center justify-center p-4 rounded-xl bg-clinic-50 text-clinic-700 hover:bg-clinic-100 transition-all border border-clinic-100 group">
+                            <span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">person_add</span>
+                            <span class="text-xs font-bold">Novo Paciente</span>
+                        </a>
+                        <button onclick="abrirModalGenerico('/agendamentos/new', 'Novo Agendamento')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all border border-emerald-100 group">
+                            <span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">calendar_add_on</span>
+                            <span class="text-xs font-bold">Agendar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Recently Updated Patients -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-white/80 p-6 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="font-headline font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">Últimos Pacientes</h3>
                 <div class="divide-y divide-slate-100">
                     <% if (pacientesReservados && pacientesReservados.length > 0) { %>
@@ -123,8 +125,8 @@
                                         <%= paciente.nome.split(' ').map(n => n[0]).join('').substring(0,2) %>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold text-slate-700 group-hover:text-clinic-600 transition-colors"><%= paciente.nome %></p>
-                                        <p class="text-[10px] text-slate-400">Última atualização: <%= new Date(paciente.updatedAt).toLocaleDateString('pt-BR') %></p>
+                                        <p class="text-sm font-bold text-slate-700 group-hover:text-clinic-800 transition-colors"><%= paciente.nome %></p>
+                                        <p class="text-[10px] text-slate-600">Última atualização: <%= new Date(paciente.updatedAt).toLocaleDateString('pt-BR') %></p>
                                     </div>
                                 </div>
                                 <div class="flex gap-2">

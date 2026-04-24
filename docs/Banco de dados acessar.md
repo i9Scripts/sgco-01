@@ -16,7 +16,7 @@ Verificando se o cliente `mysql` está disponível no sistema.
 
 Ran terminal command: which mysql || mysql --version || echo 'mysql not found'
 
-Ran terminal command: mysql -u root -pJesus7011 -e "SHOW DATABASES LIKE 'optosystem';"
+Ran terminal command: mysql -u root -p 
 
 Running `prisma migrate dev` with name apply migrations after db create...
 

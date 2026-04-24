@@ -46,7 +46,7 @@
           <tr class="hover:bg-slate-50/50 transition-colors">
             <td class="px-6 py-4">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-slate-100 text-slate-600 border border-slate-200">
-                <%= paciente.nFicha %>
+                <%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %>
               </span>
             </td>
             <td class="px-6 py-4">
@@ -77,7 +77,7 @@
                 <form action="/pacientes/<%= paciente.idPaciente %>/adicionar-fila?_method=PUT" method="post" class="inline">
                   <button
                     type="submit"
-                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
                     title="Adicionar à Fila"
                   >
                     <span class="material-symbols-outlined text-[20px]">playlist_add</span>

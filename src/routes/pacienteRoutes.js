@@ -9,7 +9,6 @@ const router = Router();
 
 router.get('/', pacienteController.getAllPacientes); // GET /pacientes
 router.get('/new', pacienteController.newPacienteForm); // GET /pacientes/new
-router.get('/new-modern', pacienteController.newPacienteModernForm); // GET /pacientes/new-modern (Tailwind)
 router.post('/', pacienteController.createPaciente); // POST /pacientes
 
 // Busca antes da rota dinâmica
@@ -21,11 +20,11 @@ router.get('/:idPaciente/selecionar', pacienteController.selecionarPaciente);
 // Rota para a ficha do paciente (relatório)
 
 // Rota dinâmica depois
+router.put('/:idPaciente/atendido', pacienteController.marcarAtendido); // PUT /pacientes/2/atendido
+router.put('/:idPaciente/adicionar-fila', pacienteController.adicionarFila); // PUT /pacientes/2/adicionar-fila
 router.get('/:idPaciente', pacienteController.getPacienteById); // GET /pacientes/2
 router.get('/:idPaciente/edit', pacienteController.editPacienteForm); // GET /pacientes/2/edit
 router.put('/:idPaciente', pacienteController.updatePaciente); // PUT /pacientes/2
-router.put('/:idPaciente/atendido', pacienteController.marcarAtendido); // PUT /pacientes/2/atendido
-router.put('/:idPaciente/adicionar-fila', pacienteController.adicionarFila); // PUT /pacientes/2/adicionar-fila
 router.delete('/:idPaciente', pacienteController.deletePaciente); // DELETE /pacientes/2
 
 export default router;

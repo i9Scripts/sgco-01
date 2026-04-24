@@ -41,6 +41,9 @@ export const renderizarCobranca = async (req, res) => {
   try {
     const paciente = await prisma.paciente.findUnique({
       where: { idPaciente: parseInt(pacienteId) },
+      include: {
+        anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+      }
     });
 
     if (!paciente) {
@@ -141,7 +144,7 @@ export const processarCobranca = async (req, res) => {
         formaPagamento: forma,
         statusPagamento: forma === FormaPagamento.Convenio ? StatusPagamento.Pendente : StatusPagamento.Pago,
         ...(dataPagamento && { dataPagamento: new Date(dataPagamento) }),
-        observacao: observacao || null,
+        observacao: officeacion || null,
         paciente: { connect: { idPaciente: parseInt(pacienteId) } },
         consultorio: { connect: { idConsultorio: consultorioId } },
         ...(parceiroId && { parceiro: { connect: { idParceiro: parseInt(parceiroId) } } }),
@@ -173,6 +176,9 @@ export const renderizarConfirmacaoFila = async (req, res) => {
   try {
     const paciente = await prisma.paciente.findUnique({
       where: { idPaciente: parseInt(pacienteId) },
+      include: {
+        anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+      }
     });
 
     if (!paciente) {
@@ -367,7 +373,9 @@ export const renderizarSelecionarPaciente = async (req, res) => {
 
     const pacientes = await prisma.paciente.findMany({
       where: whereClause,
-      select: { idPaciente: true, nome: true, naFila: true },
+      include: {
+        anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+      },
       orderBy: { nome: 'asc' },
     });
 

@@ -13,7 +13,7 @@
             <p class="text-xl font-extrabold text-slate-800">
               <%= paciente?.nome %>
               <span class="mx-2 text-slate-300">|</span>
-              <span class="text-slate-600 text-lg">Ficha: <%= paciente?.nFicha || 'N/D' %></span>
+              <span class="text-slate-600 text-lg">Ficha: <%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %></span>
             </p>
           </div>
         </div>
@@ -103,20 +103,40 @@
               <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest">Informações Clínicas</h4>
               <div class="space-y-3">
                 <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase">Último Exame</p>
-                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.ultimoExame || 'N/D' %></p>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Último Exame</p>
+                  <p class="text-sm font-bold text-black"><%= ultimaAnamnese.ultimoExame || 'N/D' %></p>
                 </div>
                 <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase">Sintomas</p>
-                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.sintomas || 'N/D' %></p>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Sintomas</p>
+                  <p class="text-sm font-bold text-black"><%= ultimaAnamnese.sintomas || 'N/D' %></p>
+                </div>
+                <% 
+                  // Normaliza a exibição caso os campos venham como array ou string
+                  const cefaleiaRaw = ultimaAnamnese.cefaleia;
+                  let cefaleiaDisplay = 'Nenhuma';
+                  if (Array.isArray(cefaleiaRaw) && cefaleiaRaw.length > 0) cefaleiaDisplay = cefaleiaRaw.join(', ');
+                  else if (typeof cefaleiaRaw === 'string' && cefaleiaRaw.trim() !== '') cefaleiaDisplay = cefaleiaRaw.trim();
+
+                  const antRaw = ultimaAnamnese.antecedentesPessoais;
+                  let antDisplay = 'Nenhum';
+                  if (Array.isArray(antRaw) && antRaw.length > 0) antDisplay = antRaw.join(', ');
+                  else if (typeof antRaw === 'string' && antRaw.trim() !== '') antDisplay = antRaw.trim();
+                %>
+                <div>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Cefaleia</p>
+                  <p class="text-sm font-bold text-black capitalize"><%= cefaleiaDisplay %></p>
                 </div>
                 <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase">Trauma/Cirurgia</p>
-                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.trauma || 'N/D' %></p>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Antecedentes Pessoais</p>
+                  <p class="text-sm font-bold text-black"><%= antDisplay %></p>
                 </div>
                 <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase">Fármacos</p>
-                  <p class="text-sm font-bold text-slate-700"><%= ultimaAnamnese.remedio || 'N/D' %></p>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Trauma/Cirurgia</p>
+                  <p class="text-sm font-bold text-black"><%= ultimaAnamnese.trauma || 'N/D' %></p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-bold text-gray-500 uppercase">Fármacos</p>
+                  <p class="text-sm font-bold text-black"><%= ultimaAnamnese.remedio || 'N/D' %></p>
                 </div>
               </div>
             </div>
