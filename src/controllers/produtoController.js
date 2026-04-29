@@ -87,13 +87,20 @@ export const produtoController = {
   async getAllProdutos(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
+      const { query } = req.query;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
+      const where = { consultorioId: idConsultorio };
+      if (query && query.trim() !== '') {
+        where.descricao = { contains: query.trim() };
+      }
+
       const produtos = await prisma.produto.findMany({
-        where: { consultorioId: idConsultorio },
+        where,
         orderBy: { descricao: 'asc' },
       });
 
@@ -101,6 +108,7 @@ export const produtoController = {
         pageTitle: 'Lista de Produtos',
         pageIcon: 'ri-archive-line',
         produtos,
+        query: query || '',
       });
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);
@@ -234,42 +242,6 @@ export const produtoController = {
       } else {
         req.flash('error', 'Erro ao deletar o produto. Tente novamente.');
       }
-      return res.redirect('/produtos');
-    }
-  },
-
-  async searchProdutos(req, res) {
-    try {
-      const { q } = req.query; // use ?q=term
-      const idConsultorio = req.session.idConsultorio;
-      if (!idConsultorio) {
-        req.flash('error', 'Nenhum consultório selecionado.');
-        return res.redirect('/consultorios/new');
-      }
-
-      if (!q || q.trim() === '') return res.redirect('/produtos');
-
-      const produtos = await prisma.produto.findMany({
-        where: {
-          consultorioId: idConsultorio,
-          descricao: { contains: q.trim(), mode: 'insensitive' },
-        },
-        orderBy: { descricao: 'asc' },
-      });
-
-      if (produtos.length === 0) {
-        req.flash('warning', 'Nenhum produto encontrado.');
-        return res.redirect('/produtos');
-      }
-
-      res.render('produtos/index', {
-        pageTitle: `Resultados para "${q}"`,
-        pageIcon: 'ri-search-line',
-        produtos,
-      });
-    } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
-      req.flash('error', 'Erro ao buscar produtos. Tente novamente.');
       return res.redirect('/produtos');
     }
   },

@@ -760,8 +760,13 @@ export const pacienteController = {
         });
       });
 
-      // 3. Define o destaque (o item mais recente)
-      const servicoDestaque = servicosCobrados.length > 0 ? servicosCobrados[0] : null;
+      // 3. Define o destaque (itens do lançamento mais recente para aparecer no topo da ficha)
+      let servicoDestaque = null;
+      if (lancamentos.length > 0) {
+        const itensUltimo = lancamentos[0].items || [];
+        const listaNomes = itensUltimo.map(it => it.servico?.descricao || it.produto?.descricao || 'Item').filter(Boolean).join(', ');
+        servicoDestaque = { descricao: listaNomes };
+      }
 
       // 4. Renderização
       res.render('reports/imprimir_ficha_basica', {

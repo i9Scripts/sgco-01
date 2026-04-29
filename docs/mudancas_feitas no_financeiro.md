@@ -1,3 +1,5 @@
+Um link para ir direto a cobrança sem fazer anamnese ou editar os dados do paciente (/financeiro/selecionar-paciente)
+
 ✦ I will enter plan mode to detail the migration strategy and ensure no data is lost during the schema changes.
 
 ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮

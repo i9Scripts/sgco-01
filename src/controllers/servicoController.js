@@ -34,6 +34,7 @@ export const servicoController = {
   async createServico(req, res) {
     try {
       const { descricao, valor } = req.body;
+      const file = req.file;
       const idConsultorio = req.session.idConsultorio;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
@@ -44,10 +45,13 @@ export const servicoController = {
         return res.redirect('/servicos/new');
       }
 
+      const imagemPath = file ? `/img/servicos/${file.filename}` : null;
+
       await prisma.servico.create({
         data: {
           descricao,
           valor: parseFloat(valor),
+          imagem: imagemPath,
           consultorioId: idConsultorio,
         },
       });
@@ -68,13 +72,20 @@ export const servicoController = {
   async getAllServicos(req, res) {
     try {
       const idConsultorio = req.session.idConsultorio;
+      const { query } = req.query;
+
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
       }
 
+      const where = { consultorioId: idConsultorio };
+      if (query && query.trim() !== '') {
+        where.descricao = { contains: query.trim() };
+      }
+
       const servicos = await prisma.servico.findMany({
-        where: { consultorioId: idConsultorio },
+        where,
         orderBy: { descricao: 'asc' },
       });
 
@@ -82,6 +93,7 @@ export const servicoController = {
         pageTitle: 'Serviços',
         pageIcon: 'ri-list-check',
         servicos,
+        query: query || '',
       });
     } catch (error) {
       console.error('Erro ao listar serviços:', error);
@@ -150,6 +162,7 @@ export const servicoController = {
       const idConsultorio = req.session.idConsultorio;
       const { idServico } = req.params;
       const { descricao, valor } = req.body;
+      const file = req.file;
       if (!idConsultorio) {
         req.flash('error', 'Nenhum consultório selecionado.');
         return res.redirect('/consultorios/new');
@@ -166,9 +179,17 @@ export const servicoController = {
         return res.redirect(`/servicos/${idServico}/edit`);
       }
 
+      const updateData = {
+        descricao,
+        valor: parseFloat(valor),
+      };
+      if (file) {
+        updateData.imagem = `/img/servicos/${file.filename}`;
+      }
+
       await prisma.servico.update({
         where: { idServico: parseInt(idServico) },
-        data: { descricao, valor: parseFloat(valor) },
+        data: updateData,
       });
 
       req.flash('success', 'Serviço atualizado com sucesso!');

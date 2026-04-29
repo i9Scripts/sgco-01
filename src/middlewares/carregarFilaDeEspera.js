@@ -8,10 +8,7 @@ export const carregarFilaDeEspera = async (req, res, next) => {
         where: { consultorioId: req.session.idConsultorio, naFila: true },
         include: { 
           paciente: true,
-          anamnese: {
-            orderBy: { createdAt: 'desc' },
-            take: 1
-          }
+          anamnese: true
         },
         orderBy: { createdAt: 'asc' },
       });

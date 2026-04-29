@@ -1,14 +1,32 @@
-<div class="max-w-6xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
   <!-- Cabeçalho e Ações -->
-  <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
     <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
       <span class="material-symbols-outlined text-clinic-600">medical_services</span>
       Serviços
     </h2>
-    <a href="/servicos/new" class="px-6 py-2.5 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-all flex items-center gap-2 shadow-md shadow-clinic-100">
-      <span class="material-symbols-outlined">add_circle</span>
-      Novo Serviço
-    </a>
+    <div class="flex flex-col md:flex-row w-full md:w-auto gap-4">
+      <!-- Formulário de busca -->
+      <form action="/servicos" method="get" class="flex gap-2 w-full md:w-80">
+        <div class="flex-1 relative">
+          <input 
+            type="text" 
+            name="query" 
+            class="w-full h-10 pl-10 pr-4 text-sm font-medium border-2 border-slate-200 rounded-lg focus:border-clinic-500 focus:ring-0 outline-none transition-all" 
+            placeholder="Buscar por descrição..." 
+            value="<%= typeof query !== 'undefined' ? query : '' %>"
+          />
+          <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400">search</span>
+        </div>
+        <button class="h-10 px-4 bg-slate-100 text-slate-700 rounded-lg font-bold hover:bg-slate-200 transition-colors" type="submit">
+          Buscar
+        </button>
+      </form>
+      <a href="/servicos/new" class="px-6 py-2 bg-clinic-500 text-white rounded-lg font-bold hover:bg-clinic-600 transition-all flex items-center justify-center gap-2 shadow-md shadow-clinic-100">
+        <span class="material-symbols-outlined">add_circle</span>
+        Novo Serviço
+      </a>
+    </div>
   </div>
 
   <!-- Lista de serviços -->
@@ -19,7 +37,7 @@
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200">
               <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Descrição do Serviço</th>
-              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Valor (R$)</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Valor Unitário</th>
               <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
             </tr>
           </thead>
@@ -28,8 +46,12 @@
               <tr class="hover:bg-slate-50 transition-colors">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-clinic-50 flex items-center justify-center text-clinic-600">
-                      <span class="material-symbols-outlined text-lg">medical_information</span>
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 overflow-hidden border border-slate-200">
+                      <% if (servico.imagem) { %>
+                        <img src="<%= servico.imagem %>" alt="<%= servico.descricao %>" class="w-full h-full object-cover">
+                      <% } else { %>
+                        <span class="material-symbols-outlined text-lg">medical_information</span>
+                      <% } %>
                     </div>
                     <span class="text-sm font-bold text-slate-800"><%= servico.descricao %></span>
                   </div>
@@ -39,6 +61,11 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
+                    <button onclick="abrirModalGenerico('/servicos/<%= servico.idServico %>', 'Ver Serviço')" 
+                            class="p-2 text-clinic-600 hover:bg-clinic-50 rounded-lg transition-colors" 
+                            title="Ver Detalhes">
+                      <span class="material-symbols-outlined text-[20px]">visibility</span>
+                    </button>
                     <a href="/servicos/<%= servico.idServico %>/edit" 
                        class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" 
                        title="Editar Serviço">
@@ -59,7 +86,7 @@
     <% } else { %>
       <div class="p-12 text-center">
         <span class="material-symbols-outlined text-5xl text-slate-300 mb-4">medical_services</span>
-        <p class="text-slate-500 font-medium">Nenhum serviço cadastrado.</p>
+        <p class="text-slate-500 font-medium">Nenhum serviço encontrado.</p>
         <a href="/servicos/new" class="mt-4 inline-flex items-center text-clinic-600 font-bold hover:underline gap-1">
           <span class="material-symbols-outlined text-sm">add</span>
           Cadastrar o primeiro serviço

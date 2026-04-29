@@ -33,7 +33,6 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024
 router.get('/', produtoController.getAllProdutos);
 router.get('/new', produtoController.newProdutoForm);
 router.post('/', upload.single('imagem'), produtoController.createProduto);
-router.get('/search', produtoController.searchProdutos);
 router.get('/:idProduto', produtoController.getProdutoById);
 router.get('/:idProduto/edit', produtoController.editProdutoForm);
 router.post('/:idProduto/edit', upload.single('imagem'), produtoController.updateProduto);

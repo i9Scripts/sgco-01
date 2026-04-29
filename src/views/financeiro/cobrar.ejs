@@ -1,330 +1,362 @@
-<div class="max-w-6xl mx-auto">
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="bg-medical-navy/90 p-6 flex justify-between items-center">
-      <div>
-        <h2 class="text-xl font-bold text-white flex items-center">
-          <span class="material-symbols-outlined mr-2">point_of_sale</span>
-          PDV / Checkout
-        </h2>
-        <p class="text-clinic-100 text-sm">Paciente: <%= paciente.nome %>
-        <span class="mx-2 text-slate-300">|</span> 
-        <span class="text-clinic-100 text-sm">Ficha <%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %> </span>
-        </p>
+<div class="max-w-7xl mx-auto h-[calc(100vh-120px)] flex flex-col">
+  <!-- Top Bar: Paciente & Contexto -->
+  <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex items-center justify-between border border-slate-200">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-[#006573]/10 flex items-center justify-center text-[#006573]">
+        <span class="material-symbols-outlined">person</span>
       </div>
-      <div class="text-white text-right">
-        <span class="text-xs uppercase opacity-80 block">Data</span>
-        <span class="font-bold"><%= new Date().toLocaleDateString('pt-BR') %></span>
+      <div>
+        <h2 class="text-lg font-bold text-slate-800"><%= paciente.nome %></h2>
+        <div class="flex gap-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          <span>Ficha: <%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %></span>
+          <span class="text-slate-300">|</span>
+          <span>CPF: <%= paciente.cpf || 'N/D' %></span>
+        </div>
       </div>
     </div>
+    <div class="flex items-center gap-6">
+      <div class="text-right">
+        <p class="text-[10px] uppercase font-bold text-slate-400">Data da Operação</p>
+        <p class="font-bold text-slate-700"><%= new Date().toLocaleDateString('pt-BR') %></p>
+      </div>
+      <a href="/financeiro/selecionar-paciente" class="p-2 text-slate-400 hover:text-error transition-colors">
+        <span class="material-symbols-outlined">cancel</span>
+      </a>
+    </div>
+  </div>
 
-    <form id="cobrarForm" action="/financeiro/registrar" method="POST" class="p-6 sm:p-8 space-y-8">
-      <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
-      <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= (typeof parceiro !== 'undefined' && parceiro) ? parceiro.idParceiro : '' %>">
-      <input type="hidden" name="items" id="itemsField" value="[]">
-      <input type="hidden" name="valorBruto" id="valorBrutoField" value="0.00">
-      <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
-      <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
-      
-      <input type="hidden" name="tipoItem" id="tipoItemValue" value="servico">
+  <form id="cobrarForm" action="/financeiro/registrar" method="POST" class="flex flex-col lg:flex-row gap-6 flex-1 min-h-0 overflow-hidden">
+    <!-- Hidden Fields -->
+    <input type="hidden" name="pacienteId" value="<%= paciente.idPaciente %>">
+    <input type="hidden" name="parceiroId" id="parceiroIdField" value="<%= (typeof parceiro !== 'undefined' && parceiro) ? parceiro.idParceiro : '' %>">
+    <input type="hidden" name="items" id="itemsField" value="[]">
+    <input type="hidden" name="valorBruto" id="valorBrutoField" value="0.00">
+    <input type="hidden" name="valorFinal" id="valorFinalField" value="0.00">
+    <input type="hidden" name="valorDesconto" id="valorDescontoField" value="<%= valorDesconto %>">
+    <input type="hidden" name="tipoItem" id="tipoItemValue" value="servico">
+    <input type="hidden" name="formaPagamento" id="formaPagamentoValue" value="<%= (typeof formasPagamento !== 'undefined' && formasPagamento.length > 0) ? formasPagamento[0] : '' %>">
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-8 space-y-6">
+    <!-- Left Column: Search & Item Grid -->
+    <div class="lg:w-2/3 flex flex-col gap-6 min-h-0">
+      <!-- Search & Filters -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+          <div class="flex bg-slate-100 p-1 rounded-xl w-full md:w-auto">
+            <button type="button" onclick="setTipoItem('servico', this)" class="tipo-btn flex-1 md:flex-none px-6 py-2 rounded-lg font-bold text-xs transition-all bg-white text-[#006573] shadow-sm">
+              Serviços
+            </button>
+            <button type="button" onclick="setTipoItem('produto', this)" class="tipo-btn flex-1 md:flex-none px-6 py-2 rounded-lg font-bold text-xs transition-all text-slate-500 hover:text-slate-700">
+              Produtos
+            </button>
+          </div>
           
-          <div class="space-y-3">
-            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Tipo de Item</label>
-            <div class="flex gap-4">
-              <button type="button" onclick="setTipoItem('servico', this)" class="tipo-btn flex-1 flex items-center justify-center p-4 rounded-xl border-2 transition-all shadow-sm border-clinic-500 bg-clinic-50 text-clinic-700 font-bold">
-                <span class="material-symbols-outlined mr-2">medical_services</span>
-                Serviço
-              </button>
-              <button type="button" onclick="setTipoItem('produto', this)" class="tipo-btn flex-1 flex items-center justify-center p-4 rounded-xl border-2 transition-all shadow-sm border-slate-100 bg-slate-50 text-slate-600 hover:bg-white font-bold">
-                <span class="material-symbols-outlined mr-2">inventory_2</span>
-                Produto
-              </button>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="md:col-span-8 relative">
-              <select id="itemSelect" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all appearance-none">
-                <option value="">Selecione...</option>
-              </select>
-              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Item</label>
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                <span class="material-symbols-outlined">expand_more</span>
-              </div>
-            </div>
-            <div class="md:col-span-2 relative">
-              <input type="number" id="itemQuantidade" class="peer w-full h-12 px-4 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all" value="1" min="1">
-              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Qtd</label>
-            </div>
-            <div class="md:col-span-2">
-              <button type="button" id="addItemBtn" class="w-full h-12 bg-clinic-500 text-white rounded-xl font-bold hover:bg-clinic-600 shadow-md transition-all flex items-center justify-center">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-              </button>
-            </div>
-          </div>
-          <!-- Seleciona Parceiro -->
-            <div class="relative mb-6">
-              <select id="parceiroSelect" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all appearance-none">
-                <option value="">Nenhum</option>
-                <% (parceiros || []).forEach(function(p){ %>
-                  <option value="<%= p.idParceiro %>" data-credito="<%= p.credito || 0 %>"><%= p.nome %></option>
-                <% }) %>
-              </select>
-              <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Parceiro</label>
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                <span class="material-symbols-outlined">expand_more</span>
-              </div>
-            </div>
-            <div class="space-y-4">
-            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Informações Adicionais</label>
-            <div class="space-y-4">
-              <div class="relative">
-                <input type="date" name="dataPagamento" id="dataPagamento" class="peer w-full h-12 px-4 pt-2 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all" value="<%= new Date().toISOString().split('T')[0] %>">
-                <label class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Data do Pagamento</label>
-              </div>
-              <div class="relative">
-                <textarea name="observacao" id="observacao" rows="2" class="peer w-full px-4 py-3 text-sm font-semibold border-2 border-slate-200 rounded-xl bg-white focus:ring-0 focus:border-clinic-500 outline-none transition-all placeholder-transparent" placeholder="Observações"></textarea>
-                <label for="observacao" class="absolute left-3 -top-2.5 px-2 bg-white text-xs font-extrabold text-slate-500 rounded-full">Observações</label>
-              </div>
-            </div>
-          </div>
-          <!-- tabela do itens adicionados -->
-          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
-            <table class="w-full text-left border-collapse" id="cartTable">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-200">
-                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase">Descrição</th>
-                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-center">Tipo</th>
-                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-center">Qtd</th>
-                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-right">Unit R$</th>
-                  <th class="px-4 py-3 text-xs font-extrabold text-slate-500 uppercase text-right">Total R$</th>
-                  <th class="px-4 py-3 w-10"></th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100"></tbody>
-            </table>
-            <div id="emptyCartMsg" class="p-8 text-center text-slate-400">
-              <span class="material-symbols-outlined text-4xl block mb-2">shopping_basket</span>
-              Seu carrinho está vazio
-            </div>
+          <div class="relative w-full md:max-w-xs">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+            <input type="text" id="itemSearch" oninput="filterGrid()" class="w-full bg-slate-50 border-none rounded-xl py-2 pl-10 pr-4 text-xs font-medium focus:ring-2 focus:ring-[#006573]" placeholder="Buscar item...">
           </div>
         </div>
 
-        <div class="lg:col-span-4 space-y-6">
-          <div id="imagePreview" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl h-48 flex items-center justify-center overflow-hidden relative group">
-            <img id="produtoImage" src="" class="max-w-full max-h-full object-contain p-4 hidden transition-transform group-hover:scale-105" />
-            <div id="noImageText" class="text-slate-400 text-center p-4">
-              <span class="material-symbols-outlined text-4xl block mb-2">image</span>
-              <p class="text-xs font-bold uppercase tracking-widest">Visualização</p>
+        <!-- Scrollable Grid Area -->
+        <div id="itemGrid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Settings & Metadata -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Configurações do Lançamento</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="relative">
+            <select id="parceiroSelect" class="w-full h-11 px-4 pt-2 text-xs font-semibold border-2 border-slate-100 rounded-xl bg-slate-50 focus:ring-0 focus:border-[#006573] outline-none transition-all appearance-none">
+              <option value="">Nenhum Parceiro</option>
+              <% (parceiros || []).forEach(function(p){ %>
+                <option value="<%= p.idParceiro %>" data-credito="<%= p.credito || 0 %>" <%= (typeof parceiro !== 'undefined' && parceiro && parceiro.idParceiro === p.idParceiro) ? 'selected' : '' %>><%= p.nome %></option>
+              <% }) %>
+            </select>
+            <label class="absolute left-3 -top-2 px-1 bg-white text-[9px] font-bold text-slate-400 uppercase">Parceiro / Convênio</label>
+          </div>
+          <div class="relative">
+            <input type="date" name="dataPagamento" id="dataPagamento" class="w-full h-11 px-4 pt-2 text-xs font-semibold border-2 border-slate-100 rounded-xl bg-slate-50 focus:ring-0 focus:border-[#006573] outline-none transition-all" value="<%= new Date().toISOString().split('T')[0] %>">
+            <label class="absolute left-3 -top-2 px-1 bg-white text-[9px] font-bold text-slate-400 uppercase">Data do Pagamento</label>
+          </div>
+        </div>
+        <div class="relative">
+          <textarea name="observacao" id="observacao" rows="2" class="w-full px-4 py-3 text-xs font-semibold border-2 border-slate-100 rounded-xl bg-slate-50 focus:ring-0 focus:border-[#006573] outline-none transition-all" placeholder="Observações adicionais..."></textarea>
+          <label class="absolute left-3 -top-2 px-1 bg-white text-[9px] font-bold text-slate-400 uppercase">Observações</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Cart & Totals -->
+    <div class="lg:w-1/3 flex flex-col gap-6 min-h-0">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-full overflow-hidden">
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+          <h2 class="font-bold text-slate-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#006573]">shopping_basket</span>
+            Carrinho
+          </h2>
+          <span id="cartCount" class="bg-[#006573] text-white text-[10px] font-bold px-2 py-1 rounded-lg">0 ITENS</span>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+          <div id="emptyCartMsg" class="h-full flex flex-col items-center justify-center text-slate-300 py-12">
+            <span class="material-symbols-outlined text-4xl mb-2">add_shopping_cart</span>
+            <p class="text-xs font-bold uppercase tracking-widest">Carrinho Vazio</p>
+          </div>
+        </div>
+
+        <!-- Totals Area -->
+        <div class="p-6 bg-[#233454] text-white rounded-t-[2rem] space-y-6">
+          <div class="space-y-2">
+            <div class="flex justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              <span>Subtotal</span>
+              <span>R$ <span id="brutoDisplay">0.00</span></span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Desconto</span>
+              <div class="flex items-center gap-1 border-b border-slate-600 focus-within:border-[#50e1f9] transition-colors">
+                <span class="text-[10px] font-bold text-slate-400">R$</span>
+                <input type="number" id="descontoDisplay" step="0.01" class="w-20 text-right bg-transparent border-none focus:ring-0 p-0 text-sm font-bold text-[#50e1f9]" value="<%= valorDesconto || '0.00' %>">
+              </div>
+            </div>
+            <div class="pt-4 border-t border-slate-700/50 flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Total Final</span>
+              <span class="text-2xl font-black text-[#50e1f9]">R$ <span id="finalDisplay">0.00</span></span>
             </div>
           </div>
 
-          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
-            <div class="pt-4 space-y-2">
-              <div class="flex justify-between items-center text-slate-600">
-                <span class="text-sm font-bold uppercase">Subtotal</span>
-                <span class="font-mono font-bold">R$ <span id="brutoDisplay">0.00</span></span>
-              </div>
-              <div class="flex justify-between items-center text-clinic-600">
-                <span class="text-sm font-bold uppercase">Desconto</span>
-                <input type="number" id="descontoDisplay" step="0.01" class="w-24 text-right bg-transparent border-b-2 border-clinic-200 focus:border-clinic-500 outline-none font-mono font-bold" value="<%= valorDesconto || '0.00' %>">
-              </div>
-              <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
-                <span class="text-lg font-black text-slate-800 uppercase">Total Final</span>
-                <span class="text-2xl font-black text-clinic-600 font-mono">R$ <span id="finalDisplay">0.00</span></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider ml-1">Forma de Pagamento</label>
-            <input type="hidden" name="formaPagamento" id="formaPagamentoValue" value="<%= (typeof formasPagamento !== 'undefined' && formasPagamento.length > 0) ? formasPagamento[0] : '' %>">
+          <!-- Payment Grid -->
+          <div class="space-y-3">
+            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Forma de Pagamento</p>
             <div class="grid grid-cols-2 gap-2">
               <% (typeof formasPagamento !== 'undefined' ? formasPagamento : []).forEach(function(f, idx){ 
                 let icon = 'payments';
                 if(f.toLowerCase().includes('pix')) icon = 'qr_code_2';
                 if(f.toLowerCase().includes('cartão')) icon = 'credit_card';
-                const activeClass = idx === 0 ? 'border-clinic-500 bg-clinic-50 text-clinic-700' : 'border-slate-100 bg-slate-50 text-slate-600';
+                if(f.toLowerCase().includes('convênio')) icon = 'shield_health';
+                const isActive = idx === 0;
               %>
-                <button type="button" onclick="setFormaPagamento('<%= f %>', this)" class="pagamento-btn flex items-center p-3 rounded-xl border-2 transition-all text-xs font-bold <%= activeClass %>">
-                  <span class="material-symbols-outlined text-lg mr-2"><%= icon %></span>
-                  <%= f %>
+                <button type="button" onclick="setFormaPagamento('<%= f %>', this)" class="pagamento-btn group flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-all <%= isActive ? 'border-[#50e1f9] bg-[#50e1f9]/10 text-[#50e1f9]' : 'border-slate-700 bg-slate-800/50 text-slate-400' %> hover:border-[#50e1f9]/50">
+                  <span class="material-symbols-outlined text-lg mb-1 transition-transform group-hover:scale-110"><%= icon %></span>
+                  <span class="text-[9px] font-bold uppercase tracking-tighter"><%= f %></span>
                 </button>
               <% }) %>
             </div>
           </div>
 
-          <button type="submit" id="submitBtn" class="w-full py-4 bg-clinic-500 text-white rounded-xl font-black text-lg hover:bg-clinic-600 shadow-xl transition-all flex items-center justify-center disabled:bg-slate-300" disabled>
+          <button type="submit" id="submitBtn" class="w-full py-4 bg-[#006573] hover:bg-[#005864] text-white rounded-xl font-black text-sm shadow-xl shadow-black/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed" disabled>
             FINALIZAR VENDA
+            <span class="material-symbols-outlined text-sm">check_circle</span>
           </button>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>
 
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
+
 <script>
-  // Dados vindos do Backend
+  // Dados do Backend
   const produtos = <%- JSON.stringify(produtos || []) %>;
   const servicos = <%- JSON.stringify(servicos || []) %>;
   let cart = [];
 
-  // --- FUNÇÕES GLOBAIS (Devem ficar fora do DOMContentLoaded para o 'onclick' funcionar) ---
-
+  // Funções Globais para UI
   function setTipoItem(valor, elemento) {
     document.getElementById('tipoItemValue').value = valor;
     document.querySelectorAll('.tipo-btn').forEach(btn => {
-      btn.classList.replace('border-clinic-500', 'border-slate-100');
-      btn.classList.replace('bg-clinic-50', 'bg-slate-50');
-      btn.classList.replace('text-clinic-700', 'text-slate-600');
+      btn.classList.remove('bg-white', 'text-[#006573]', 'shadow-sm');
+      btn.classList.add('text-slate-500');
     });
-    elemento.classList.replace('border-slate-100', 'border-clinic-500');
-    elemento.classList.replace('bg-slate-50', 'bg-clinic-50');
-    elemento.classList.replace('text-slate-600', 'text-clinic-700');
+    elemento.classList.add('bg-white', 'text-[#006573]', 'shadow-sm');
+    elemento.classList.remove('text-slate-500');
     
-    // Recarrega a lista de itens (função definida abaixo)
-    if (typeof window.populateItemSelect === "function") window.populateItemSelect();
+    renderGrid();
   }
 
   function setFormaPagamento(valor, elemento) {
     document.getElementById('formaPagamentoValue').value = valor;
     document.querySelectorAll('.pagamento-btn').forEach(btn => {
-      btn.classList.remove('border-clinic-500', 'bg-clinic-50', 'text-clinic-700');
-      btn.classList.add('border-slate-100', 'bg-slate-50', 'text-slate-600');
+      btn.classList.remove('border-[#50e1f9]', 'bg-[#50e1f9]/10', 'text-[#50e1f9]');
+      btn.classList.add('border-slate-700', 'bg-slate-800/50', 'text-slate-400');
     });
-    elemento.classList.replace('border-slate-100', 'border-clinic-500');
-    elemento.classList.replace('bg-slate-50', 'bg-clinic-50');
-    elemento.classList.replace('text-slate-600', 'text-clinic-700');
+    elemento.classList.replace('border-slate-700', 'border-[#50e1f9]');
+    elemento.classList.replace('bg-slate-800/50', 'bg-[#50e1f9]/10');
+    elemento.classList.replace('text-slate-400', 'text-[#50e1f9]');
   }
 
-  // --- LÓGICA DO CARRINHO ---
+  function renderGrid() {
+    const grid = document.getElementById('itemGrid');
+    const tipo = document.getElementById('tipoItemValue').value;
+    const search = document.getElementById('itemSearch').value.toLowerCase();
+    const items = tipo === 'produto' ? produtos : servicos;
+    
+    grid.innerHTML = '';
+    
+    const filtered = items.filter(it => it.descricao.toLowerCase().includes(search));
+    
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 text-xs font-bold uppercase">Nenhum item encontrado</div>';
+      return;
+    }
+
+    filtered.forEach(it => {
+      const id = tipo === 'produto' ? it.idProduto : it.idServico;
+      const card = document.createElement('div');
+      card.className = 'bg-slate-50 rounded-xl p-3 flex flex-col gap-2 border border-slate-100 hover:border-[#006573]/30 transition-all group cursor-pointer';
+      card.onclick = () => addToCart(it, tipo);
+      
+      const imgPath = it.imagem && it.imagem !== 'null' ? it.imagem : '/img/placeholder-item.png';
+      
+      card.innerHTML = `
+        <div class="h-24 bg-white rounded-lg overflow-hidden flex items-center justify-center relative mb-1">
+          <img src="${imgPath}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" onerror="this.src='/img/placeholder-item.png'">
+        </div>
+        <div class="flex-1">
+          <h4 class="text-[10px] font-bold text-slate-800 leading-tight mb-1 line-clamp-2">${it.descricao}</h4>
+          <p class="text-[#006573] font-black text-xs">R$ ${parseFloat(it.valor).toFixed(2)}</p>
+        </div>
+        <button type="button" class="w-full py-1 bg-white text-[#006573] border border-[#006573]/20 rounded-lg text-[9px] font-bold hover:bg-[#006573] hover:text-white transition-colors">
+          ADICIONAR
+        </button>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterGrid() {
+    renderGrid();
+  }
+
+  function addToCart(item, tipo) {
+    const id = tipo === 'produto' ? item.idProduto : item.idServico;
+    
+    // Check if already in cart to increment qty
+    const existing = cart.find(it => it.id === id && it.tipo === tipo);
+    if (existing) {
+      existing.quantidade++;
+    } else {
+      const newItem = {
+        id: id,
+        descricao: item.descricao,
+        valorUnitario: parseFloat(item.valor),
+        quantidade: 1,
+        tipo: tipo,
+        imagem: item.imagem
+      };
+      
+      // Fix for controller: set specific ID fields
+      if (tipo === 'produto') newItem.produtoId = id;
+      else newItem.servicoId = id;
+      
+      cart.push(newItem);
+    }
+    
+    renderCart();
+    recalc();
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+    recalc();
+  }
+
+  function updateQty(index, delta) {
+    cart[index].quantidade += delta;
+    if (cart[index].quantidade <= 0) {
+      removeFromCart(index);
+    } else {
+      renderCart();
+      recalc();
+    }
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cartItems');
+    const msg = document.getElementById('emptyCartMsg');
+    const count = document.getElementById('cartCount');
+    
+    list.innerHTML = '';
+    
+    if (cart.length === 0) {
+      list.appendChild(msg);
+      count.textContent = '0 ITENS';
+      return;
+    }
+    
+    count.textContent = `${cart.length} ${cart.length === 1 ? 'ITEM' : 'ITENS'}`;
+    
+    cart.forEach((it, idx) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'bg-slate-50 p-3 rounded-xl flex gap-3 group border border-transparent hover:border-slate-200 transition-all';
+      
+      const imgPath = it.imagem && it.imagem !== 'null' ? it.imagem : '/img/placeholder-item.png';
+      
+      itemDiv.innerHTML = `
+        <div class="w-12 h-12 rounded-lg bg-white flex-shrink-0 overflow-hidden border border-slate-100">
+          <img src="${imgPath}" class="w-full h-full object-contain" onerror="this.src='/img/placeholder-item.png'">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-start gap-2">
+            <h4 class="text-[10px] font-bold text-slate-800 truncate">${it.descricao}</h4>
+            <button type="button" onclick="removeFromCart(${idx})" class="text-slate-300 hover:text-error transition-colors">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          </div>
+          <div class="flex items-center justify-between mt-1">
+            <div class="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-100">
+              <button type="button" onclick="updateQty(${idx}, -1)" class="text-slate-400 hover:text-[#006573] font-bold text-xs">-</button>
+              <span class="text-[10px] font-bold text-slate-700 w-3 text-center">${it.quantidade}</span>
+              <button type="button" onclick="updateQty(${idx}, 1)" class="text-slate-400 hover:text-[#006573] font-bold text-xs">+</button>
+            </div>
+            <span class="text-[11px] font-black text-[#006573]">R$ ${(it.valorUnitario * it.quantidade).toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+      list.appendChild(itemDiv);
+    });
+  }
+
+  function recalc() {
+    const bruto = cart.reduce((total, item) => total + (item.valorUnitario * item.quantidade), 0);
+    const desconto = parseFloat(document.getElementById('descontoDisplay').value) || 0;
+    const final = Math.max(0, bruto - desconto);
+
+    document.getElementById('brutoDisplay').textContent = bruto.toFixed(2);
+    document.getElementById('finalDisplay').textContent = final.toFixed(2);
+    
+    document.getElementById('itemsField').value = JSON.stringify(cart);
+    document.getElementById('valorBrutoField').value = bruto.toFixed(2);
+    document.getElementById('valorFinalField').value = final.toFixed(2);
+    document.getElementById('submitBtn').disabled = cart.length === 0;
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const itemSelect = document.getElementById('itemSelect');
-    const itemQuantidade = document.getElementById('itemQuantidade');
-    const addItemBtn = document.getElementById('addItemBtn');
-    const cartTableBody = document.querySelector('#cartTable tbody');
-    const emptyCartMsg = document.getElementById('emptyCartMsg');
-    const brutoDisplay = document.getElementById('brutoDisplay');
-    const descontoDisplay = document.getElementById('descontoDisplay');
-    const finalDisplay = document.getElementById('finalDisplay');
-    const itemsField = document.getElementById('itemsField');
-    const valorBrutoField = document.getElementById('valorBrutoField');
-    const valorFinalField = document.getElementById('valorFinalField');
-    const submitBtn = document.getElementById('submitBtn');
-//acho que é aqui
     const parceiroSelect = document.getElementById('parceiroSelect');
     const parceiroIdField = document.getElementById('parceiroIdField');
+    const descontoDisplay = document.getElementById('descontoDisplay');
 
     if (parceiroSelect) {
       parceiroSelect.addEventListener('change', () => {
         const selected = parceiroSelect.options[parceiroSelect.selectedIndex];
-        
-        // Pega o valor do crédito do atributo data que colocamos no HTML
         const credito = parseFloat(selected.dataset.credito || 0) || 0;
-        
-        // Atualiza o ID do parceiro para o envio do formulário
         parceiroIdField.value = selected.value || '';
-        
-        // Define o valor do desconto e recalcula o total final
         descontoDisplay.value = credito.toFixed(2);
-        
-        // Chama a função de recalcular que já criamos
         recalc();
       });
     }
-    //definiçoes de parceiro fim
-    
-    window.populateItemSelect = function() {
-      const currentTipo = document.getElementById('tipoItemValue').value;
-      const list = currentTipo === 'produto' ? produtos : servicos;
-      
-      itemSelect.innerHTML = '<option value="">Selecione...</option>';
-      list.forEach(it => {
-        const id = currentTipo === 'produto' ? it.idProduto : it.idServico;
-        const opt = document.createElement('option');
-        opt.value = id;
-        opt.dataset.valor = it.valor;
-        opt.dataset.imagem = it.imagem || '';
-        opt.textContent = `${it.descricao} - R$ ${parseFloat(it.valor).toFixed(2)}`;
-        itemSelect.appendChild(opt);
-      });
-      showPreview();
-    };
 
-    function showPreview() {
-      const sel = itemSelect.options[itemSelect.selectedIndex];
-      const img = document.getElementById('produtoImage');
-      const txt = document.getElementById('noImageText');
-      if (sel && sel.dataset.imagem && sel.dataset.imagem !== 'null') {
-        img.src = sel.dataset.imagem;
-        img.classList.remove('hidden');
-        txt.classList.add('hidden');
-      } else {
-        img.classList.add('hidden');
-        txt.classList.remove('hidden');
-      }
-    }
-
-    function recalc() {
-      const bruto = cart.reduce((total, item) => total + (item.valorUnitario * item.quantidade), 0);
-      const desconto = parseFloat(descontoDisplay.value) || 0;
-      const final = Math.max(0, bruto - desconto);
-
-      brutoDisplay.textContent = bruto.toFixed(2);
-      finalDisplay.textContent = final.toFixed(2);
-      
-      itemsField.value = JSON.stringify(cart);
-      valorBrutoField.value = bruto.toFixed(2);
-      valorFinalField.value = final.toFixed(2);
-      submitBtn.disabled = cart.length === 0;
-    }
-
-    addItemBtn.addEventListener('click', () => {
-      const selectedOption = itemSelect.options[itemSelect.selectedIndex];
-      if (!selectedOption.value) return;
-
-      const tipo = document.getElementById('tipoItemValue').value;
-      cart.push({
-        descricao: selectedOption.textContent.split(' - ')[0],
-        quantidade: parseInt(itemQuantidade.value),
-        valorUnitario: parseFloat(selectedOption.dataset.valor),
-        tipo: tipo,
-        id: selectedOption.value
-      });
-
-      renderCart();
-      recalc();
-      itemSelect.selectedIndex = 0;
-      showPreview();
-    });
-
-    window.removeCartItem = (idx) => {
-      cart.splice(idx, 1);
-      renderCart();
-      recalc();
-    };
-
-    function renderCart() {
-      cartTableBody.innerHTML = '';
-      emptyCartMsg.classList.toggle('hidden', cart.length > 0);
-      cart.forEach((it, idx) => {
-        cartTableBody.innerHTML += `
-          <tr>
-            <td class="px-4 py-3">${it.descricao}</td>
-            <td class="text-center"><span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${it.tipo === 'produto' ? 'bg-amber-100' : 'bg-blue-100'}">${it.tipo}</span></td>
-            <td class="text-center">${it.quantidade}</td>
-            <td class="text-right">${it.valorUnitario.toFixed(2)}</td>
-            <td class="text-right">${(it.quantidade * it.valorUnitario).toFixed(2)}</td>
-            <td class="text-right"><button type="button" onclick="removeCartItem(${idx})">X</button></td>
-          </tr>`;
-      });
-    }
-
-    itemSelect.addEventListener('change', showPreview);
     descontoDisplay.addEventListener('input', recalc);
-    window.populateItemSelect();
+    
+    renderGrid();
   });
 </script>

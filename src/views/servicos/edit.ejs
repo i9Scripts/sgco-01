@@ -1,6 +1,6 @@
 <div class="max-w-4xl mx-auto">
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <form class="p-6 sm:p-8 space-y-8" action="/servicos/<%= servico.idServico %>" method="post">
+    <form class="p-6 sm:p-8 space-y-8" action="/servicos/<%= servico.idServico %>" method="post" enctype="multipart/form-data">
       
       <div class="space-y-6">
         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -41,6 +41,46 @@
             Valor do Serviço (R$)
           </label>
         </div>
+
+        <div class="space-y-4">
+          <% if (servico.imagem) { %>
+            <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <div class="w-16 h-16 rounded overflow-hidden bg-white border border-slate-200">
+                <img src="<%= servico.imagem %>" alt="Imagem atual" class="w-full h-full object-cover" />
+              </div>
+              <p class="text-xs text-slate-500">Imagem atual do serviço</p>
+            </div>
+          <% } %>
+
+          <div class="space-y-2">
+            <label class="text-xs font-extrabold text-slate-700 uppercase tracking-wider ml-1">
+              Substituir Imagem (opcional)
+            </label>
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg hover:border-clinic-400 transition-colors relative group overflow-hidden">
+              <input 
+                id="imagem" 
+                name="imagem" 
+                type="file" 
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                accept="image/*" 
+                onchange="previewImage(this)"
+              >
+              <div class="space-y-1 text-center" id="upload-placeholder">
+                <span class="material-symbols-outlined text-4xl text-slate-400 group-hover:text-clinic-500 transition-colors">upload_file</span>
+                <div class="flex text-sm text-slate-600">
+                  <span class="relative font-bold text-clinic-600 group-hover:text-clinic-700">Selecionar novo arquivo</span>
+                </div>
+                <p class="text-xs text-slate-500">PNG, JPG, GIF até 10MB</p>
+              </div>
+              <div id="image-preview-container" class="hidden absolute inset-0 bg-white pointer-events-none">
+                <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-contain p-2">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p class="text-white font-bold text-xs">Clique para alterar</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="pt-6 flex justify-end gap-4">
@@ -56,3 +96,23 @@
     </form>
   </div>
 </div>
+
+<script>
+  function previewImage(input) {
+    const preview = document.getElementById('image-preview');
+    const container = document.getElementById('image-preview-container');
+    const placeholder = document.getElementById('upload-placeholder');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        container.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      }
+      
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
