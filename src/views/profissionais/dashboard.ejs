@@ -1,5 +1,5 @@
 
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8 bg-white/70 p-6 rounded-xl shadow-sm">
+<div class="bg-white/70 p-4 rounded-xl grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
     <div class="lg:col-span-1 flex flex-col justify-center">
         <h2 class="font-headline text-2xl font-extrabold text-primary leading-tight">Olá, <%= profissional ? profissional.nome : 'Doutor' %></h2>
         <p class="text-secondary text-sm mt-2">Você tem <%= agendamentosHoje.length %> consultas agendadas para hoje.</p>
@@ -8,44 +8,44 @@
     <!-- Quick Stats Counters -->
     <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 border-l-4 border-clinic-500">
         <div class="w-12 h-12 rounded-full bg-clinic-100 flex items-center justify-center text-clinic-600">
-            <span class="material-symbols-outlined">how_to_reg</span>
+            <span class="material-symbols-outlined">groups</span>
         </div>
         <div>
-            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Atendimentos</p>
-            <p class="text-2xl font-headline font-bold text-slate-800"><%= atendimentosHoje %> <span class="text-xs font-normal text-slate-400">/ <%= agendamentosHoje.length %></span></p>
+            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Cadastrados</p>
+            <p class="text-2xl font-headline font-bold text-slate-800"><%= stats.totalPacientes %></p>
         </div>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 border-l-4 border-medical-teal">
         <div class="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center text-medical-teal">
-            <span class="material-symbols-outlined">timer</span>
+            <span class="material-symbols-outlined">visibility</span>
         </div>
         <div>
-            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Na Fila</p>
-            <p class="text-2xl font-headline font-bold text-slate-800"><%= pacientesNaFila.length %></p>
+            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">% Miopia</p>
+            <p class="text-2xl font-headline font-bold text-slate-800"><%= stats.percMiopia %><span class="text-sm">%</span></p>
         </div>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 border-l-4 border-orange-400">
         <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
-            <span class="material-symbols-outlined">event_repeat</span>
+            <span class="material-symbols-outlined">visibility</span>
         </div>
         <div>
-            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">Cadastrados</p>
-            <p class="text-2xl font-headline font-bold text-slate-800"><%= pacientesReservados.length %></p>
+            <p class="text-[10px] font-label uppercase tracking-wider text-slate-500">% Hipermetropia</p>
+            <p class="text-2xl font-headline font-bold text-slate-800"><%= stats.percHipermetropia %><span class="text-sm">%</span></p>
         </div>
     </div>
+    
 </div>
 
 <!-- Dashboard Body Layout -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <!-- Column Left: Daily Schedule (5 cols) -->
-    <div class="lg:col-span-5 space-y-6 bg-medical-navy/80 p-6 rounded-xl shadow-sm">
+    <div class="bg-white/70 p-4 rounded-xl lg:col-span-5 space-y-6">
         <div class="flex items-center justify-between">
-            <h3 class="font-headline font-bold text-white text-lg ">Agenda do Dia</h3>
-            <a href="/agendamentos" class="text-xs font-label text-white font-bold hover:underline">Ver Calendário Completo</a>
+            <h3 class="font-headline font-bold text-lg text-on-surface">Agenda do Dia</h3>
+            <a href="/agendamentos" class="text-xs font-label text-primary font-bold hover:underline">Ver Calendário Completo</a>
         </div>
-        
         <div class="space-y-4">
             <% if (agendamentosHoje && agendamentosHoje.length > 0) { %>
                 <% agendamentosHoje.forEach(agendamento => { %>
@@ -55,14 +55,14 @@
                         </div>
                         <div class="flex-1">
                             <h4 class="font-bold text-sm text-slate-800"><%= agendamento.paciente ? agendamento.paciente.nome : agendamento.nome %></h4>
-                            <p class="text-xs text-slate-500"><%= agendamento.observacao || 'Consulta de rotina' %></p>
+                            <p class="text-xs text-secondary truncate"><%= agendamento.observacao || 'Consulta de rotina' %></p>
                         </div>
                         <span class="material-symbols-outlined text-slate-300 group-hover:text-clinic-600 transition-colors">chevron_right</span>
                     </div>
                 <% }) %>
             <% } else { %>
                 <div class="bg-white p-8 rounded-xl text-center shadow-sm">
-                    <p class="text-slate-500 text-sm">Nenhum agendamento para hoje.</p>
+                    <p class="text-secondary text-sm">Nenhum agendamento para hoje.</p>
                 </div>
             <% } %>
         </div>
@@ -73,7 +73,7 @@
         <!-- Patient Overview Card (Featured) -->
         <% if (pacientesNaFila && pacientesNaFila.length > 0) { %>
             <% const proximo = pacientesNaFila[0]; %>
-            <div class="bg-gradient-to-br from-medical-navy to-clinic-700 p-8 rounded-xl text-white shadow-xl relative overflow-hidden group">
+            <div class="refraction-gradient p-8 rounded-xl text-white shadow-xl relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-12 opacity-10 scale-150 group-hover:rotate-12 transition-transform duration-700">
                     <span class="material-symbols-outlined text-[120px]">visibility</span>
                 </div>
@@ -92,85 +92,46 @@
                                     <p class="text-xs font-bold"><%= (proximo.anamneses && proximo.anamneses.length > 0) ? proximo.anamneses[0].nFicha : 'N/D' %></p>
                                 </div>
                                 <div class="bg-black/10 px-3 py-1 rounded-lg">
-                                    <p class="text-[9px] uppercase opacity-60">Chegada</p>
+                                    <p class="text-[9px] uppercase opacity-60">Entrada</p>
                                     <p class="text-xs font-bold"><%= new Date(proximo.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="/pacientes/<%= proximo.idPaciente %>/ficha" class="bg-white text-clinic-700 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-clinic-50 transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-lg">play_circle</span>
-                            Iniciar Consulta
+                    <div class="mt-8 flex gap-3">
+                        <a href="/pacientes/<%= proximo.idPaciente %>/ficha" class="bg-white text-primary px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:bg-clinic-50 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">history</span>
+                            Abrir Prontuário
                         </a>
                     </div>
                 </div>
             </div>
         <% } %>
 
-        <!-- Waiting Room (Fila de Espera) -->
-        <div class="space-y-4 bg-medical-navy/80 p-6 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <h3 class="font-headline font-bold text-white text-lg text-slate-800">Fila de Espera</h3>
-                <div class="flex gap-2 items-center">
-                    <span class="w-2 h-2 rounded-full bg-clinic-500 animate-pulse"></span>
-                    <span class="text-[10px] text-white font-bold text-slate-500 uppercase tracking-widest"><%= pacientesNaFila.length %> Pacientes aguardando</span>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-50">
-                        <tr>
-                            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Paciente</th>
-                            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Ficha</th>
-                            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Horário</th>
-                            <th class="px-6 py-4 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <% if (pacientesNaFila && pacientesNaFila.length > 0) { %>
-                            <% pacientesNaFila.forEach((paciente, index) => { %>
-                                <tr class="hover:bg-clinic-50/30 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-500">
-                                                <%= paciente.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
-                                            </div>
-                                            <span class="text-sm font-bold text-slate-800"><%= paciente.nome %></span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600"><%= (paciente.anamneses && paciente.anamneses.length > 0) ? paciente.anamneses[0].nFicha : 'N/D' %></td>
-                                    <td class="px-6 py-4 text-sm text-slate-500">
-                                        <%= new Date(paciente.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <a href="/pacientes/<%= paciente.idPaciente %>/ficha" class="text-clinic-600 hover:bg-clinic-100 p-2 rounded-full transition-colors" title="Iniciar Atendimento">
-                                                <span class="material-symbols-outlined">play_arrow</span>
-                                            </a>
-                                            <button onclick="abrirModalGenerico('/pacientes/<%= paciente.idPaciente %>', 'Dados do Paciente')" class="text-slate-400 hover:bg-slate-100 p-2 rounded-full transition-colors">
-                                                <span class="material-symbols-outlined">visibility</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="4" class="px-6 py-8 text-center text-slate-500 text-sm">
-                                    Nenhum paciente na fila no momento.
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
+        <!-- Waiting Room (Fila de Espera) -->
+        <div class="lg:col-span-12 space-y-6 p-4">
+            <div class="bg-medical-navy/60 flex items-center justify-between rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-8 bg-clinic-500 rounded-full"></div>
+                    <h3 class="text-white font-headline font-extrabold text-xl tracking-tight">Fila de Espera</h3>
+                </div>
+                <div class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-200 animate-pulse">
+                    <%= pacientesNaFila.length %> Aguardando
+                </div>
+            </div>
+            <div id="fila-de-espera-profissional" class="transition-all duration-500">
+                <%- include('../partials/_filaEspera.ejs', { pacientes: pacientesNaFila, isProfissional: true }) %>
+            </div>
+        </div>
+
+
 
 <style>
     .font-headline { font-family: 'Manrope', sans-serif; }
     .font-label { font-family: 'Inter', sans-serif; }
+    .refraction-gradient {
+        background: linear-gradient(135deg, #006573 0%, #50e1f9 100%);
+    }
 </style>

@@ -136,14 +136,14 @@
             <td>Olho Direito (OD)</td>
             <td class="text-center"><%= ultimaAnamnese?.esfOD || '|________|' %></td>
             <td class="text-center"><%= ultimaAnamnese?.cilOD || '|________|' %></td>
-            <td class="text-center"><%= ultimaAnamnese?.eixoOD ? ultimaAnamnese.eixoOD + '°' : '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.eixoOD ? ultimaAnamnese.eixoOD : '|________|' %></td>
             <td class="text-center"><strong><%= ultimaAnamnese?.avSCOD || '|________|' %></strong></td>
           </tr>
           <tr>
             <td>Olho Esquerdo (OE)</td>
             <td class="text-center"><%= ultimaAnamnese?.esfOE || '|________|' %></td>
             <td class="text-center"><%= ultimaAnamnese?.cilOE || '|________|' %></td>
-            <td class="text-center"><%= ultimaAnamnese?.eixoOE ? ultimaAnamnese.eixoOE + '°' : '|________|' %></td>
+            <td class="text-center"><%= ultimaAnamnese?.eixoOE ? ultimaAnamnese.eixoOE : '|________|' %></td>
             <td class="text-center"><strong><%= ultimaAnamnese?.avSCOE || '|________|' %></strong></td>
           </tr>
         </tbody>
@@ -161,7 +161,7 @@
   <div class="value" style="min-height: 40px;">
     <%= ultimaAnamnese?.obsGerais || 'Nenhuma observação adicional.' %>
   </div>
-</div>
+
 
 <!-- Serviços Contratados -->
 <% if (typeof servicosCobrados !== 'undefined' && servicosCobrados && servicosCobrados.length > 0) { %>
@@ -189,3 +189,4 @@
   </table>
 </div>
 <% } %>
+</div>

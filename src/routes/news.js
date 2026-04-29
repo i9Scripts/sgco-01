@@ -21,7 +21,7 @@ export default function registerNews(app) {
       const params = {
         apikey: apiKey,
         language: 'pt',
-        category: 'education,domestic,entertainment,food,tourism',
+        category: 'health,education,domestic,entertainment,food,tourism',
         image: 1,
         country: 'br',
       };

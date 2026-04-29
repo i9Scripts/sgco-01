@@ -28,19 +28,19 @@ router.get('/fila-espera', async (req, res) => {
 // Rota para marcar um paciente como atendido
 router.put('/paciente/:idPaciente/atendido', async (req, res) => {
   const { idPaciente } = req.params;
-  const dadosAtualizados = req.body;
 
   try {
-    const pacienteAtualizado = await prisma.paciente.update({
+    await prisma.consulta.updateMany({
       where: {
-        idPaciente: parseInt(idPaciente), // Converte o ID para inteiro
+        pacienteId: parseInt(idPaciente),
+        naFila: true,
       },
       data: {
-        naFila: false, // Atualiza o status para "fora da fila"
+        naFila: false,
+        statusConsulta: 'Finalizada'
       },
     });
 
-    console.log('Paciente atualizado:', pacienteAtualizado);
     res.redirect('/fila-espera'); // Redireciona para a página da fila de espera
   } catch (error) {
     console.error('Erro ao marcar como atendido:', error);
@@ -52,9 +52,14 @@ router.put('/paciente/:idPaciente/atendido', async (req, res) => {
 router.post('/paciente/:idPaciente/remover-fila', async (req, res) => {
   const { idPaciente } = req.params;
   try {
-    await prisma.paciente.update({
-      where: { idPaciente: parseInt(idPaciente) },
-      data: { naFila: false },
+    await prisma.consulta.updateMany({
+      where: {
+        pacienteId: parseInt(idPaciente),
+        naFila: true,
+      },
+      data: { 
+        naFila: false 
+      },
     });
     req.flash('success', 'Paciente removido da fila.');
     res.redirect('/');

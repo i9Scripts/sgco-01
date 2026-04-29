@@ -268,9 +268,57 @@ export const profissionalController = {
         },
       });
 
-      // pacientesNaFila e pacientesReservados são carregados pelo middleware `carregarFilaDeEspera`
-      const pacientesNaFila = res.locals.pacientesNaFila || [];
+      // Buscar consultas na fila diretamente para garantir consistência
+      const consultasNaFila = await prisma.consulta.findMany({
+        where: { consultorioId: idConsultorio, naFila: true },
+        include: { 
+            paciente: true,
+            anamnese: true
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      // Mapear consultas para o formato esperado pela view
+      const pacientesNaFila = consultasNaFila.map(c => ({
+          ...c.paciente,
+          anamneses: [c.anamnese],
+          idConsulta: c.idConsulta,
+          createdAt: c.createdAt
+      }));
+
+      // pacientesReservados ainda pode vir do res.locals ou buscar se necessário
       const pacientesReservados = res.locals.pacientesReservados || [];
+
+      // Estatísticas para o Dashboard
+      const totalPacientes = await prisma.paciente.count({
+        where: { consultorioId: idConsultorio },
+      });
+
+      const diagnosticos = await prisma.diagnostico.findMany({
+        where: { consultorioId: idConsultorio },
+        select: { esfOD: true, esfOE: true },
+      });
+
+      let totalMiopia = 0;
+      let totalHipermetropia = 0;
+      const totalDiagnosticos = diagnosticos.length;
+
+      diagnosticos.forEach((diag) => {
+        const esfOD = parseFloat(diag.esfOD.replace(',', '.'));
+        const esfOE = parseFloat(diag.esfOE.replace(',', '.'));
+
+        let isMiopia = false;
+        let isHipermetropia = false;
+
+        if (esfOD < 0 || esfOE < 0) isMiopia = true;
+        if (esfOD > 0 || esfOE > 0) isHipermetropia = true;
+
+        if (isMiopia) totalMiopia++;
+        if (isHipermetropia) totalHipermetropia++;
+      });
+
+      const percMiopia = totalDiagnosticos > 0 ? ((totalMiopia / totalDiagnosticos) * 100).toFixed(1) : 0;
+      const percHipermetropia = totalDiagnosticos > 0 ? ((totalHipermetropia / totalDiagnosticos) * 100).toFixed(1) : 0;
 
       return res.render('profissionais/dashboard', {
         pageTitle: 'Painel do Profissional',
@@ -282,6 +330,11 @@ export const profissionalController = {
         atendimentosHoje,
         profissional,
         usuario: req.session.usuario,
+        stats: {
+          totalPacientes,
+          percMiopia,
+          percHipermetropia,
+        },
       });
     } catch (error) {
       console.error('Erro ao abrir dashboard do profissional:', error);

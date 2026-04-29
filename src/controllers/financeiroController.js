@@ -1,4 +1,4 @@
-import { PrismaClient, FormaPagamento, StatusPagamento, StatusConsulta } from '@prisma/client';
+import { PrismaClient, FormaPagamento, StatusFinanceiro, TipoLancamento, StatusConsulta } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Função auxiliar para criar ou obter uma consulta vinculada ao paciente
@@ -21,10 +21,7 @@ async function obterOuCriarConsulta(pacienteId, consultorioId) {
         paciente: { connect: { idPaciente: pacienteId } },
         consultorio: { connect: { idConsultorio: consultorioId } },
         anamnese: anamnese ? { connect: { idAnam: anamnese.idAnam } } : undefined,
-        valorPago: 0,
-        valorTotal: 0,
         statusConsulta: StatusConsulta.Agendada,
-        statusPagamento: StatusPagamento.Pendente,
       },
     });
   }
@@ -59,13 +56,9 @@ export const renderizarCobranca = async (req, res) => {
       where: { consultorioId },
     });
 
-    // `Servico` model may not exist yet in Prisma schema; guard the call
-    let servicos = [];
-    if (prisma.servico && typeof prisma.servico.findMany === 'function') {
-      servicos = await prisma.servico.findMany({
-        where: { consultorioId },
-      });
-    }
+    const servicos = await prisma.servico.findMany({
+      where: { consultorioId },
+    });
 
     let parceiro = null;
     let descontoParceiro = 0;
@@ -136,29 +129,46 @@ export const processarCobranca = async (req, res) => {
     // Obter ou criar consulta vinculada ao paciente
     const consulta = await obterOuCriarConsulta(parseInt(pacienteId), consultorioId);
 
-    await prisma.lancamentoFinanceiro.create({
-      data: {
-        valorBruto: valorBruto,
-        valorDesconto: desconto,
-        valorFinal: valorFinal,
-        formaPagamento: forma,
-        statusPagamento: forma === FormaPagamento.Convenio ? StatusPagamento.Pendente : StatusPagamento.Pago,
-        ...(dataPagamento && { dataPagamento: new Date(dataPagamento) }),
-        observacao: officeacion || null,
-        paciente: { connect: { idPaciente: parseInt(pacienteId) } },
-        consultorio: { connect: { idConsultorio: consultorioId } },
-        ...(parceiroId && { parceiro: { connect: { idParceiro: parseInt(parceiroId) } } }),
-        items: {
-          create: items.map((it) => ({
-            quantidade: parseInt(it.quantidade || 1, 10),
-            valorUnitario: parseFloat(it.valorUnitario),
-            ...(it.produtoId && { produto: { connect: { idProduto: parseInt(it.produtoId) } } }),
-            ...(it.servicoId && { servico: { connect: { idServico: parseInt(it.servicoId) } } }),
-            consultorio: { connect: { idConsultorio: consultorioId } },
-            consulta: { connect: { idConsulta: consulta.idConsulta } },
-          })),
+    // Determinar status inicial
+    const status = forma === FormaPagamento.Convenio ? StatusFinanceiro.PENDENTE : StatusFinanceiro.PAGO;
+
+    await prisma.$transaction(async (tx) => {
+      const lancamento = await tx.lancamentoFinanceiro.create({
+        data: {
+          tipo: TipoLancamento.RECEITA,
+          status: status,
+          valorTotal: valorFinal,
+          dataVencimento: dataPagamento ? new Date(dataPagamento) : new Date(),
+          observacao: observacao || null,
+          paciente: { connect: { idPaciente: parseInt(pacienteId) } },
+          consultorio: { connect: { idConsultorio: consultorioId } },
+          consulta: { connect: { idConsulta: consulta.idConsulta } },
+          ...(parceiroId && { parceiro: { connect: { idParceiro: parseInt(parceiroId) } } }),
+          items: {
+            create: items.map((it) => ({
+              quantidade: parseInt(it.quantidade || 1, 10),
+              valorUnitario: parseFloat(it.valorUnitario),
+              ...(it.produtoId && { produto: { connect: { idProduto: parseInt(it.produtoId) } } }),
+              ...(it.servicoId && { servico: { connect: { idServico: parseInt(it.servicoId) } } }),
+              consultorio: { connect: { idConsultorio: consultorioId } },
+            })),
+          },
         },
-      },
+      });
+
+      // Se o status for PAGO, criamos o registro de Pagamento
+      if (status === StatusFinanceiro.PAGO) {
+        await tx.pagamento.create({
+          data: {
+            valorPago: valorFinal,
+            dataPagamento: dataPagamento ? new Date(dataPagamento) : new Date(),
+            formaPagamento: forma,
+            observacao: 'Pagamento registrado no ato da cobrança',
+            lancamento: { connect: { idLancamento: lancamento.idLancamento } },
+            consultorio: { connect: { idConsultorio: consultorioId } },
+          }
+        });
+      }
     });
 
     req.flash('success', 'Cobrança registrada com sucesso!');
@@ -212,13 +222,12 @@ export const renderizarRelatorios = async (req, res) => {
   }
 };
 
-// GET - Lista parceiros com pagamentos pendentes no período selecionado
+// GET - Lista parceiros com pagamentos pendentes
 export const listarParceirosPendentes = async (req, res) => {
   const consultorioId = req.session.consultorio.idConsultorio;
   try {
     const { startDate: qStartDate, endDate: qEndDate } = req.query;
 
-    // Parse date strings as UTC boundaries to avoid timezone shifts
     let start = null;
     let end = null;
     const parseUtcStart = (s) => {
@@ -237,19 +246,16 @@ export const listarParceirosPendentes = async (req, res) => {
     if (qStartDate) start = parseUtcStart(qStartDate);
     if (qEndDate) end = parseUtcEnd(qEndDate);
 
-    // Build where clause for consultas: parceiroId not null, pagamentoRealizado = false
     const whereClause = {
       consultorioId,
       parceiroId: { not: null },
-      pagamentoRealizado: false,
+      // Lógica simplificada: consultas com parceiro que não têm um lançamento de DESPESA associado
+      // Ou simplemente filtrar consultas onde valorAPagarParceiro > 0
+      valorAPagarParceiro: { gt: 0 },
     };
 
     if (start && end) {
       whereClause.createdAt = { gte: start, lte: end };
-    } else if (start) {
-      whereClause.createdAt = { gte: start };
-    } else if (end) {
-      whereClause.createdAt = { lte: end };
     }
 
     const consultas = await prisma.consulta.findMany({
@@ -258,7 +264,6 @@ export const listarParceirosPendentes = async (req, res) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Agrupar por parceiro
     const mapa = new Map();
     consultas.forEach((c) => {
       const pid = c.parceiroId;
@@ -290,9 +295,8 @@ export const listarParceirosPendentes = async (req, res) => {
 export const vendasDoDia = async (req, res) => {
   const consultorioId = req.session.consultorio.idConsultorio;
   try {
-    // Paginação e filtros via query params
     const q = req.query.q || '';
-    const formaFilter = req.query.forma || '';
+    const statusFilter = req.query.status || '';
     const page = parseInt(req.query.page || '1', 10) || 1;
     const pageSize = parseInt(req.query.pageSize || '15', 10) || 15;
 
@@ -304,9 +308,10 @@ export const vendasDoDia = async (req, res) => {
     const whereClause = {
       consultorioId: consultorioId,
       createdAt: { gte: start, lte: end },
+      tipo: TipoLancamento.RECEITA
     };
 
-    if (formaFilter) whereClause.formaPagamento = formaFilter;
+    if (statusFilter) whereClause.status = statusFilter;
 
     if (q) {
       whereClause.OR = [
@@ -320,7 +325,7 @@ export const vendasDoDia = async (req, res) => {
 
     const totalAgg = await prisma.lancamentoFinanceiro.aggregate({
       where: whereClause,
-      _sum: { valorFinal: true },
+      _sum: { valorTotal: true },
     });
 
     const vendas = await prisma.lancamentoFinanceiro.findMany({
@@ -328,14 +333,14 @@ export const vendasDoDia = async (req, res) => {
       include: {
         paciente: { select: { nome: true } },
         parceiro: { select: { nome: true } },
+        pagamentos: { select: { formaPagamento: true } }
       },
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    const total = (totalAgg._sum.valorFinal || 0).toFixed(2);
-
+    const total = (totalAgg._sum.valorTotal || 0).toFixed(2);
     const pageCount = Math.max(1, Math.ceil(totalCount / pageSize));
 
     res.render('financeiro/vendas-do-dia', {
@@ -344,11 +349,11 @@ export const vendasDoDia = async (req, res) => {
       vendas,
       total,
       q,
-      formaFilter,
+      statusFilter,
       page,
       pageCount,
       pageSize,
-      formasPagamento: Object.values(FormaPagamento),
+      statuses: Object.values(StatusFinanceiro),
     });
   } catch (error) {
     console.error('Erro ao gerar relatório de vendas do dia:', error);
@@ -357,7 +362,7 @@ export const vendasDoDia = async (req, res) => {
   }
 };
 
-// GET - Permite ao profissional selecionar um paciente para cobrar
+// GET - Permite selecionar um paciente para cobrar
 export const renderizarSelecionarPaciente = async (req, res) => {
   try {
     const consultorioId = req.session.consultorio.idConsultorio;
@@ -374,16 +379,26 @@ export const renderizarSelecionarPaciente = async (req, res) => {
     const pacientes = await prisma.paciente.findMany({
       where: whereClause,
       include: {
-        anamneses: { orderBy: { createdAt: 'desc' }, take: 1 }
+        anamneses: { orderBy: { createdAt: 'desc' }, take: 1 },
+        consultas: {
+          where: { naFila: true },
+          take: 1
+        }
       },
       orderBy: { nome: 'asc' },
     });
 
+    // Mapear para manter compatibilidade com a view (adicionando naFila ao objeto paciente)
+    const pacientesMapped = pacientes.map(p => ({
+      ...p,
+      naFila: p.consultas.length > 0
+    }));
+
     res.render('financeiro/selecionar-paciente', {
       pageTitle: 'Selecionar Paciente para Cobrança',
       pageIcon: 'bi-person-check',
-      pacientes,
-      query: searchQuery, // Passa o termo de busca para a view
+      pacientes: pacientesMapped,
+      query: searchQuery,
     });
   } catch (error) {
     console.error('Erro ao renderizar seleção de paciente:', error);
@@ -397,11 +412,9 @@ export const listarLancamentos = async (req, res) => {
   const consultorioId = req.session.consultorio.idConsultorio;
 
   try {
-    // Filtragem por período (opcional)
     const { startDate: qStartDate, endDate: qEndDate } = req.query;
     const whereClause = { consultorioId: consultorioId };
 
-    // Parse date strings as UTC boundaries to avoid timezone shifts
     let start = null;
     let end = null;
 
@@ -422,17 +435,13 @@ export const listarLancamentos = async (req, res) => {
     if (qStartDate) start = parseUtcStart(qStartDate);
     if (qEndDate) end = parseUtcEnd(qEndDate);
 
-    // Quando o usuário filtra por período, o filtro deve ser aplicado sobre `dataPagamento`
     let orderByClause = { createdAt: 'desc' };
     if (start && end) {
-      whereClause.dataPagamento = { gte: start, lte: end };
-      orderByClause = { dataPagamento: 'desc' };
+      whereClause.createdAt = { gte: start, lte: end };
     } else if (start) {
-      whereClause.dataPagamento = { gte: start };
-      orderByClause = { dataPagamento: 'desc' };
+      whereClause.createdAt = { gte: start };
     } else if (end) {
-      whereClause.dataPagamento = { lte: end };
-      orderByClause = { dataPagamento: 'desc' };
+      whereClause.createdAt = { lte: end };
     }
 
     const lancamentos = await prisma.lancamentoFinanceiro.findMany({
@@ -440,6 +449,7 @@ export const listarLancamentos = async (req, res) => {
       include: {
         paciente: { select: { nome: true } },
         parceiro: { select: { nome: true } },
+        pagamentos: true
       },
       orderBy: orderByClause,
     });
@@ -454,7 +464,7 @@ export const listarLancamentos = async (req, res) => {
   } catch (error) {
     console.error('Erro ao listar lançamentos financeiros:', error);
     req.flash('error', 'Erro ao carregar extrato financeiro.');
-    res.redirect('/'); // Ou para onde for apropriado
+    res.redirect('/');
   }
 };
 
@@ -468,46 +478,50 @@ export const renderizarDashboard = async (req, res) => {
     const aReceber = await prisma.lancamentoFinanceiro.aggregate({
       where: {
         consultorioId,
-        statusPagamento: StatusPagamento.Pendente,
+        tipo: TipoLancamento.RECEITA,
+        status: StatusFinanceiro.PENDENTE,
       },
-      _sum: { valorFinal: true },
+      _sum: { valorTotal: true },
     });
 
-    // 2. Lançamentos a Pagar (Consultas com parceiro pendente)
+    // 2. Lançamentos a Pagar (Simplificado para este exemplo)
     const aPagar = await prisma.consulta.aggregate({
       where: {
         consultorioId,
         parceiroId: { not: null },
-        pagamentoRealizado: false,
+        valorAPagarParceiro: { gt: 0 }
       },
       _sum: { valorAPagarParceiro: true },
     });
+
     // 3. Saldo Mensal (Ganhos pagos no mês)
-    const saldoMensal = await prisma.lancamentoFinanceiro.aggregate({
+    const saldoMensal = await prisma.pagamento.aggregate({
       where: {
         consultorioId,
-        statusPagamento: StatusPagamento.Pago,
         dataPagamento: { gte: startOfMonth },
+        lancamento: { tipo: TipoLancamento.RECEITA }
       },
-      _sum: { valorFinal: true },
+      _sum: { valorPago: true },
     });
+
     // 4. Atrasados (Pendente com data vencida)
     const atrasados = await prisma.lancamentoFinanceiro.aggregate({
       where: {
         consultorioId,
-        statusPagamento: StatusPagamento.Pendente,
-        dataPagamento: { lt: now },
+        status: StatusFinanceiro.PENDENTE,
+        dataVencimento: { lt: now },
       },
-      _sum: { valorFinal: true },
+      _sum: { valorTotal: true },
     });
-    // Lista de lançamentos recentes para a tabela
+
     const lancamentosRecentes = await prisma.lancamentoFinanceiro.findMany({
       where: { consultorioId },
       include: {
         paciente: { select: { nome: true } },
         items: { include: { produto: true, servico: true } },
+        pagamentos: true
       },
-      orderBy: { dataPagamento: 'desc' },
+      orderBy: { createdAt: 'desc' },
       take: 10,
     });
 
@@ -515,10 +529,10 @@ export const renderizarDashboard = async (req, res) => {
       pageTitle: 'Gestão Financeira',
       pageIcon: 'bi-speedometer2',
       stats: {
-        totalAReceber: (aReceber._sum.valorFinal | 0).toFixed(2),
+        totalAReceber: (aReceber._sum.valorTotal || 0).toFixed(2),
         totalAPagar: (aPagar._sum.valorAPagarParceiro || 0).toFixed(2),
-        saldoMensal: (saldoMensal._sum.valorFinal || 0).toFixed(2),
-        atrasado: (atrasados._sum.valorFinal || 0).toFixed(2),
+        saldoMensal: (saldoMensal._sum.valorPago || 0).toFixed(2),
+        atrasado: (atrasados._sum.valorTotal || 0).toFixed(2),
       },
       lancamentos: lancamentosRecentes,
     });

@@ -14,10 +14,10 @@
         <div class="p-6">
             <form method="GET" action="/financeiro/relatorios/vendas-dia" class="flex flex-wrap gap-3 mb-4">
                 <input type="text" name="q" placeholder="Pesquisar paciente, parceiro ou observação" value="<%= q || '' %>" class="px-3 py-2 border rounded w-full sm:w-1/2" />
-                <select name="forma" class="px-3 py-2 border rounded">
-                    <option value="">Todas as formas</option>
-                    <% (formasPagamento || []).forEach(function(f){ %>
-                        <option value="<%= f %>" <%= formaFilter === f ? 'selected' : '' %>><%= f %></option>
+                <select name="status" class="px-3 py-2 border rounded">
+                    <option value="">Todos os status</option>
+                    <% (statuses || []).forEach(function(s){ %>
+                        <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s %></option>
                     <% }) %>
                 </select>
                 <select name="pageSize" class="px-3 py-2 border rounded">
@@ -41,18 +41,22 @@
                                 <th class="px-4 py-3">Parceiro</th>
                                 <th class="px-4 py-3">Observação</th>
                                 <th class="px-4 py-3 text-right">Valor (R$)</th>
-                                <th class="px-4 py-3">Forma</th>
+                                <th class="px-4 py-3 text-center">Forma</th>
                             </tr>
                         </thead>
                         <tbody>
                             <% vendas.forEach(function(v){ %>
                                 <tr class="border-t">
-                                    <td class="px-4 py-3"><%= new Date(v.createdAt).toLocaleTimeString() %></td>
-                                    <td class="px-4 py-3"><%= v.paciente ? v.paciente.nome : '—' %></td>
-                                    <td class="px-4 py-3"><%= v.parceiro ? v.parceiro.nome : '—' %></td>
-                                    <td class="px-4 py-3"><%= v.observacao || '—' %></td>
-                                    <td class="px-4 py-3 text-right font-mono"><%= parseFloat(v.valorFinal).toFixed(2) %></td>
-                                    <td class="px-4 py-3"><%= v.formaPagamento %></td>
+                                    <td class="px-4 py-3 text-sm text-slate-500"><%= new Date(v.createdAt).toLocaleTimeString('pt-BR') %></td>
+                                    <td class="px-4 py-3 font-bold text-slate-700"><%= v.paciente ? v.paciente.nome : '—' %></td>
+                                    <td class="px-4 py-3 text-sm"><%= v.parceiro ? v.parceiro.nome : 'Particular' %></td>
+                                    <td class="px-4 py-3 text-xs text-slate-500 italic"><%= v.observacao || '—' %></td>
+                                    <td class="px-4 py-3 text-right font-mono font-bold">R$ <%= (Number(v.valorTotal) || 0).toFixed(2) %></td>
+                                    <td class="px-4 py-3 text-center text-xs">
+                                        <span class="px-2 py-1 bg-slate-100 rounded-md">
+                                            <%= (v.pagamentos && v.pagamentos.length > 0) ? v.pagamentos[0].formaPagamento : '—' %>
+                                        </span>
+                                    </td>
                                 </tr>
                             <% }) %>
                         </tbody>
@@ -65,16 +69,16 @@
                     <div class="flex items-center gap-2">
                         <% const prevPage = page > 1 ? page - 1 : 1; %>
                         <% const nextPage = page < pageCount ? page + 1 : pageCount; %>
-                        <a href="?q=<%= encodeURIComponent(q || '') %>&forma=<%= encodeURIComponent(formaFilter || '') %>&pageSize=<%= pageSize %>&page=<%= prevPage %>" class="px-3 py-2 bg-slate-100 rounded hover:bg-slate-200">Anterior</a>
-                        <a href="?q=<%= encodeURIComponent(q || '') %>&forma=<%= encodeURIComponent(formaFilter || '') %>&pageSize=<%= pageSize %>&page=<%= nextPage %>" class="px-3 py-2 bg-slate-100 rounded hover:bg-slate-200">Próxima</a>
+                        <a href="?q=<%= encodeURIComponent(q || '') %>&status=<%= encodeURIComponent(statusFilter || '') %>&pageSize=<%= pageSize %>&page=<%= prevPage %>" class="px-3 py-2 bg-slate-100 rounded hover:bg-slate-200">Anterior</a>
+                        <a href="?q=<%= encodeURIComponent(q || '') %>&status=<%= encodeURIComponent(statusFilter || '') %>&pageSize=<%= pageSize %>&page=<%= nextPage %>" class="px-3 py-2 bg-slate-100 rounded hover:bg-slate-200">Próxima</a>
                     </div>
                 </div>
             <% } %>
         </div>
 
         <div class="p-6 border-t flex justify-between items-center">
-            <a href="/profissionais/dashboard" class="px-4 py-2 bg-slate-200 rounded">Voltar</a>
-            <button onclick="window.print()" class="px-4 py-2 bg-clinic-500 text-white rounded">Imprimir Relatório</button>
+            <a href="/financeiro/relatorios" class="px-4 py-2 bg-slate-200 rounded no-underline text-slate-700 font-bold">Voltar</a>
+            <button onclick="window.print()" class="px-4 py-2 bg-clinic-500 text-white rounded font-bold">Imprimir Relatório</button>
         </div>
     </div>
 </div>

@@ -32,10 +32,6 @@
 <!-- BEGIN: Global Styles -->
 <style data-purpose="typography">
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    /* .dashboard-container {
-      font-family: 'Inter', sans-serif;
-      background-color: #f1f5f9;
-    } */
   </style>
 <style data-purpose="layout-adjustments">
     .sidebar-active {
@@ -53,10 +49,6 @@
     .status-badge-overdue {
       background-color: #fee2e2;
       color: #991b1b;
-    }
-    /* Ajuste para não conflitar com bootstrap do layout pai se necessário */
-    .tailwind-scope {
-        all: revert; /* Tenta isolar se necessário, mas tailwind costuma ser agressivo */
     }
   </style>
 <!-- END: Global Styles -->
@@ -133,13 +125,6 @@
                     <button class="px-4 py-1.5 text-sm font-semibold rounded-md bg-white shadow-sm text-clinic-700">Lançamentos</button>
                     <a href="/financeiro/extrato" class="px-4 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 no-underline">Ver Extrato Completo</a>
                 </div>
-                <!-- Search and Filters -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="relative">
-                        <input class="pl-9 pr-4 py-2 border-slate-300 rounded-lg text-sm focus:ring-clinic-500 focus:border-clinic-500 w-full sm:w-64" placeholder="Pesquisar..." type="text"/>
-                        <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
             </div>
         </div>
         <!-- END: Table Controls -->
@@ -161,7 +146,7 @@
                     <% lancamentos.forEach(l => { %>
                     <tr class="hover:bg-slate-50/50 transition-colors">
                         <td class="px-6 py-4 text-slate-500">
-                            <%= new Date(l.dataPagamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) %>
+                            <%= new Date(l.createdAt).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) %>
                         </td>
                         <td class="px-6 py-4 font-medium text-slate-700">
                             <%= l.paciente ? l.paciente.nome : 'N/A' %>
@@ -170,19 +155,19 @@
                             <%= l.observacao || '—' %>
                         </td>
                         <td class="px-6 py-4 text-right font-semibold">
-                            R$ <%= l.valorFinal.toFixed(2) %>
+                            R$ <%= (Number(l.valorTotal) || 0).toFixed(2) %>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <% if (l.statusPagamento === 'Pago') { %>
+                            <% if (l.status === 'PAGO') { %>
                                 <span class="status-badge-paid px-3 py-1 rounded-full text-[11px] font-bold uppercase">Pago</span>
-                            <% } else if (new Date(l.dataPagamento) < new Date() && l.statusPagamento === 'Pendente') { %>
+                            <% } else if (new Date(l.dataVencimento) < new Date() && l.status === 'PENDENTE') { %>
                                 <span class="status-badge-overdue px-3 py-1 rounded-full text-[11px] font-bold uppercase">Atrasado</span>
                             <% } else { %>
                                 <span class="status-badge-pending px-3 py-1 rounded-full text-[11px] font-bold uppercase">Pendente</span>
                             <% } %>
                         </td>
                         <td class="px-6 py-4 text-right space-x-2">
-                            <button class="text-clinic-500 hover:text-clinic-700 text-xs font-bold">Ver</button>
+                            <a href="/financeiro/extrato" class="text-clinic-500 hover:text-clinic-700 text-xs font-bold no-underline">Ver</a>
                         </td>
                     </tr>
                     <% }) %>

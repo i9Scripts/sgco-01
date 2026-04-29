@@ -38,9 +38,9 @@ export const anamneseController = {
         include: {
           anamneses: {
             orderBy: { createdAt: 'desc' },
-            take: 1
-          }
-        }
+            take: 1,
+          },
+        },
       });
 
       if (!paciente) {
@@ -48,14 +48,18 @@ export const anamneseController = {
         return res.redirect('/pacientes');
       }
 
-      // Buscar o maior nFicha atual do consultório para sugerir o próximo
+      // Buscar o maior nFicha atual do consultório para sugerir o próximo caso o paciente não tenha um
       const maxAnamnese = await prisma.anamnese.findFirst({
         where: { consultorioId: parseInt(idConsultorio) },
         orderBy: { nFicha: 'desc' },
         select: { nFicha: true },
       });
 
-      const proximaFicha = (maxAnamnese && maxAnamnese.nFicha ? maxAnamnese.nFicha : 0) + 1;
+      // Se o paciente já tem anamneses, sugerir o mesmo nFicha. Caso contrário, sugerir o próximo disponível.
+      const ultimaAnamnesePaciente = paciente.anamneses[0];
+      const proximaFicha = ultimaAnamnesePaciente && ultimaAnamnesePaciente.nFicha
+        ? ultimaAnamnesePaciente.nFicha
+        : (maxAnamnese && maxAnamnese.nFicha ? maxAnamnese.nFicha : 0) + 1;
 
       res.render('anamneses/new', {
         pageTitle: 'Nova Anamnese',
@@ -113,27 +117,25 @@ export const anamneseController = {
         req.flash('error', 'Paciente ou consultório não encontrado.');
         return res.redirect('/pacientes');
       }
-      
+
       // Validação de nFicha único por consultório
       if (nFicha) {
         const fichaExistente = await prisma.anamnese.findFirst({
           where: {
             consultorioId: parseInt(idConsultorio),
             nFicha: parseInt(nFicha),
-            pacienteId: { not: parseInt(idPaciente) } // Permite o mesmo nFicha para o mesmo paciente (histórico)
+            pacienteId: { not: parseInt(idPaciente) }, // Permite o mesmo nFicha para o mesmo paciente (histórico)
           },
-          include: { paciente: { select: { nome: true } } }
+          include: { paciente: { select: { nome: true } } },
         });
 
         if (fichaExistente) {
-          req.flash('error', `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.paciente.nome}.`);
-          // Aqui poderíamos renderizar novamente com os erros, mas para simplificar vamos redirecionar
+          req.flash(
+            'error',
+            `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.paciente.nome}.`
+          );
           return res.redirect(`/anamneses/new?idPaciente=${idPaciente}`);
         }
-      }
-
-      if (!motivo || !ultimoExame || !usuarioOculos || !usuarioLC || !dm || !has || !glauc) {
-        req.flash('error', 'Existem campos obrigatórios não preenchidos.');
       }
 
       const nova = await prisma.anamnese.create({
@@ -153,8 +155,10 @@ export const anamneseController = {
           glaucFam: glaucFam || null,
           sintomas: sintomas || null,
           remedio: remedio || null,
-          cefaleia: Array.isArray(cefaleia) ? cefaleia.join(', ') : (cefaleia || null),
-          antecedentesPessoais: Array.isArray(antecedentesPessoais) ? antecedentesPessoais.join(', ') : (antecedentesPessoais || null),
+          cefaleia: Array.isArray(cefaleia) ? cefaleia.join(', ') : cefaleia || null,
+          antecedentesPessoais: Array.isArray(antecedentesPessoais)
+            ? antecedentesPessoais.join(', ')
+            : antecedentesPessoais || null,
           obsGerais: obsGerais || null,
           adicao: adicao || null,
           cilOD: cilOD || null,
@@ -168,12 +172,18 @@ export const anamneseController = {
         },
       });
 
-      // Se a flag addToQueue estiver presente, adiciona o paciente à fila
+      // Cria uma consulta vinculada a esta anamnese
+      await prisma.consulta.create({
+        data: {
+          pacienteId: parseInt(idPaciente),
+          consultorioId: parseInt(idConsultorio),
+          anamneseId: nova.idAnam,
+          naFila: addToQueue === 'true',
+          statusConsulta: 'Agendada',
+        },
+      });
+
       if (addToQueue === 'true') {
-        await prisma.paciente.update({
-          where: { idPaciente: parseInt(idPaciente) },
-          data: { naFila: true },
-        });
         req.flash('success', 'Anamnese salva e paciente adicionado à fila de espera!');
         return res.redirect('/');
       }
@@ -231,21 +241,17 @@ export const anamneseController = {
         return res.redirect('/anamneses');
       }
 
-      // Renderizar a view de detalhes
       // calcula idade no servidor
       const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
-      // 1. Criar o objeto Date (se ainda não for um objeto Date)
       const dataObjeto = new Date(anamnese.createdAt);
-      // 3. Formatar a data para DD/MM/YYYY (usando a nova função)
       const dataCreatedAt = formatarData(dataObjeto);
-      // formatar a data de nascimento e anexar ao objeto paciente antes de renderizar
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
 
       res.render('anamneses/show', {
         pageTitle: 'Ficha da Anamnese',
         pageIcon: 'ri-file-list-line',
         anamnese,
-        paciente, // Passa os dados do paciente para a view
+        paciente,
         dataCreatedAt,
         idadePaciente,
       });
@@ -268,15 +274,13 @@ export const anamneseController = {
       const anamneses = await prisma.anamnese.findMany({
         where: { consultorioId: idConsultorio },
         include: {
-          paciente: true, // <- isso é necessário para incluir o idpaciente
+          paciente: true,
         },
-        // 💡 PARA ORDENAR POR DATA MAIS RECENTE
         orderBy: [{ paciente: { nome: 'asc' } }, { createdAt: 'desc' }],
       });
-      // Mapeie a lista para formatar a data de criação
+
       const anamnesesFormatadas = anamneses.map((anamnese) => ({
         ...anamnese,
-        // Formata o createdAt e anexa como dataCreatedAt ao objeto
         dataCreatedAt: formatarData(new Date(anamnese.createdAt)),
       }));
       res.render('anamneses/index', {
@@ -339,19 +343,21 @@ export const anamneseController = {
         avSCOE,
       } = req.body;
 
-      // Validação de nFicha único por consultório (opcional para update se permitirmos histórico)
       if (nFicha) {
         const fichaExistente = await prisma.anamnese.findFirst({
           where: {
             consultorioId: parseInt(idConsultorio),
             nFicha: parseInt(nFicha),
-            pacienteId: { not: anamnese.pacienteId }
+            pacienteId: { not: anamnese.pacienteId },
           },
-          include: { paciente: { select: { nome: true } } }
+          include: { paciente: { select: { nome: true } } },
         });
 
         if (fichaExistente) {
-          req.flash('error', `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.paciente.nome}.`);
+          req.flash(
+            'error',
+            `O número de ficha ${nFicha} já está em uso pelo paciente ${fichaExistente.paciente.nome}.`
+          );
           return res.redirect(`/anamneses/${idAnam}/edit`);
         }
       }
@@ -444,9 +450,7 @@ export const anamneseController = {
       const q = query.trim();
       const cleanQ = q.replace(/\D/g, '');
 
-      const orConditions = [
-        { paciente: { nome: { contains: q } } }
-      ];
+      const orConditions = [{ paciente: { nome: { contains: q } } }];
 
       const nFichaNum = parseInt(cleanQ);
       if (!isNaN(nFichaNum) && nFichaNum <= 2147483647) {
@@ -456,7 +460,7 @@ export const anamneseController = {
       const anamneses = await prisma.anamnese.findMany({
         where: {
           consultorioId: idConsultorio,
-          OR: orConditions
+          OR: orConditions,
         },
         include: {
           paciente: true,
@@ -526,18 +530,14 @@ export const anamneseController = {
         return res.redirect('/anamneses');
       }
 
-      // calcula idade no servidor
       const idadePaciente = paciente ? calcularIdadeFromDate(paciente.dataNasc || paciente.dataNascFormatada) : null;
-
-      // Renderizar a view de edição
-      // formatar a data de nascimento e anexar ao objeto paciente antes de renderizar
       paciente.dataNascFormatada = dayjs.utc(paciente.dataNasc).format('DD/MM/YYYY');
       res.render('anamneses/edit', {
         pageTitle: 'Editar Anamnese',
         pageIcon: 'ri-edit-line',
         anamnese,
-        paciente, // Passa os dados do paciente para a view
-        idadePaciente, // passa para a view
+        paciente,
+        idadePaciente,
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

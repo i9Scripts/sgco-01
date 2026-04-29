@@ -57,11 +57,27 @@ export const diagnosticoController = {
         },
       });
 
-      // Update patient status to 'atendido' and remove from queue
+      // Busca a consulta ativa na fila para vincular o diagnóstico e finalizar
+      const consultaAtiva = await prisma.consulta.findFirst({
+        where: { pacienteId: parseInt(pacienteId), consultorioId, naFila: true },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      if (consultaAtiva) {
+        await prisma.consulta.update({
+          where: { idConsulta: consultaAtiva.idConsulta },
+          data: {
+            diagnosticoId: novoDiagnostico.idDiagnostico,
+            naFila: false,
+            statusConsulta: 'Finalizada'
+          }
+        });
+      }
+
+      // Update patient status (opcional, mantendo compatibilidade)
       await prisma.paciente.update({
         where: { idPaciente: parseInt(pacienteId) },
         data: {
-          naFila: false,
           status: 'atendido',
         },
       });
@@ -116,10 +132,11 @@ export const diagnosticoController = {
         return res.redirect('/profissionais/new');
       }
 
+      // Consultas finalizadas para histórico na view se necessário
       const consultas = await prisma.consulta.findMany({
         where: {
           consultorioId: idConsultorio,
-          pagamentoRealizado: true,
+          statusConsulta: 'Finalizada'
         },
         include: {
           paciente: {
@@ -133,8 +150,6 @@ export const diagnosticoController = {
         },
       });
 
-      // ... busca de pacientes e profissionais ...
-
       const { idPaciente } = req.query;
       let selectedPaciente = null;
       let diagnostico = null;
@@ -142,7 +157,6 @@ export const diagnosticoController = {
       if (idPaciente) {
         const pid = parseInt(idPaciente);
         if (!Number.isNaN(pid)) {
-          // Busca direta no banco para garantir que temos o objeto completo e pertence ao consultório
           selectedPaciente = await prisma.paciente.findFirst({
             where: {
               idPaciente: pid,
@@ -164,7 +178,7 @@ export const diagnosticoController = {
         pageIcon: 'ri-file-add-line',
         pacientes,
         profissionais,
-        consultas, // Passa as consultas para a view
+        consultas,
         idConsultorio,
         diagnostico,
         selectedPaciente,
@@ -261,7 +275,6 @@ export const diagnosticoController = {
   async searchDiagnosticos(req, res) {
     try {
       const { query } = req.query;
-      //ParseInt para garantir que o ID seja um número
       const idConsultorio = parseInt(req.session.idConsultorio);
 
       if (!idConsultorio) {
@@ -269,18 +282,15 @@ export const diagnosticoController = {
         return res.redirect('/consultorios/new');
       }
 
-      // Se a busca estiver vazia, redireciona para a listagem
       if (!query || query.trim() === '') {
         return res.redirect('/diagnosticos');
       }
 
-      // Limpar a string de busca
       const q = query.trim();
 
       const diagnosticos = await prisma.diagnostico.findMany({
         where: {
           consultorioId: idConsultorio,
-          // Buscar nome
           OR: [
             {
               paciente: {
@@ -333,7 +343,6 @@ export const diagnosticoController = {
         return res.redirect('/consultorios/new');
       }
 
-      // 1. Buscamos o diagnóstico incluindo os dados do paciente
       const diagnostico = await prisma.diagnostico.findFirst({
         where: {
           idDiagnostico: parseInt(idDiagnostico),
@@ -361,7 +370,6 @@ export const diagnosticoController = {
       });
       const profissionais = await prisma.profissional.findMany({ where: { consultorioId: idConsultorio } });
 
-      // 2. Definimos a variável selectedPaciente que a sua View edit.ejs agora exige
       const selectedPaciente = diagnostico.paciente;
 
       res.render('diagnosticos/edit', {
@@ -371,7 +379,7 @@ export const diagnosticoController = {
         pacientes,
         profissionais,
         idConsultorio,
-        selectedPaciente, // <--- Aqui está a correção para o erro de ReferenceError
+        selectedPaciente,
       });
     } catch (error) {
       console.error('Erro ao exibir formulário de edição:', error);

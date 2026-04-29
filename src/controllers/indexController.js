@@ -51,17 +51,27 @@ export const indexController = {
         },
       });
 
-      // Buscar pacientes na fila
-      const pacientesNaFila = await prisma.paciente.findMany({
+      // Buscar consultas na fila
+      const consultasNaFila = await prisma.consulta.findMany({
         where: { consultorioId: idConsultorio, naFila: true },
-        include: { anamneses: { take: 1, orderBy: { createdAt: 'desc' } } },
+        include: { 
+            paciente: true,
+            anamnese: true
+        },
         orderBy: { createdAt: 'asc' },
       });
 
+      // Mapear consultas para o formato esperado pela view (pacientesNaFila)
+      const pacientesNaFila = consultasNaFila.map(c => ({
+          ...c.paciente,
+          anamneses: [c.anamnese],
+          idConsulta: c.idConsulta, // Útil para ações na fila
+          createdAt: c.createdAt // Usa a data de entrada na fila (consulta)
+      }));
+
       // Buscar pacientes reservados (fora da fila mas ativos hoje?) ou apenas os que não estão na fila
-      // Para o dashboard de recepção, talvez interesse quem foi atendido hoje
       const pacientesReservados = await prisma.paciente.findMany({
-        where: { consultorioId: idConsultorio, naFila: false },
+        where: { consultorioId: idConsultorio },
         take: 10,
         orderBy: { updatedAt: 'desc' },
       });
@@ -97,7 +107,7 @@ export const indexController = {
         usuario: null,
         error: 'Erro ao carregar dados da recepção.',
         pageTitle: 'Erro',
-        pageIcon: 'bi bi-x-circle',
+        pageIcon: 'bi-x-circle',
       });
     }
   },
@@ -108,7 +118,22 @@ export const indexController = {
       const idConsultorio = req.session.idConsultorio;
       const isProfissional = !!req.session.idProfissional;
 
-      // Renderiza o partial passando as variáveis necessárias
+      const consultasNaFila = await prisma.consulta.findMany({
+        where: { consultorioId: idConsultorio, naFila: true },
+        include: { 
+            paciente: true,
+            anamnese: true
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      const pacientes = consultasNaFila.map(c => ({
+          ...c.paciente,
+          anamneses: [c.anamnese],
+          idConsulta: c.idConsulta,
+          createdAt: c.createdAt
+      }));
+
       return res.render('fila-espera', {
         idConsultorio,
         pacientes,

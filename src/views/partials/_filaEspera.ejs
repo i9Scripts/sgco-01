@@ -47,38 +47,17 @@
                 </button>
 
                 <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
-                  <!-- Diagnóstico -->
-                  <a
-                    href="/diagnosticos/new?idPaciente=<%= paciente.idPaciente %>"
-                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                    title="Fazer Diagnóstico"
-                  >
-                    <span class="material-symbols-outlined text-[20px]">medical_services</span>
-                  </a>
-                  
+                  <!-- Botão Retirar da Fila -->
+                  <form action="/paciente/<%= paciente.idPaciente %>/remover-fila" method="post" class="inline" onsubmit="return confirm('Tem certeza que deseja retirar o paciente da fila?')">
+                    <button
+                      type="submit"
+                      class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      title="Retirar da Fila"
+                    >
+                      <span class="material-symbols-outlined text-[20px]">person_remove</span>
+                    </button>
+                  </form> 
                 <% } %>
-
-                <!-- Botão Atendido -->
-                <form action="/pacientes/<%= paciente.idPaciente %>/atendido?_method=PUT" method="post" class="inline">
-                  <button
-                    type="submit"
-                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                    title="Marcar como Atendido"
-                  >
-                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                  </button>
-                </form>
-
-                <!-- Botão Retirar da Fila -->
-                <form action="/paciente/<%= paciente.idPaciente %>/remover-fila" method="post" class="inline" onsubmit="return confirm('Tem certeza que deseja retirar o paciente da fila?')">
-                  <button
-                    type="submit"
-                    class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                    title="Retirar da Fila"
-                  >
-                    <span class="material-symbols-outlined text-[20px]">person_remove</span>
-                  </button>
-                </form>
               </div>
             </td>
 
@@ -96,32 +75,36 @@
                   >
                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                   </button>
-                  <button
-                    onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')"
-                    class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
-                    title="Editar Anamnese"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                  </button>
-                  <button
-                    onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')"
-                    class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
-                    title="Nova Anamnese"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                  </button>
+                  <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
+                    <button
+                      onclick="abrirModalGenerico('/anamneses/<%= anamnese.idAnam %>/edit', 'Editar Anamnese')"
+                      class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+                      title="Editar Anamnese"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">edit</span>
+                    </button>
+                    <button
+                      onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Nova Anamnese')"
+                      class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
+                      title="Nova Anamnese"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    </button>
+                  <% } %>
                 </div>
                 <% } else { %>
                 <span class="hidden md:inline-flex items-center px-2 py-1 rounded-md text-[10px] font-black uppercase bg-slate-100 text-slate-500 border border-slate-200">
                   Pendente
                 </span>
-                <button
-                  onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')"
-                  class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
-                  title="Criar Nova Anamnese"
-                >
-                  <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                </button>
+                <% if (typeof isProfissional !== 'undefined' && isProfissional) { %>
+                  <button
+                    onclick="abrirModalGenerico('/anamneses/new?idPaciente=<%= paciente.idPaciente %>', 'Criar Nova Anamnese')"
+                    class="p-1.5 text-clinic-600 hover:bg-clinic-50 rounded-md transition-colors"
+                    title="Criar Nova Anamnese"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                  </button>
+                <% } %>
                 <% } %>
               </div>
             </td>
